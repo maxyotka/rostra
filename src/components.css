@@ -313,6 +313,8 @@
 .rs-alert__mark { width: 3px; border-radius: 2px; background: var(--rs-text-faint); flex: none; }
 .rs-alert__title { font: 500 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); }
 .rs-alert__text { font: 400 var(--rs-fs-label) / 1.5 var(--rs-font); color: var(--rs-text-muted); margin-top: 3px; }
+.rs-alert--ok { background: var(--rs-ok-bg); border-color: color-mix(in oklab, var(--rs-ok) 30%, transparent); }
+.rs-alert--ok .rs-alert__mark { background: var(--rs-ok); }
 .rs-alert--warn { background: var(--rs-warn-bg); border-color: color-mix(in oklab, var(--rs-warn) 30%, transparent); }
 .rs-alert--warn .rs-alert__mark { background: var(--rs-warn); }
 .rs-alert--bad { background: var(--rs-bad-bg); border-color: color-mix(in oklab, var(--rs-bad) 30%, transparent); }
