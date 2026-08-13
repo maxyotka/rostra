@@ -280,6 +280,31 @@
 .rs-switch.is-on { background: var(--rs-accent-500); border-color: var(--rs-accent-500); }
 .rs-switch.is-on::after { transform: translateX(14px); }
 
+/* Нативные контролы под визуалом системы.
+   Разметка: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
+   <span class="rs-check"></span><span>подпись</span></label>
+   Состояние держит сам input, поэтому доступность, формы и клавиатура
+   работают без единой строки js — .is-on нужен только там, где визуал
+   рисуется без input (например, ячейка таблицы).
+   Галочка рисуется рамкой, чтобы базовый чекбокс не тянул иконочный шрифт. */
+.rs-choice { display: inline-flex; align-items: center; gap: 9px; position: relative; font: 400 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); cursor: pointer; }
+.rs-choice__input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; pointer-events: none; }
+.rs-choice__input:disabled ~ * { opacity: 0.5; cursor: not-allowed; }
+.rs-choice:has(.rs-choice__input:disabled) { cursor: not-allowed; }
+.rs-choice__input:checked + .rs-check { background: var(--rs-accent-500); border-color: var(--rs-accent-500); color: var(--rs-text-invert); }
+.rs-choice__input:checked + .rs-check::after,
+.rs-choice__input:indeterminate + .rs-check::after { content: ''; display: block; }
+.rs-choice__input:checked + .rs-check::after { width: 4px; height: 8px; border: 2px solid currentColor; border-top: 0; border-left: 0; transform: translateY(-1px) rotate(45deg); }
+.rs-choice__input:indeterminate + .rs-check { background: var(--rs-accent-500); border-color: var(--rs-accent-500); color: var(--rs-text-invert); }
+.rs-choice__input:indeterminate + .rs-check::after { width: 8px; height: 2px; border-radius: 1px; background: currentColor; }
+.rs-choice__input:checked + .rs-radio { background: var(--rs-surface); border-color: var(--rs-accent-500); }
+.rs-choice__input:checked + .rs-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--rs-accent-500); animation: rs-pop var(--rs-dur-instant) var(--rs-ease-out) both; }
+.rs-choice__input:checked + .rs-switch { background: var(--rs-accent-500); border-color: var(--rs-accent-500); }
+.rs-choice__input:checked + .rs-switch::after { transform: translateX(14px); }
+.rs-choice__input:focus-visible + .rs-check,
+.rs-choice__input:focus-visible + .rs-radio,
+.rs-choice__input:focus-visible + .rs-switch { box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
+
 /* --- 5. Поверхности ------------------------------------------ */
 .rs-card { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); }
 .rs-card__body { padding: var(--rs-pad-card); }
@@ -321,10 +346,22 @@
 .rs-seg__btn.is-on { background: var(--rs-surface); color: var(--rs-text); font-weight: 500; box-shadow: var(--rs-shadow-1); }
 
 /* --- 9. Обратная связь -------------------------------------- */
+/* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
+   висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
+.rs-backdrop { position: fixed; inset: 0; z-index: 40; background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
+.rs-layer { position: fixed; z-index: 41; }
+.rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
+.rs-layer--right { top: 0; right: 0; bottom: 0; display: flex; }
+.rs-drawer { width: min(460px, 100vw); height: 100%; display: flex; flex-direction: column; background: var(--rs-surface); border-left: 1px solid var(--rs-border); box-shadow: var(--rs-shadow-3); }
+.rs-drawer__head, .rs-dialog__head { flex: none; display: flex; align-items: center; gap: 12px; padding: 14px var(--rs-pad-card); border-bottom: 1px solid var(--rs-hairline); }
+.rs-drawer__body, .rs-dialog__body { flex: 1; min-height: 0; overflow: auto; padding: var(--rs-pad-card); }
+.rs-drawer__foot, .rs-dialog__foot { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 12px var(--rs-pad-card); border-top: 1px solid var(--rs-hairline); background: var(--rs-surface-2); }
+.rs-toast-viewport { position: fixed; z-index: 42; top: var(--rs-space-4); right: var(--rs-space-4); display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.rs-toast-viewport > * { pointer-events: auto; }
 .rs-toast { display: flex; gap: 10px; padding: 11px 12px; background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); box-shadow: var(--rs-shadow-2); width: 340px; }
 .rs-toast__title { font: 500 var(--rs-fs-ui) / 1.35 var(--rs-font); color: var(--rs-text); }
 .rs-toast__text { font: 400 var(--rs-fs-label) / 1.45 var(--rs-font); color: var(--rs-text-muted); margin-top: 2px; }
-.rs-dialog { width: 440px; background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius-lg); box-shadow: var(--rs-shadow-3); overflow: hidden; }
+.rs-dialog { width: 440px; max-width: 100%; display: flex; flex-direction: column; background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius-lg); box-shadow: var(--rs-shadow-3); overflow: hidden; }
 .rs-popover { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); box-shadow: var(--rs-shadow-2); padding: 12px 14px; }
 .rs-tooltip { display: inline-block; background: var(--rs-text); color: var(--rs-surface); font: 400 var(--rs-fs-label) / 1.4 var(--rs-font); padding: 5px 8px; border-radius: var(--rs-radius-sm); }
 .rs-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; text-align: center; padding: var(--rs-space-7) var(--rs-space-5); }
