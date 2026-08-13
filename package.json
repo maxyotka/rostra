@@ -1,0 +1,104 @@
+{
+  "name": "rostra-ui",
+  "version": "0.1.0",
+  "description": "Rostra — система компонентов для админок и корпоративного контура: токены, 4 темы, 4 плотности, CSS-ядро и React-слой",
+  "license": "MIT",
+  "author": "maxyotka",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxyotka/rostra.git"
+  },
+  "keywords": [
+    "design-system",
+    "ui",
+    "react",
+    "css",
+    "admin",
+    "tokens",
+    "a11y"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./rostra.css": "./rostra.css",
+    "./fonts.css": "./fonts.css",
+    "./tokens.json": "./rostra.tokens.json",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "rostra.css",
+    "fonts.css",
+    "rostra.tokens.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build:css": "node scripts/build-css.mjs",
+    "build:js": "node scripts/build-js.mjs",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build": "npm run build:css && npm run build:js && npm run build:types",
+    "check:tokens": "node scripts/build-css.mjs --check",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run check:tokens && npm run check:contrast && npm run typecheck && npm run test"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@radix-ui/react-checkbox": "^1.1.4",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-popover": "^1.1.6",
+    "@radix-ui/react-radio-group": "^1.2.3",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-tooltip": "^1.1.8"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "axe-core": "^4.10.2",
+    "culori": "^4.0.1",
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
