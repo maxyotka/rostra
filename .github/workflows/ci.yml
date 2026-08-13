@@ -22,3 +22,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # Собранный пакет должен ещё и импортироваться: «сборка прошла» и
+      # «из пакета что-то экспортируется» — разные утверждения.
+      - name: Собранный пакет отдаёт компоненты
+        run: |
+          node -e "import('./dist/index.js').then(m => { if (!m.Button || !m.Dialog || !m.Rostra) throw new Error('esm без экспортов') })"
+          node -e "if (!require('./dist/index.cjs').Button) throw new Error('cjs без экспортов')"

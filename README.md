@@ -154,6 +154,59 @@ ActionButton), графики. Классы описаны и работают, 
 - Пустое состояние не извиняется, а предлагает выход: «Ничего не найдено» + «Сбросить фильтры».
 - Единицы — строчными, коды — капсом: `2 часа назад`, `ORG-4182`, `API 42 мс`.
 
+## Рецепты
+
+**Экран по правилу одного экрана.** Скроллится только `Pane`; шапка,
+фильтры и пагинация приклеены.
+
+```tsx
+<AppShell>
+  <Sidebar aria-label="Разделы">
+    <NavItem href="/clients" active>Клиенты</NavItem>
+  </Sidebar>
+  <AppMain>
+    <AppBar><Topbar>…</Topbar></AppBar>
+    <Pane>…</Pane>
+    <AppBar>…пагинация…</AppBar>
+  </AppMain>
+</AppShell>
+```
+
+**Поле с подсказкой и ошибкой.** `Field` сам раздаёт `id`,
+`aria-describedby` и `aria-invalid` — связывать руками нечего.
+
+```tsx
+<Field label="ИНН" hint="10 цифр" error={errors.inn} required>
+  {(props) => <Input {...props} value={inn} onChange={onChange} />}
+</Field>
+```
+
+**Подтверждение удаления.** Фокус заперт внутри, Esc закрывает,
+после закрытия возвращается на кнопку, которая окно открыла.
+
+```tsx
+<Dialog
+  open={open}
+  onOpenChange={setOpen}
+  title="Удалить клиента"
+  description="Действие нельзя отменить."
+  footer={
+    <>
+      <DialogClose><Button>Отмена</Button></DialogClose>
+      <Button variant="danger" onClick={remove}>Удалить</Button>
+    </>
+  }
+/>
+```
+
+**Уведомления.**
+
+```tsx
+const { toasts, push, dismiss } = useToasts()
+push({ title: 'Счёт выставлен', text: 'ДГ-2026-114 на 12 400 ₽' })
+<ToastViewport toasts={toasts} onDismiss={dismiss} />
+```
+
 ## Своя тема
 
 Токены правятся в `rostra.tokens.json`, css пересобирается:
