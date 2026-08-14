@@ -1,57 +1,55 @@
 # Security Policy
 
-## Поддерживаемые версии
+## Supported versions
 
-Система в статусе `0.x`: публичный api ещё может меняться в минорных версиях.
-Исправления выпускаются для текущей минорной ветки.
+The project is at `0.x`: the public API may still change in minor releases.
+Fixes are shipped for the current minor branch.
 
-| Версия  | Поддержка |
+| Version | Supported |
 |---------|-----------|
 | `0.1.x` | ✅        |
 | `< 0.1` | ❌        |
 
-## Сообщить об уязвимости
+## Reporting a vulnerability
 
-**Не открывайте публичный issue для уязвимостей.**
+**Do not open a public issue for a vulnerability.**
 
-Свяжитесь приватно через GitHub Security Advisories:
+Report it privately through GitHub Security Advisories:
 <https://github.com/maxyotka/rostra/security/advisories/new>
 
-В сообщении, по возможности, укажите:
+Where possible, include:
 
-- версию пакета (`npm ls rostra-ui`) и способ подключения — css, React-слой
-  или legacy-сборка;
-- минимальный воспроизводимый пример;
-- оценку влияния;
-- предлагаемый патч, если он у вас есть.
+- the package version (`npm ls rostra-ui`) and how it is loaded — CSS only, the
+  React layer, or the legacy build;
+- a minimal reproduction;
+- an assessment of the impact;
+- a suggested patch, if you have one.
 
-Мы подтвердим получение в течение 72 часов и согласуем сроки раскрытия.
+We will acknowledge receipt within 72 hours and agree on a disclosure timeline.
 
-## Область
+## Scope
 
-Библиотека интерфейса не обрабатывает секреты и не ходит в сеть, поэтому
-поверхность атаки узкая. В области:
+A UI library handles no secrets and makes no network requests, so the attack
+surface is narrow. In scope:
 
-- Внедрение разметки через пропсы компонентов, которые ожидают текст.
-- Утечка данных между темами и порталами (содержимое слоя, отрисованное
-  вне своего контейнера).
-- Ошибки в генераторах `scripts/*.mjs`, приводящие к записи за пределы
-  репозитория.
-- Любая зависимость пакета с известной уязвимостью.
+- Markup injection through props that are documented as accepting text.
+- Data leaking across themes and portals — layer content rendered outside its
+  own container.
+- Bugs in `scripts/*.mjs` that write outside the repository.
+- Any dependency of the package with a known vulnerability.
 
-Вне области:
+Out of scope:
 
-- Разметка, которую приложение само передаёт в `dangerouslySetInnerHTML`.
-- Уязвимости в React, Radix и других зависимостях потребителя — сообщайте
-  их авторам напрямую.
-- Проблемы, воспроизводимые только в браузерах ниже заявленной границы
-  поддержки (см. README).
+- Markup the application itself passes to `dangerouslySetInnerHTML`.
+- Vulnerabilities in React, Radix or other consumer dependencies — report those
+  upstream.
+- Issues reproducible only in browsers below the documented support floor.
 
-## Оговорки
+## Caveats
 
-- `rostra.css` не делает сетевых запросов. Если вы подключаете `fonts.css`,
-  браузер обращается к `fonts.googleapis.com` — в закрытом контуре
-  используйте локальную копию шрифта.
-- `rostra.legacy.css` предназначен для браузеров, которые давно не получают
-  обновлений безопасности. Сам факт их поддержки не делает их безопасными:
-  решение об их допуске принимает эксплуатирующая сторона.
+- `rostra.css` makes no network requests. If you load `fonts.css`, the browser
+  contacts `fonts.googleapis.com` — in a closed network use a local copy of the
+  font instead.
+- `rostra.legacy.css` targets browsers that stopped receiving security updates
+  years ago. Supporting them does not make them safe: whether to allow them is
+  the operator's decision.

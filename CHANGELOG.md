@@ -1,84 +1,97 @@
-# Изменения
+# Changelog
 
-Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/),
-версии — [SemVer](https://semver.org/lang/ru/).
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+versioning follows [SemVer](https://semver.org/).
 
-## [Не выпущено]
+## [Unreleased]
 
-### Добавлено
-- Пакет `rostra-ui`: сборка esm + cjs, типы, `exports` для `rostra.css`,
-  `fonts.css` и `rostra.tokens.json`.
-- React-слой поверх классов `rs-*`. Слои и вкладки — на примитивах Radix
-  (фокус-трап, Esc, клавиатура, ARIA), формы — на нативных элементах.
-- `--rs-control-border` — граница интерактивного контрола. Отделена от
-  `--rs-border`, потому что у них разные требования: волосяная линия карточки
-  декоративна, граница поля обязана давать 3:1 по WCAG 1.4.11.
-- Поддержка нативных `input` в css-ядре (`.rs-choice`): чекбокс, радио и
-  переключатель работают без js, в том числе на чистом html.
-- Геометрия всплывающих слоёв: `.rs-backdrop`, `.rs-layer`, `.rs-drawer__*`,
-  `.rs-dialog__*`, `.rs-toast-viewport`. Раньше её приходилось писать инлайн.
-- `scripts/check-contrast.mjs` — 23 пары «текст на фоне» в каждой из 4 тем.
-- `scripts/build-css.mjs` — сборка `rostra.css` из токенов, режим `--check`
-  ловит правку css мимо json.
-- Тест соответствия классов: React-слой ссылается на css строками, поэтому
-  опечатка не ломает ни один тест поведения — ломается только вид.
-- CI: расхождение токенов, контраст, типы, тесты, сборка, импорт пакета.
+### Added
 
-- Поддержка старых браузеров. Цвета объявляются дважды: sRGB в основном
-  блоке, oklch — внутри `@supports`. Дублировать объявление кастомного
-  свойства нельзя: его значение браузер не проверяет, поэтому старый принял
-  бы `oklch(...)` как валидный токен, и невалидным стало бы уже свойство,
-  которое его использует — вместо фоллбэка получилось бы пустое место.
-- Фоллбэки для `color-mix()`, `100dvh`, `appearance` и `:focus-visible`.
-  Кольцо фокуса собрано в три правила, чтобы в старых браузерах оно было
-  на любом фокусе, а в новых — только с клавиатуры.
-- `scripts/check-support.mjs` — минимальная версия каждого браузера по данным
-  caniuse-lite, с указанием фичи, которая задаёт границу.
-- Тест на фоллбэки: каждое объявление с `color-mix()`/`dvh` обязано иметь
-  предшественника, каждый oklch-токен — sRGB-двойник, каждое правило с
-  `:focus-visible` — парное с `:focus`.
-- Контраст проверяется в двух вариантах: по oklch и по sRGB-фоллбэку.
-- `rostra.legacy.css` — вторая сборка для браузеров без кастомных свойств,
-  включая IE11. Основная сборка при этом не изменилась: современный браузер
-  грузит только её. В legacy значения токенов подставлены, `gap` переведён
-  в отступы соседей и псевдоэлементов, `grid` — во flex и float, разметка
-  прошла через autoprefixer с `-ms-` префиксами. Тема и плотность в ней
-  фиксируются на сборке: переключение на лету требует кастомных свойств.
-  React-слой в этом контуре недоступен — React 18+ не поддерживает IE.
-- Тест legacy-сборки: пересобираемость, отсутствие непонятных старому
-  браузеру конструкций, наличие `-ms-flexbox`, совпадение цветов с
-  sRGB-ветвью основной сборки.
-- Оформление репозитория: `SECURITY.md`, шаблоны issue и pull request,
-  бейджи и разделы README по образцу остальных репозиториев.
+- `rostra-ui` package: esm + cjs builds, types, `exports` for `rostra.css`,
+  `rostra.legacy.css`, `fonts.css` and `rostra.tokens.json`.
+- React layer on top of the `rs-*` classes. Layers and tabs sit on Radix
+  primitives (focus trap, Escape, keyboard, ARIA); form controls are native
+  elements.
+- `--rs-control-border` — the border of an interactive control, split from
+  `--rs-border` because the two have different requirements: a card hairline is
+  decorative, a field border must reach 3:1 under WCAG 1.4.11.
+- Native `input` support in the CSS core (`.rs-choice`): checkbox, radio and
+  switch work without JavaScript, including in plain HTML.
+- Geometry for floating layers: `.rs-backdrop`, `.rs-layer`, `.rs-drawer__*`,
+  `.rs-dialog__*`, `.rs-toast-viewport`. Previously every consumer had to write
+  it inline.
+- Support for old browsers. Colours are declared twice: sRGB in the main block,
+  oklch inside `@supports`. Duplicating a custom property declaration does not
+  work as a fallback — the browser does not validate the value, so an old
+  browser would accept `oklch(...)` as a valid token and the property consuming
+  it would become invalid instead, leaving nothing at all.
+- Fallbacks for `color-mix()`, `100dvh`, `appearance` and `:focus-visible`. The
+  focus ring is expressed as three rules so that old browsers show it on any
+  focus while modern ones keep it for the keyboard.
+- `rostra.legacy.css` — a second build for browsers without custom properties,
+  including IE10 and IE11. The modern build is unchanged: a modern browser
+  loads only that one. In the legacy build token values are inlined, `gap`
+  becomes margins on siblings and pseudo-elements, `grid` becomes flex and
+  float, and autoprefixer adds the `-ms-` prefixes. Theme and density are fixed
+  at build time, since switching at runtime requires custom properties. The
+  React layer is unavailable there — React 18+ dropped Internet Explorer.
+- `scripts/check-contrast.mjs` — 23 foreground/background pairs in each of the
+  four themes, verified against both oklch and sRGB values.
+- `scripts/build-css.mjs` — builds `rostra.css` from the tokens; `--check` mode
+  catches CSS edited outside the json.
+- `scripts/check-support.mjs` — minimum version per browser from caniuse-lite
+  data, naming the feature that sets each limit.
+- Class-consistency test: the React layer references CSS through strings, so a
+  typo breaks no behaviour test — it only breaks the way things look.
+- Fallback test: every declaration using `color-mix()` or a dynamic viewport
+  unit must have a predecessor, every oklch token an sRGB twin, and every
+  `:focus-visible` rule a `:focus` counterpart.
+- Legacy build test: reproducibility, absence of constructs an old browser
+  cannot parse, presence of `-ms-flexbox`, and colours matching the sRGB branch
+  of the main build.
+- CI: token drift, contrast, browser support, types, tests, build, package
+  import.
+- Repository documentation: `SECURITY.md`, issue and pull request templates,
+  and `docs/` covering principles, theming, accessibility, browser support and
+  recipes.
 
-### Изменено
-- `rostra.tokens.json` стал полным источником правды: 4 темы, 4 плотности,
-  базовый слой. Блок токенов в `rostra.css` теперь генерируется.
-- `@import` Google Fonts вынесен из `rostra.css` в отдельный `fonts.css`.
-  Ядро больше не делает сетевых запросов — важно для контура за файрволом,
-  где `googleapis.com` недоступен, и для первого рендера.
-- Нижняя граница поддержки: Chrome 84, Firefox 63, Safari 14.1 вместо
-  Chrome 111 и Safari 16.2, которых требовал oklch без фоллбэка.
-- Сборка js переведена с es2022 на es2019, иначе скрипт оказался бы
-  требовательнее стилей и сам стал бы узким местом.
+### Changed
 
-### Исправлено
-- Вкладка не сбрасывала стили кнопки. React-слой рендерит `<button>`, и
-  браузер рисовал ему свой фон, рамку и шрифт — вкладки выглядели кнопками.
-- Активная вкладка и пункт меню под стрелками не подсвечивались: состояние
-  приходит атрибутом `data-state` / `data-highlighted`, а css знал только
-  про `.is-on`. Тесты поведения этого не видели — роли и атрибуты были верны.
-- Спиннер кнопки в состоянии загрузки был белым на белом фоне: цвет брался
-  из `--rs-text-invert` для всех кнопок, а не только для основной.
-- Граница поля, чекбокса, переключателя, зоны загрузки и ползунка прокрутки
-  давала 1.5:1 при требуемых 3:1 — контролы были почти неразличимы.
-- Выключенный переключатель отличался от карточки только подложкой (~1.1:1);
-  добавлена граница.
-- Плейсхолдер давал 3.6:1 при требуемых 4.5:1 в светлой и тёплой темах.
-- Тема `contrast` не переопределяла цвета статусов и наследовала их из светлой.
-- `.rs-alert--ok` отсутствовал в css, хотя статус «в норме» объявлен наравне
-  с остальными: баннер молча оставался нейтральным.
+- `rostra.tokens.json` became the complete source of truth: four themes, four
+  densities, a base layer. The token block in `rostra.css` is now generated.
+- The Google Fonts `@import` moved out of `rostra.css` into `fonts.css`. The
+  core no longer makes network requests — which matters behind a firewall where
+  `googleapis.com` is unreachable, and for first render.
+- Support floor: Chrome 84, Firefox 63, Safari 14.1, down from Chrome 111 and
+  Safari 16.2 that oklch required without a fallback.
+- The JS build target moved from es2022 to es2019, so the script does not end
+  up more demanding than the stylesheet.
+
+### Fixed
+
+- Tabs did not reset button styling. The React layer renders a `<button>` and
+  the browser painted its own background, border and font — tabs looked like
+  buttons.
+- The active tab and the keyboard-highlighted menu item were not highlighted:
+  that state arrives as `data-state` / `data-highlighted`, while the CSS only
+  knew about `.is-on`. Behaviour tests could not see it — roles and attributes
+  were correct.
+- The button spinner in the loading state was white on a white background: the
+  colour came from `--rs-text-invert` for every button, not just the primary
+  one.
+- The border of inputs, checkboxes, switches, the dropzone and the scrollbar
+  thumb measured 1.5:1 against a required 3:1 — the controls were barely
+  distinguishable.
+- An unchecked switch differed from the card only by its fill (~1.1:1); it now
+  has a border.
+- Placeholder text measured 3.6:1 against a required 4.5:1 in the light and
+  warm themes.
+- The `contrast` theme did not override status colours and inherited them from
+  the light theme.
+- `.rs-alert--ok` was missing from the CSS even though the "healthy" status is
+  declared alongside the others: the banner silently stayed neutral.
 
 ## [0.1.0] — 2026-08-11
-- Первая версия системы: токены, 4 темы, 3 плотности, классы `rs-*`,
-  живая библиотека и два прототипа.
+
+- First version of the system: tokens, four themes, three densities, the `rs-*`
+  classes, a live component library and two prototypes.

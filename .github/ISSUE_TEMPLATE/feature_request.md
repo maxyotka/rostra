@@ -1,30 +1,29 @@
 ---
 name: Feature request
-about: Предложить компонент, токен или возможность
+about: Propose a component, token or capability
 title: ''
 labels: enhancement
 assignees: ''
 ---
 
-## Задача
+## The problem
 
-Какую задачу интерфейса это решает? Опишите экран или сценарий, а не сразу
-решение.
+Which interface problem does this solve? Describe the screen or the scenario
+rather than jumping to a solution.
 
-## Предложение
+## Proposal
 
-Что предлагается добавить или изменить.
+What should be added or changed.
 
-## Как решается сейчас
+## Current workaround
 
-Чем приходится обходиться без этого — своими стилями, чужой библиотекой,
-копированием разметки.
+What you have to do without it — custom styles, another library, copied markup.
 
-## Проверка на соответствие системе
+## Fit with the system
 
-Система намеренно узкая: варианты добавляются редко и с обоснованием.
+The system is deliberately narrow: variants are added rarely and with a reason.
 
-- [ ] это не четвёртый вариант того, у чего уже есть три;
-- [ ] решение не требует второго акцентного цвета;
-- [ ] плотность остаётся токеном, а не отдельной версией компонента;
-- [ ] поведение можно построить на нативном элементе или примитиве Radix.
+- [ ] this is not a fourth variant of something that already has three;
+- [ ] it does not require a second accent colour;
+- [ ] density stays a token rather than a separate version of the component;
+- [ ] the behaviour can be built on a native element or a Radix primitive.

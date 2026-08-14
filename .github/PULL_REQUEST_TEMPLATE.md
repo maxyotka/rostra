@@ -1,29 +1,29 @@
-## Что меняется
+## What changes
 
-Что и зачем меняет этот pull request.
+What this pull request changes and why.
 
-## Тип изменения
+## Type of change
 
-- [ ] Исправление дефекта
-- [ ] Новый компонент или токен
-- [ ] Рефакторинг
-- [ ] Документация
-- [ ] Тесты
+- [ ] Bug fix
+- [ ] New component or token
+- [ ] Refactor
+- [ ] Documentation
+- [ ] Tests
 
-## Влияние на внешний вид
+## Visual impact
 
-- [ ] вид не меняется;
-- [ ] вид меняется — приложены скриншоты до и после;
-- [ ] меняется вид в одной из четырёх тем — проверены все.
+- [ ] nothing changes visually;
+- [ ] appearance changes — before/after screenshots attached;
+- [ ] appearance changes in one theme — all four were checked.
 
-## Чеклист
+## Checklist
 
-- [ ] `npm run verify` проходит;
-- [ ] токены правились в `rostra.tokens.json`, а не в `rostra.css`;
-- [ ] новые цветовые пары добавлены в `contrastPairs` и проходят порог;
-- [ ] `npm run build:legacy` пересобран, если менялся `src/components.css`;
-- [ ] новые классы описаны в css, а не только использованы в React-слое;
-- [ ] поведение с состоянием оставило после себя тест;
-- [ ] `CHANGELOG.md` дополнен;
-- [ ] изменение не нарушает принципы из README — либо README поправлен
-      в этом же pull request.
+- [ ] `npm run verify` passes;
+- [ ] tokens were edited in `rostra.tokens.json`, not in `rostra.css`;
+- [ ] new colour pairs are listed in `contrastPairs` and meet their threshold;
+- [ ] `npm run build:legacy` was rerun if `src/components.css` changed;
+- [ ] new classes exist in the CSS, not only in the React layer;
+- [ ] stateful behaviour left a test behind;
+- [ ] `CHANGELOG.md` updated;
+- [ ] the change does not break the principles in `docs/principles.md`, or that
+      document is updated in this same pull request.

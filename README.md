@@ -1,38 +1,15 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/CSS-ядро%20без%20зависимостей-663399?style=for-the-badge&logo=css3&logoColor=white" alt="CSS"/>
-  <img src="https://img.shields.io/badge/React-18%20·%2019-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/>
-  <img src="https://img.shields.io/badge/WCAG-2.1%20AA-brightgreen?style=for-the-badge" alt="WCAG 2.1 AA"/>
-  <img src="https://img.shields.io/badge/IE-11%20·%2010-0078D6?style=for-the-badge&logo=internetexplorer&logoColor=white" alt="IE 11"/>
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="License MIT"/>
-</p>
+# Rostra
 
-<p align="center">
-  <a href="https://github.com/maxyotka/rostra/actions/workflows/ci.yml"><img src="https://github.com/maxyotka/rostra/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
-  <a href="https://www.npmjs.com/package/rostra-ui"><img src="https://img.shields.io/npm/v/rostra-ui?color=cb3837&logo=npm" alt="npm"/></a>
-  <a href="https://github.com/maxyotka/rostra/releases/latest"><img src="https://img.shields.io/github/v/release/maxyotka/rostra?sort=semver" alt="Release"/></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/maxyotka/rostra" alt="License"/></a>
-</p>
+A component system for admin panels and internal corporate tools. Four themes,
+four densities, a CSS core with no dependencies, and an optional React layer.
 
-# rostra
+[![npm](https://img.shields.io/npm/v/rostra-ui)](https://www.npmjs.com/package/rostra-ui)
+[![CI](https://github.com/maxyotka/rostra/actions/workflows/ci.yml/badge.svg)](https://github.com/maxyotka/rostra/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/maxyotka/rostra)](LICENSE)
 
-Система компонентов для админок и корпоративного контура.
-Строчный характер, холодный графит, один акцент, плотность как токен.
+---
 
-Ядро — один css-файл без зависимостей и без сетевых запросов. React-слой
-необязателен: система работает на чистом html, во Vue и в шаблонах на сервере.
-Отдельная сборка держит браузеры вплоть до IE10.
-
-## Что внутри
-
-| Слой | Файл | Содержание |
-| --- | --- | --- |
-| Токены | `rostra.tokens.json` | Единственный источник правды: 4 темы, 4 плотности, шкалы |
-| Ядро | `rostra.css` | Классы `rs-*`, темы и плотность на атрибутах контейнера |
-| Старые браузеры | `rostra.legacy.css` | Значения подставлены, `-ms-flexbox`, IE10+ |
-| React | `dist/index.js` | Типы, состояния, доступность; слои на примитивах Radix |
-| Шрифт | `fonts.css` | Необязательный слой: Golos Text |
-
-## Установка
+## Installation
 
 ```bash
 npm i rostra-ui
@@ -43,346 +20,82 @@ import 'rostra-ui/rostra.css'
 import { Rostra, Button } from 'rostra-ui'
 
 <Rostra theme="light" density="medium">
-  <Button variant="primary">Сохранить</Button>
+  <Button variant="primary">Save</Button>
 </Rostra>
 ```
 
-Без сборщика и без React — так же, одним файлом:
+The React layer is optional. Without a bundler the same system is one file and
+a class name:
 
 ```html
 <link rel="stylesheet" href="rostra.css">
 <div class="rs" data-theme="light" data-density="medium">
-  <button class="rs-btn rs-btn--primary">Сохранить</button>
+  <button class="rs-btn rs-btn--primary">Save</button>
 </div>
 ```
 
-Тема и плотность — атрибуты на любом контейнере, поэтому в одном приложении
-может жить светлый рабочий стол и тёмная панель мониторинга.
+Theme and density are attributes on any container, so a light workspace and a
+dark monitoring panel can live in the same application.
 
-## Что здесь
+## What it does differently
 
-| Файл | Что это |
+- **Density is a token, not a variant.** `data-density` changes control height,
+  card padding and table row padding. Components do not know which mode they
+  render in.
+- **The core runs without JavaScript.** Checkbox, radio and switch are real
+  `input` elements styled through `.rs-choice`, so forms, keyboard and mobile
+  OS behaviour come for free.
+- **Contrast is verified, not claimed.** 23 foreground/background pairs across
+  4 themes, checked in CI against WCAG 2.1 AA — in both the oklch and the sRGB
+  fallback values.
+- **Old browsers get their own build.** `rostra.legacy.css` supports IE10 and
+  browsers from 2012 without changing anything in the modern build.
+- **Behaviour is not hand-rolled.** Dialogs, popovers, menus and tabs sit on
+  Radix primitives; focus traps, positioning and ARIA are not reimplemented.
+
+## Documentation
+
+| Document | Contents |
 | --- | --- |
-| `rostra.css` | Ядро: токены, 4 темы, 4 плотности, классы `rs-*`. Собирается, руками не правится. |
-| `rostra.tokens.json` | Источник правды по токенам. Из него генерируется блок токенов и темы клиентов. |
-| `src/components.css` | Классы компонентов — то, что правится руками. |
-| `src/*.tsx` | React-слой: типы, состояния, доступность. |
-| `fonts.css` | Необязательный: Golos Text с Google Fonts. |
-| `Rostra Library.html` | Живая библиотека: токены, компоненты во всех состояниях, переключатели темы и плотности. |
-| `Прототип - Клиенты.html` | Кликабельная админка: список с фильтрами, карточка в drawer, создание с валидацией. |
-| `Прототип - Диспетчерская.html` | Доска заявок со SLA, живые таймеры, панель деталей, лента событий. |
-| `Rostra.html` | Дизайн-документ: три характера, экраны, схемы, история решений. |
+| [Principles](docs/principles.md) | The eight rules the system is built on, and the writing guidelines |
+| [Theming](docs/theming.md) | Tokens, custom themes, density, building your own palette |
+| [Accessibility](docs/accessibility.md) | Contrast policy, control borders, what the system does not do for you |
+| [Browser support](docs/browser-support.md) | Support floor per browser, the legacy build, how to serve both |
+| [Recipes](docs/recipes.md) | Common screens: layout, forms, confirmation dialogs, notifications |
 
-## Шрифт и иконки
+The live component library and two clickable prototypes are the `.html`
+files in the repository root — open them directly in a browser.
 
-`rostra.css` не делает сетевых запросов: `@import` внутри таблицы стилей
-блокирует рендер, а в закрытом контуре `googleapis.com` часто недоступен.
-Поэтому шрифт подключается отдельно и осознанно.
+## Browser support
 
-```html
-<link rel="stylesheet" href="rostra.css">
-<link rel="stylesheet" href="fonts.css">   <!-- или своя локальная копия -->
-```
-
-Без шрифта система не ломается — падает на `system-ui` из `--rs-font`.
-Для закрытого контура положите файлы рядом и объявите `@font-face` сами.
-
-Иконки — Phosphor Icons, тоже необязательные: базовые компоненты (галочка
-чекбокса, точка радио, статусная точка бейджа) нарисованы css и работают без
-иконочного шрифта.
-
-```html
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-<i class="ph ph-buildings" style="font-size:20px"></i>
-```
-
-Три веса из шести, у каждого своя работа: **regular** — интерфейс и навигация;
-**bold** — галочки, каретки, плюсы, всё мелкое до 16 px; **fill** — статусные
-точки и иконки состояний. Thin, light и duotone не используем.
-
-Размеры: 16 / 18 / 20 / 22. Цвет всегда `currentColor`, кегль наследуется от
-`font-size` — иконка сама встаёт в тему. В кнопке иконка на 4–5 px меньше
-высоты строки текста.
-
-## Принципы
-
-1. **Плотность — токен, а не переделка.** `data-density` меняет высоту контролов, отступы карточек и padding строк таблицы. Компоненты не знают, в каком режиме их отрисуют.
-2. **Один акцент.** Синий 262° работает в кнопке, активном пункте, ссылке и графике. Статусные цвета не участвуют в навигации.
-3. **Границы вместо теней.** Тень — только у всплывающих слоёв: тост, диалог, поповер, командная палитра.
-4. **Три регистра, у каждого своя работа.** «Заголовок» — заголовки, метки полей, кнопки, статусы. `КАПС` с трекингом 0.07em — только надзаголовок секции (`.rs-eyebrow`), шапка таблицы и код/аббревиатура (`SSO`, `CSV`, `PDF`, `ORG-4182`, `ДГ-2026-114`). Капс в кнопке, заголовке или предложении — ошибка: `.rs-eyebrow--sentence` и `.rs-table--sentence-head` отключают его там, где строка длиннее двух слов.
-5. **Один экран.** Админка ведёт себя как приложение: высота равна окну, страница целиком не листается. Скроллится только рабочая область (`.rs-pane`), навигация, шапка, фильтры и пагинация приклеены. Если контент не влезает — это повод убрать лишнее или свернуть в раскрывающийся блок, а не отдать пользователю вертикальную прокрутку. Исключение одно: длинные документы и регламенты (`.rs-md`).
-6. **Широкая таблица получает две полосы прокрутки** — над шапкой и под последней строкой (`.rs-xbar`), потому что на 20 строках прокрутка вправо не должна требовать спуска в конец списка. Нативная полоса скрывается.
-7. **Числа выравниваются по правому краю** и всегда идут табличными цифрами — колонки не прыгают при обновлении данных.
-8. **Фокус видно всегда.** `:focus-visible` даёт кольцо `--rs-ring`; убирать его нельзя.
-
-## Поддержка браузеров
-
-Сборки две, и они не мешают друг другу: современный браузер грузит только
-`rostra.css`, старый — только `rostra.legacy.css`. Вид у них одинаковый.
-
-| Сборка | Браузеры | Что внутри |
-| --- | --- | --- |
-| `rostra.css` | Chrome 84+, Firefox 63+, Safari 14.1+, Edge 84+ | токены, 4 темы и 4 плотности на лету, oklch |
-| `rostra.legacy.css` | **IE10+**, Chrome 21+, Firefox 28+, Safari 6.1+, iOS 7+, Opera 15+ | значения подставлены, одна тема, `-ms-flexbox` |
-
-Границы считаются не на глаз, а по данным caniuse: `npm run check:support`
-печатает таблицу и говорит, какая именно фича упирается. Самая старая точка
-охвата — сентябрь 2012 (Chrome 21 и IE10).
-
-### Ниже спускаться незачем: мешает не css, а TLS
-
-Браузер без TLS 1.2 не установит соединение с современным сервером и до
-стилей просто не дойдёт. TLS 1.2 появился в Chrome 29, Firefox 27, Safari 7,
-IE11 и Opera 16 — все 2013–2014 годы.
-
-Значит по https реально работают Chrome 29+, Firefox 27+, Safari 7+, IE11 —
-и legacy-сборка перекрывает этот диапазон с запасом. Chrome 21 и IE10 в ней
-поддержаны, но сайт по https они всё равно не откроют. Ограничение снимается
-только во внутренней сети по http.
-
-### Как подключить обе
-
-IE10 и IE11 ловятся media-запросом, который остальные браузеры игнорируют:
-
-```html
-<link rel="stylesheet" href="rostra.css">
-<link rel="stylesheet" href="rostra.legacy.css"
-      media="screen and (-ms-high-contrast: active), (-ms-high-contrast: none)">
-```
-
-Старые Chrome, Firefox и Safari так не отличить — для них проверка идёт
-скриптом, по наличию кастомных свойств:
-
-```html
-<script>
-  if (!window.CSS || !CSS.supports('--rs-test', '0')) {
-    document.write('<link rel="stylesheet" href="rostra.legacy.css">')
-  }
-</script>
-```
-
-### Чем legacy-сборка отличается
-
-- **Тема и плотность фиксированы на сборке.** Кастомных свойств нет, поэтому
-  переключение на лету невозможно — другая тема это другой файл:
-  `node scripts/build-legacy.mjs --theme=dark --density=compact`.
-- **`gap` заменён отступами** соседних элементов и псевдоэлементов.
-- **`grid` заменён** flex и float — KeyValue, календарь, лента событий,
-  мобильная навигация разложены иначе, но выглядят так же.
-- **`oklch` посчитан в sRGB**, контраст проверен и в этом варианте.
-- **React-слой недоступен**: React 18 и 19 официально не поддерживают IE.
-  В таком контуре система остаётся css-ядром, разметку пишет приложение.
-
-### Ниже IE10 не спускаемся
-
-IE9 и IE8 (2010–2011) не поддерживают flexbox вообще: там пришлось бы
-переписать все раскладки на float и таблицы, а требование «вёрстка примерно
-та же» перестало бы выполняться — это была бы другая система, а не сборка
-этой. IE10 — последняя точка, где `-ms-flexbox` ещё даёт ту же раскладку.
-Тот же рубеж стоит и у Chrome с Firefox: до Chrome 21 и Firefox 28 флексбокс
-существовал только в синтаксисе 2009 года (`display: box`), без переноса
-строк — autoprefixer его умеет, но раскладка получилась бы другой.
-
-### Что деградирует внутри основной сборки
-
-Между Chrome 84 и Chrome 111 браузер уже работает, но часть возможностей ещё
-не знает. Для каждой в css объявлен фоллбэк, который он возьмёт вместо
-непонятого значения — переключаться на legacy-сборку ради них не нужно:
-
-| Возможность | Без неё |
+| Build | Browsers |
 | --- | --- |
-| `oklch()` | цвета берутся из sRGB-двойника: тот же тон, чуть иная насыщенность |
-| `color-mix()` | границы баннеров и кнопки danger — нейтральные |
-| `:focus-visible` | кольцо фокуса появляется и при клике мышью, а не только с клавиатуры |
-| `100dvh` | высота считается по `100vh` — на мобильных полоса браузера съедает край |
-| `position: sticky` | первая колонка широкой таблицы не залипает |
-| `:has()` | у выключенного контрола нет курсора «запрещено» |
-| `prefers-reduced-motion` | анимации играют, даже если пользователь их отключил |
+| `rostra.css` | Chrome 84+, Firefox 63+, Safari 14.1+, Edge 84+ |
+| `rostra.legacy.css` | IE10+, Chrome 21+, Firefox 28+, Safari 6.1+, Opera 15+ |
 
-Цвета проверены дважды: контраст WCAG считается и по oklch, и по
-sRGB-фоллбэку — обе версии проходят AA во всех четырёх темах.
+Both floors are derived from caniuse data, not guessed: `npm run check:support`
+prints the table and names the feature that sets each limit. Details and the
+TLS caveat are in [docs/browser-support.md](docs/browser-support.md).
 
-## Доступность
-
-Не декларация: проверяется на каждый push.
-
-- **Контраст.** 23 пары «текст на фоне» в каждой из четырёх тем, пороги WCAG 2.1 AA:
-  4.5 для текста, 3 для границ и других нетекстовых индикаторов. `npm run check:contrast`.
-- **Две границы, а не одна.** `--rs-border` — волосяная линия карточек и
-  разделителей, декоративная. `--rs-control-border` — граница поля, чекбокса,
-  переключателя: она единственное, по чему видно, что перед пользователем
-  контрол, поэтому обязана давать 3:1. Нужен прежний тихий вид — одна строка:
-  ```css
-  .rs { --rs-control-border: var(--rs-border); }
-  ```
-  Это осознанный отказ от AA, а не настройка по вкусу.
-- **Формы нативные.** `input`, `select`, `textarea` — настоящие элементы:
-  клавиатура, автозаполнение, отправка формы и мобильный контур ОС работают
-  сами. Чекбокс, радио и переключатель — тоже, визуал надет на `input` через
-  `.rs-choice` и не требует js.
-- **Слои на примитивах Radix.** Фокус-трап, возврат фокуса, Esc, `aria-modal`,
-  навигация стрелками в меню и вкладках — не самодельные.
-- **Движение.** `prefers-reduced-motion` гасит все анимации.
-
-Чего система не делает за вас: `aria-label` для кнопки-иконки, порядок
-заголовков на странице, осмысленный текст ссылки. Подсказка не заменяет
-подпись.
-
-## Состав
-
-Формы: Button, Field, Input, Textarea, Select, Checkbox, Radio, Switch.
-Данные: Table (+ группировка, зебра, залипающая колонка), Metric, Meter, Badge,
-Chip, EmptyState, Skeleton, Steps, KeyValue, Avatar, AvatarStack, Kbd, Timeline, Alert.
-Слои: Dialog, Drawer, Popover, Tooltip, Menu, Toast (+ `useToasts`).
-Каркас: AppShell, Pane, Topbar, Sidebar, NavItem, Rail, Tabs, Breadcrumbs,
-Segmented, SystemState.
-
-Только css, без React-обёртки: Calendar, Combobox с токенами, CellEdit, Tree,
-Dropzone, Board, мобильный контур (Card, BottomNav, Sheet, ChipScroller,
-ActionButton), графики. Классы описаны и работают, поведение пишет приложение —
-обёртки в планах.
-
-Планшет 768–1024: `data-viewport="tablet"` — сайдбар в рельс 60 px (`.rs-rail`),
-таблица `.rs-table--sticky` с залипающей первой колонкой, фильтры под одну
-кнопку со счётчиком.
-Системные состояния: `.rs-state` — 403, 404, 500, обслуживание, первый запуск.
-Мобильный контур: `data-density="mobile"` — контрол 44, радиус 16, текст 15.
-Таблица на мобильном разбирается на карточки: две ключевые метрики в подвале,
-остальное — на детальной.
-
-## Надзаголовки секций
-
-Три варианта, больше не вводим:
-- `.rs-eyebrow` — по умолчанию. Капс с трекингом 0.07em плюс волосяная линия до конца блока. Секции страниц и библиотеки.
-- `.rs-eyebrow--tick` — акцентная риска 10×2 вместо линии. Внутри карточек и панелей, где линия спорит с границей.
-- `.rs-eyebrow--tag` — метка на подложке `--rs-surface-3` плюс линия. Над группой карточек, когда ярлык должен читаться как раздел.
-
-Служебные модификаторы: `--bare` (без линии, для групп в сайдбаре),
-`--sentence` (без капса, когда надпись длиннее двух слов).
-
-## Контент и тон
-
-- Обращение к пользователю на «вы», без восклицаний и эмодзи.
-- Кнопка — глагол в инфинитиве: «Сохранить», «Выставить счёт», «Запросить доступ».
-- Ошибка называет причину и следующее действие: «Отчёт не собрался за 30 секунд» + «Повторить».
-- Пустое состояние не извиняется, а предлагает выход: «Ничего не найдено» + «Сбросить фильтры».
-- Единицы — строчными, коды — капсом: `2 часа назад`, `ORG-4182`, `API 42 мс`.
-
-## Рецепты
-
-**Экран по правилу одного экрана.** Скроллится только `Pane`; шапка,
-фильтры и пагинация приклеены.
-
-```tsx
-<AppShell>
-  <Sidebar aria-label="Разделы">
-    <NavItem href="/clients" active>Клиенты</NavItem>
-  </Sidebar>
-  <AppMain>
-    <AppBar><Topbar>…</Topbar></AppBar>
-    <Pane>…</Pane>
-    <AppBar>…пагинация…</AppBar>
-  </AppMain>
-</AppShell>
-```
-
-**Поле с подсказкой и ошибкой.** `Field` сам раздаёт `id`,
-`aria-describedby` и `aria-invalid` — связывать руками нечего.
-
-```tsx
-<Field label="ИНН" hint="10 цифр" error={errors.inn} required>
-  {(props) => <Input {...props} value={inn} onChange={onChange} />}
-</Field>
-```
-
-**Подтверждение удаления.** Фокус заперт внутри, Esc закрывает,
-после закрытия возвращается на кнопку, которая окно открыла.
-
-```tsx
-<Dialog
-  open={open}
-  onOpenChange={setOpen}
-  title="Удалить клиента"
-  description="Действие нельзя отменить."
-  footer={
-    <>
-      <DialogClose><Button>Отмена</Button></DialogClose>
-      <Button variant="danger" onClick={remove}>Удалить</Button>
-    </>
-  }
-/>
-```
-
-**Уведомления.**
-
-```tsx
-const { toasts, push, dismiss } = useToasts()
-push({ title: 'Счёт выставлен', text: 'ДГ-2026-114 на 12 400 ₽' })
-<ToastViewport toasts={toasts} onDismiss={dismiss} />
-```
-
-## Своя тема
-
-Токены правятся в `rostra.tokens.json`, css пересобирается:
-
-```bash
-npm run build:css        # собрать rostra.css из токенов
-npm run check:contrast   # проверить, что тема не провалила AA
-```
-
-Тема клиента — это блок переопределений в `themes`. Достаточно перечислить
-то, что отличается от светлой: остальное каскадируется.
-
-## Структура проекта
-
-```
-rostra/
-├── rostra.tokens.json      # источник правды по токенам
-├── rostra.css              # ядро, собирается из токенов
-├── rostra.legacy.css       # сборка для IE10+ и старых браузеров
-├── fonts.css               # необязательный слой со шрифтом
-├── src/
-│   ├── components.css      # классы rs-* — правятся руками
-│   ├── theme.tsx           # корень системы и контекст для порталов
-│   ├── forms.tsx           # кнопки, поля, нативные чекбоксы
-│   ├── data.tsx            # таблицы, метрики, статусы, лента
-│   ├── layers.tsx          # диалог, панель, поповер, меню, тосты
-│   └── shell.tsx           # каркас приложения и навигация
-├── scripts/
-│   ├── build-css.mjs       # токены → css
-│   ├── build-legacy.mjs    # css → сборка для старых браузеров
-│   ├── check-contrast.mjs  # WCAG по всем темам, oklch и sRGB
-│   └── check-support.mjs   # минимальные версии браузеров по caniuse
-├── tests/                  # контраст, доступность, поведение, фоллбэки
-└── *.html               #  библиотека и прототипы
-```
-
-## Разработка
+## Development
 
 ```bash
 npm ci
-npm run verify          # токены, контраст, типы, тесты
-npm run build           # css, legacy-сборка, js, типы
-npm run check:support   # с какого браузера всё работает
+npm run verify   # tokens, contrast, types, tests
+npm run build    # css, legacy build, js, types
 ```
 
-Подробности — в [CONTRIBUTING.md](CONTRIBUTING.md), история — в
-[CHANGELOG.md](CHANGELOG.md), уязвимости — в [SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, [CHANGELOG.md](CHANGELOG.md)
+for history, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 
-## Дальше
+## Status
 
-- React-обёртки над Calendar, Combobox, Tree, Board и мобильным контуром.
-- Визуальные регресс-тесты библиотеки: сейчас `.html` проверяются глазами.
-- Проверка `prefers-contrast` и связка темы `contrast` с системной настройкой.
-- Стили печати: сейчас их нет совсем.
-- Проверка на живом IE11 — симуляция в Chrome не ловит баги движка.
+Version 0.1.0. The API may still change in minor releases.
 
-## Лицензия
+Not covered yet: React wrappers for Calendar, Combobox, Tree and Board; print
+styles; visual regression tests; verification on a real IE11 rather than a
+simulated one.
 
-[MIT](LICENSE) — используйте свободно, в том числе в закрытом коммерческом ПО.
+## License
 
-```
-Copyright (c) 2026 maxyotka
-
-SPDX-License-Identifier: MIT
-```
+[MIT](LICENSE)

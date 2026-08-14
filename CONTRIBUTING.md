@@ -1,71 +1,71 @@
-# Как вносить изменения
+# Contributing
 
 ```bash
 npm ci
-npm run verify          # токены, контраст, типы, тесты
-npm run build           # css, legacy-сборка, js, типы
-npm run check:support   # с какого браузера всё работает
+npm run verify          # tokens, contrast, types, tests
+npm run build           # css, legacy build, js, types
+npm run check:support   # which browsers the result supports
 ```
 
-## Что где лежит
+## What is edited by hand
 
-| Файл | Правится руками? |
+| File | Edited by hand? |
 | --- | --- |
-| `rostra.tokens.json` | да — единственный источник правды по токенам |
-| `src/components.css` | да — все классы, кроме блока токенов |
-| `src/*.tsx` | да — React-слой |
-| `rostra.css` | нет — собирается из первых двух |
-| `rostra.legacy.css` | нет — собирается из `rostra.css` |
-| `*.html` | да — демо-страницы на классах `rs-*` |
+| `rostra.tokens.json` | yes — the single source of truth for tokens |
+| `src/components.css` | yes — every class except the token block |
+| `src/*.tsx` | yes — the React layer |
+| `rostra.css` | no — generated from the two above |
+| `rostra.legacy.css` | no — generated from `rostra.css` |
+| `*.html` | yes — the demo pages, plain markup on the `rs-*` classes |
 
-Токен, поправленный прямо в `rostra.css`, потеряется при следующей сборке
-и разъедется с темами клиентов, которые собираются из того же json.
-`npm run check:tokens` ловит это в CI.
+A token edited directly in `rostra.css` is lost on the next build and drifts
+away from client themes generated from the same json. `npm run check:tokens`
+catches it in CI.
 
-## Новый токен
+## Adding a token
 
-1. Добавить в `rostra.tokens.json` — во все темы, где значение отличается.
-2. Если токен участвует в контрасте, добавить пару в `contrastPairs`
-   с порогом: 4.5 для текста, 3 для границ и других нетекстовых индикаторов.
-3. `npm run build:css`, `npm run check:contrast`, `npm run build:legacy`.
+1. Add it to `rostra.tokens.json`, in every theme where the value differs.
+2. If it takes part in contrast, add a pair to `contrastPairs` with a
+   threshold: 4.5 for text, 3 for borders and other non-text indicators.
+3. Run `npm run build:css`, `npm run check:contrast`, `npm run build:legacy`.
 
-## Новый компонент
+## Adding a component
 
-- Сначала классы в `src/components.css`, потом React-обёртка. Ядро обязано
-  работать без js: не все потребители на React.
-- Поведение — на примитивах, а не своё. Фокус-трап, позиционирование
-  и ARIA написаны в Radix лучше, чем получится написать здесь.
-- Форма — нативный элемент. `input` и `select` бесплатно дают клавиатуру,
-  автозаполнение, отправку формы и мобильный контур ОС.
-- Класс, который ставит React-слой, должен существовать в css: это
-  проверяет `tests/classes.test.ts`. Опечатка в имени не ломает ни один
-  тест поведения — ломается только вид.
-- Состояние, которое ставит Radix (`data-state`, `data-highlighted`),
-  описывается в css рядом с ручным `.is-on`.
-- Компонент с состоянием оставляет после себя тест на поведение, а не на
-  разметку: «загрузка не пропускает клик», а не «есть класс is-loading».
+- Classes in `src/components.css` first, the React wrapper second. The core
+  must work without JavaScript — not every consumer uses React.
+- Do not hand-roll behaviour. Focus traps, positioning and ARIA are better
+  implemented in Radix than they will be here.
+- For form controls use the native element. `input` and `select` give keyboard
+  support, autofill, form submission and mobile OS pickers for free.
+- Every class the React layer names as a string must exist in the CSS —
+  `tests/classes.test.ts` checks this. A typo breaks no behaviour test; it only
+  breaks the way things look.
+- State that Radix sets through attributes (`data-state`, `data-highlighted`,
+  `data-disabled`) needs a CSS rule next to the manual `.is-on`.
+- A component with state leaves behind a test for behaviour, not for markup:
+  "loading does not fire onClick", not "has class is-loading".
 
-## Старые браузеры
+## Old browsers
 
-Основная сборка их не касается: `rostra.css` остаётся современным, а всё
-старое живёт в `rostra.legacy.css`. Если добавляете свойство, которого нет
-в браузерах ниже границы поддержки:
+The modern build is not affected by them: `rostra.css` stays modern and
+everything old lives in `rostra.legacy.css`. When you use a property that is
+missing below the support floor:
 
-- объявите фоллбэк **перед** современным значением в том же правиле —
-  `tests/fallbacks.test.ts` проверяет, что предшественник есть;
-- цвета в кастомных свойствах фоллбэком не дублируются: значение переменной
-  браузер не проверяет, поэтому sRGB-версия живёт в основном блоке,
-  а oklch — внутри `@supports`;
-- пересоберите legacy: `npm run build:legacy`.
+- declare the fallback **before** the modern value in the same rule —
+  `tests/fallbacks.test.ts` verifies a predecessor exists;
+- colours in custom properties are not duplicated that way. The browser does
+  not validate a custom property's value, so the sRGB version lives in the main
+  block and oklch inside `@supports`;
+- rebuild the legacy file: `npm run build:legacy`.
 
-## Правила системы
+## Principles
 
-Их восемь, они перечислены в README. Изменение, нарушающее любое из них,
-требует правки README в том же коммите — иначе документ перестаёт описывать
-систему, а это дороже, чем кажется.
+There are eight of them, in [docs/principles.md](docs/principles.md). A change
+that breaks any of them requires updating that document in the same commit —
+otherwise it stops describing the system, which costs more than it looks.
 
-## Оформление коммитов
+## Commits
 
-Заголовок — одна строка в повелительном наклонении, без точки. Тело
-объясняет причину, а не пересказывает диff: что сломалось бы, если не
-сделать так.
+The subject line is one imperative sentence with no trailing period. The body
+explains the reason rather than restating the diff: what would break if it were
+done differently.

@@ -1,40 +1,40 @@
 ---
 name: Bug report
-about: Сообщить о дефекте в Rostra
+about: Report a defect in Rostra
 title: ''
 labels: bug
 assignees: ''
 ---
 
-## Что сломалось
+## What broke
 
-Короткое описание.
+A short description.
 
-## Как воспроизвести
+## Reproduction
 
-Минимальный пример — разметка или код компонента:
+Minimal markup or component code:
 
 ```tsx
 // ...
 ```
 
-## Ожидаемое поведение
+## Expected behaviour
 
-Что должно было произойти.
+What should have happened.
 
-## Что происходит на самом деле
+## Actual behaviour
 
-Что произошло. Приложите скриншот, если дефект визуальный.
+What happened instead. Attach a screenshot for visual defects.
 
-## Окружение
+## Environment
 
-- версия пакета:
-- способ подключения: css / React-слой / legacy-сборка
-- браузер и версия:
-- тема и плотность: `data-theme=`, `data-density=`
+- package version:
+- how it is loaded: CSS only / React layer / legacy build
+- browser and version:
+- theme and density: `data-theme=`, `data-density=`
 
-## Проверки
+## Checklist
 
-- [ ] воспроизводится на последней версии;
-- [ ] дефект не связан с переопределением токенов в моём проекте;
-- [ ] для визуальных дефектов приложен скриншот.
+- [ ] reproduces on the latest version;
+- [ ] not caused by token overrides in my own project;
+- [ ] screenshot attached for visual defects.

@@ -1,7 +1,7 @@
 {
   "name": "rostra-ui",
   "version": "0.1.0",
-  "description": "Rostra — система компонентов для админок и корпоративного контура: 4 темы, 4 плотности, css-ядро без зависимостей, React-слой, WCAG 2.1 AA и отдельная сборка для браузеров вплоть до IE10",
+  "description": "A component system for admin panels and internal corporate tools: four themes, four densities, a dependency-free CSS core, an optional React layer, verified WCAG 2.1 AA contrast, and a separate build supporting IE10+",
   "license": "MIT",
   "author": "maxyotka",
   "repository": {
