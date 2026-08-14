@@ -352,9 +352,11 @@
 .rs-btn--sm { height: var(--rs-control-h-sm); padding: 0 10px; font-size: var(--rs-fs-label); }
 .rs-btn--icon { width: var(--rs-control-h); padding: 0; }
 .rs-btn.is-loading { color: transparent; position: relative; }
+/* Цвет спиннера идёт от фона кнопки, а не от её текста: текст в загрузке
+   прозрачный. На светлой кнопке белый спиннер был бы не виден вовсе. */
 .rs-btn.is-loading::after {
   content: ''; position: absolute; width: 13px; height: 13px; border-radius: 50%;
-  border: 2px solid currentColor; border-top-color: transparent; color: var(--rs-text-invert);
+  border: 2px solid currentColor; border-top-color: transparent; color: var(--rs-text);
   animation: rs-spin 700ms linear infinite;
 }
 .rs-btn--primary.is-loading::after { color: var(--rs-text-invert); }
@@ -458,8 +460,14 @@
 
 /* --- 8. Навигация ------------------------------------------- */
 .rs-tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--rs-border); }
-.rs-tab { padding: 0 0 10px; font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text-muted); cursor: pointer; }
-.rs-tab.is-on { color: var(--rs-text); font-weight: 500; box-shadow: inset 0 -2px 0 var(--rs-accent-500); }
+/* Вкладка может быть и div, и button — у кнопки браузер рисует свой фон,
+   рамку и шрифт, поэтому сброс обязателен, иначе вкладки выглядят кнопками. */
+.rs-tab { appearance: none; -webkit-appearance: none; background: none; border: 0; padding: 0 0 10px; font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text-muted); cursor: pointer; }
+/* Состояние приходит с двух сторон: .is-on ставит разметка вручную,
+   data-state — библиотека поведения в React-слое. Оба варианта равноправны,
+   иначе ядро оказалось бы привязано к одному способу применения. */
+.rs-tab.is-on,
+.rs-tab[data-state='active'] { color: var(--rs-text); font-weight: 500; box-shadow: inset 0 -2px 0 var(--rs-accent-500); }
 .rs-nav-item { display: flex; align-items: center; gap: 10px; height: var(--rs-control-h); padding: 0 10px; border-radius: var(--rs-radius); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text-muted); cursor: pointer; }
 .rs-nav-item:hover { background: var(--rs-surface-2); color: var(--rs-text); }
 .rs-nav-item.is-on { background: var(--rs-surface-3); color: var(--rs-text); font-weight: 500; }
@@ -566,8 +574,11 @@
 .rs-token__x:hover { color: var(--rs-text); }
 .rs-menu { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); box-shadow: var(--rs-shadow-2); padding: 4px; min-width: 200px; }
 .rs-menu__item { display: flex; align-items: center; gap: 9px; height: var(--rs-control-h); padding: 0 9px; border-radius: var(--rs-radius-sm); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text); cursor: pointer; }
-.rs-menu__item:hover, .rs-menu__item.is-focus { background: var(--rs-surface-2); }
-.rs-menu__item.is-on { color: var(--rs-info-fg); font-weight: 500; }
+/* is-focus — ручная разметка, data-highlighted — пункт, на который увели
+   клавишами: без него навигация стрелками не видна на экране. */
+.rs-menu__item:hover, .rs-menu__item.is-focus, .rs-menu__item[data-highlighted] { background: var(--rs-surface-2); outline: none; }
+.rs-menu__item.is-on, .rs-menu__item[data-state='checked'] { color: var(--rs-info-fg); font-weight: 500; }
+.rs-menu__item.is-disabled, .rs-menu__item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
 .rs-menu__sep { height: 1px; background: var(--rs-hairline); margin: 4px 0; }
 .rs-menu__hint { margin-left: auto; color: var(--rs-text-faint); font-size: var(--rs-fs-label); }
 

@@ -54,3 +54,33 @@ describe('классы React-слоя', () => {
     expect(templated.filter((cls) => !css.includes(`.${cls}`))).toEqual([])
   })
 })
+
+/**
+ * Radix ставит состояние атрибутом, а не классом. Пока css знает только про
+ * .is-on, активная вкладка не подсвечена, а пункт меню под стрелками ничем
+ * не отличается от остальных — и ни один тест поведения этого не заметит,
+ * потому что роли и атрибуты при этом правильные.
+ */
+describe('состояния, которые ставит библиотека поведения', () => {
+  it.each([
+    ['вкладка', "[data-state='active']"],
+    ['пункт меню под стрелками', '[data-highlighted]'],
+    ['отключённый пункт меню', '[data-disabled]'],
+  ])('%s имеет описание в css', (_, selector) => {
+    expect(css).toContain(selector)
+  })
+
+  it('вкладка сбрасывает стили кнопки — Radix рендерит button', () => {
+    const rule = /\.rs-tab \{[^}]*\}/.exec(css)?.[0] ?? ''
+    expect(rule).toMatch(/appearance:\s*none/)
+    expect(rule).toMatch(/background:\s*none/)
+    expect(rule).toMatch(/border:\s*0/)
+  })
+
+  it('спиннер кнопки виден на светлом фоне', () => {
+    // Текст в загрузке прозрачный, поэтому currentColor тут не помощник:
+    // белый спиннер на белой кнопке не видно вовсе.
+    const rule = /\.rs-btn\.is-loading::after \{[^}]*\}/.exec(css)?.[0] ?? ''
+    expect(rule).toContain('color: var(--rs-text)')
+  })
+})
