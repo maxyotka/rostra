@@ -19,6 +19,7 @@ jobs:
       # расхождение css с токенами и провал контраста видно за секунды.
       - run: npm run check:tokens
       - run: npm run check:contrast
+      - run: npm run check:support
       - run: npm run typecheck
       - run: npm test
       - run: npm run build

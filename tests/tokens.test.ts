@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { checkTheme, themeNames, resolveTheme } from '../scripts/check-contrast.mjs'
+import { checkTheme, themeNames, resolveTheme, variants } from '../scripts/check-contrast.mjs'
 import tokens from '../rostra.tokens.json'
 
 describe('токены', () => {
@@ -36,12 +36,16 @@ interface PairResult {
 }
 
 describe('контраст', () => {
-  for (const theme of themeNames) {
-    it(`тема ${theme}: все пары проходят свой порог WCAG`, () => {
-      const failed = (checkTheme(theme) as PairResult[])
-        .filter((r) => !r.pass)
-        .map((r) => `${r.fg} на ${r.bg}: ${r.ratio.toFixed(2)} < ${r.min} (${r.note})`)
-      expect(failed).toEqual([])
-    })
+  // srgb — то, что увидит браузер без oklch: подрезка насыщенности при
+  // переводе в гамму меняет цвет, а значит может изменить и контраст.
+  for (const variant of variants) {
+    for (const theme of themeNames) {
+      it(`тема ${theme} (${variant}): все пары проходят свой порог WCAG`, () => {
+        const failed = (checkTheme(theme, variant) as PairResult[])
+          .filter((r) => !r.pass)
+          .map((r) => `${r.fg} на ${r.bg}: ${r.ratio.toFixed(2)} < ${r.min} (${r.note})`)
+        expect(failed).toEqual([])
+      })
+    }
   }
 })

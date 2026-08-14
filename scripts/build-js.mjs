@@ -17,7 +17,9 @@ const common = {
   bundle: true,
   external,
   platform: 'neutral',
-  target: ['es2022'],
+  // Ниже, чем поддерживает css-ядро, смысла не имеет, выше — сделало бы
+  // js узким местом: Chrome 84 из таблицы поддержки es2022 не выполнит.
+  target: ['es2019'],
   jsx: 'automatic',
   sourcemap: true,
   logLevel: 'info',

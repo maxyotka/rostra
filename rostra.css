@@ -12,47 +12,53 @@
 /* --- 1. Токены ------------------------------------------------
    СГЕНЕРИРОВАНО из rostra.tokens.json — не править руками.
    Пересборка: npm run build:css
+
+   Цвета объявлены дважды: сначала sRGB, затем oklch внутри @supports.
+   Дублировать объявление прямо в блоке нельзя: значение кастомного
+   свойства браузер не проверяет, поэтому старый примет oklch как валидный
+   токен, и невалидным станет уже свойство, которое его использует —
+   вместо фоллбэка получится пустое место.
    -------------------------------------------------------------- */
 
 :root,
 [data-theme='light'] {
-  --rs-accent-50: oklch(0.972 0.018 262);
-  --rs-accent-100: oklch(0.94 0.035 262);
-  --rs-accent-200: oklch(0.86 0.06 262);
-  --rs-accent-400: oklch(0.72 0.11 262);
-  --rs-accent-500: oklch(0.54 0.14 262);
-  --rs-accent-600: oklch(0.47 0.14 262);
-  --rs-accent-700: oklch(0.4 0.12 262);
-  --rs-ok: oklch(0.58 0.13 155);
-  --rs-ok-bg: oklch(0.955 0.045 155);
-  --rs-ok-fg: oklch(0.42 0.11 155);
-  --rs-warn: oklch(0.72 0.13 75);
-  --rs-warn-bg: oklch(0.965 0.05 80);
-  --rs-warn-fg: oklch(0.44 0.1 70);
-  --rs-bad: oklch(0.56 0.16 25);
-  --rs-bad-bg: oklch(0.96 0.035 25);
-  --rs-bad-fg: oklch(0.46 0.14 25);
+  --rs-accent-50: #eff6ff;
+  --rs-accent-100: #dfecff;
+  --rs-accent-200: #bcd2f9;
+  --rs-accent-400: #7fa4ea;
+  --rs-accent-500: #3f6bbf;
+  --rs-accent-600: #2c56a8;
+  --rs-accent-700: #214487;
+  --rs-ok: #249057;
+  --rs-ok-bg: #d9fae3;
+  --rs-ok-fg: #005e31;
+  --rs-warn: #d49838;
+  --rs-warn-bg: #fff1ce;
+  --rs-warn-fg: #754700;
+  --rs-bad: #c04442;
+  --rs-bad-bg: #ffe9e6;
+  --rs-bad-fg: #972e2d;
   --rs-info: var(--rs-accent-500);
-  --rs-info-bg: oklch(0.955 0.035 262);
-  --rs-info-fg: oklch(0.44 0.13 262);
-  --rs-bg: oklch(0.985 0.004 265);
+  --rs-info-bg: #e4f1ff;
+  --rs-info-fg: #284e99;
+  --rs-bg: #f9fafd;
   --rs-surface: #ffffff;
-  --rs-surface-2: oklch(0.982 0.004 265);
-  --rs-surface-3: oklch(0.955 0.005 265);
-  --rs-border: oklch(0.91 0.008 265);
-  --rs-border-strong: oklch(0.86 0.01 265);
-  --rs-control-border: oklch(0.62 0.012 265);
-  --rs-hairline: oklch(0.95 0.005 265);
-  --rs-text: oklch(0.24 0.012 265);
-  --rs-text-muted: oklch(0.52 0.014 265);
-  --rs-text-faint: oklch(0.53 0.014 265);
-  --rs-text-placeholder: oklch(0.56 0.012 265);
+  --rs-surface-2: #f8f9fc;
+  --rs-surface-3: #eef0f4;
+  --rs-border: #dfe1e7;
+  --rs-border-strong: #ced1d8;
+  --rs-control-border: #83868e;
+  --rs-hairline: #edeef2;
+  --rs-text: #1c1f25;
+  --rs-text-muted: #656971;
+  --rs-text-faint: #686c74;
+  --rs-text-placeholder: #71747c;
   --rs-text-invert: #ffffff;
   --rs-shadow-1: 0 1px 2px rgba(20, 22, 35, 0.05);
   --rs-shadow-2: 0 8px 24px -10px rgba(20, 22, 35, 0.22);
   --rs-shadow-3: 0 20px 50px -22px rgba(20, 22, 35, 0.45);
-  --rs-ring: 0 0 0 3px oklch(0.93 0.04 262);
-  --rs-ring-bad: 0 0 0 3px oklch(0.93 0.04 25);
+  --rs-ring: 0 0 0 3px #dae9ff;
+  --rs-ring-bad: 0 0 0 3px #ffdedb;
   --rs-font: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --rs-fs-display: 26px;
   --rs-fs-title: 20px;
@@ -94,53 +100,53 @@
 }
 
 [data-theme='dark'] {
-  --rs-accent-50: oklch(0.28 0.05 262);
-  --rs-accent-100: oklch(0.34 0.07 262);
-  --rs-accent-200: oklch(0.42 0.1 262);
-  --rs-accent-400: oklch(0.62 0.13 262);
-  --rs-accent-500: oklch(0.68 0.14 262);
-  --rs-accent-600: oklch(0.74 0.13 262);
-  --rs-accent-700: oklch(0.8 0.11 262);
-  --rs-ok-bg: oklch(0.32 0.06 155);
-  --rs-ok-fg: oklch(0.84 0.11 155);
-  --rs-warn-bg: oklch(0.34 0.06 75);
-  --rs-warn-fg: oklch(0.87 0.11 85);
-  --rs-bad-bg: oklch(0.33 0.07 25);
-  --rs-bad-fg: oklch(0.86 0.1 25);
-  --rs-info-bg: oklch(0.32 0.06 262);
-  --rs-info-fg: oklch(0.85 0.09 262);
-  --rs-bg: oklch(0.2 0.012 265);
-  --rs-surface: oklch(0.24 0.014 265);
-  --rs-surface-2: oklch(0.27 0.014 265);
-  --rs-surface-3: oklch(0.31 0.016 265);
-  --rs-border: oklch(0.34 0.014 265);
-  --rs-border-strong: oklch(0.42 0.016 265);
-  --rs-control-border: oklch(0.6 0.016 265);
-  --rs-hairline: oklch(0.29 0.014 265);
-  --rs-text: oklch(0.95 0.006 265);
-  --rs-text-muted: oklch(0.74 0.012 265);
-  --rs-text-faint: oklch(0.7 0.012 265);
-  --rs-text-placeholder: oklch(0.64 0.012 265);
-  --rs-text-invert: oklch(0.18 0.012 265);
+  --rs-accent-50: #1b2942;
+  --rs-accent-100: #23375c;
+  --rs-accent-200: #2e4b83;
+  --rs-accent-400: #5a84d4;
+  --rs-accent-500: #6796ee;
+  --rs-accent-600: #7daafd;
+  --rs-accent-700: #97beff;
+  --rs-ok-bg: #153c25;
+  --rs-ok-fg: #8ee0ab;
+  --rs-warn-bg: #4a330f;
+  --rs-warn-fg: #f5cf7d;
+  --rs-bad-bg: #542523;
+  --rs-bad-fg: #ffb8b0;
+  --rs-info-bg: #223251;
+  --rs-info-fg: #aeceff;
+  --rs-bg: #13161c;
+  --rs-surface: #1c1f26;
+  --rs-surface-2: #23262d;
+  --rs-surface-3: #2c3039;
+  --rs-border: #34383f;
+  --rs-border-strong: #494d56;
+  --rs-control-border: #7b808a;
+  --rs-hairline: #282b33;
+  --rs-text: #eceef3;
+  --rs-text-muted: #a7abb3;
+  --rs-text-faint: #9b9ea6;
+  --rs-text-placeholder: #888c94;
+  --rs-text-invert: #0f1217;
   --rs-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --rs-shadow-2: 0 8px 24px -10px rgba(0, 0, 0, 0.6);
   --rs-shadow-3: 0 20px 50px -22px rgba(0, 0, 0, 0.75);
-  --rs-ring: 0 0 0 3px oklch(0.42 0.09 262);
+  --rs-ring: 0 0 0 3px #314c7e;
 }
 
 [data-theme='warm'] {
-  --rs-bg: oklch(0.976 0.008 85);
+  --rs-bg: #faf7f1;
   --rs-surface: #ffffff;
-  --rs-surface-2: oklch(0.978 0.008 85);
-  --rs-surface-3: oklch(0.955 0.012 85);
-  --rs-border: oklch(0.92 0.01 85);
-  --rs-border-strong: oklch(0.87 0.014 85);
-  --rs-control-border: oklch(0.62 0.014 85);
-  --rs-hairline: oklch(0.955 0.008 85);
-  --rs-text: oklch(0.26 0.014 70);
-  --rs-text-muted: oklch(0.52 0.016 70);
-  --rs-text-faint: oklch(0.53 0.016 70);
-  --rs-text-placeholder: oklch(0.56 0.014 70);
+  --rs-surface-2: #faf7f2;
+  --rs-surface-3: #f4f0e7;
+  --rs-border: #e8e4dd;
+  --rs-border-strong: #d8d4ca;
+  --rs-control-border: #8a867d;
+  --rs-hairline: #f3f0ea;
+  --rs-text: #29231d;
+  --rs-text-muted: #6f685f;
+  --rs-text-faint: #726a62;
+  --rs-text-placeholder: #7a736c;
   --rs-radius: 10px;
   --rs-radius-lg: 14px;
   --rs-shadow-1: 0 1px 2px rgba(30, 26, 20, 0.05);
@@ -148,27 +154,27 @@
 }
 
 [data-theme='contrast'] {
-  --rs-accent-500: oklch(0.42 0.18 262);
-  --rs-accent-600: oklch(0.34 0.16 262);
-  --rs-ok-fg: oklch(0.36 0.11 155);
-  --rs-warn-fg: oklch(0.36 0.09 70);
-  --rs-bad-fg: oklch(0.4 0.15 25);
-  --rs-info-fg: oklch(0.38 0.14 262);
+  --rs-accent-500: #0a41ad;
+  --rs-accent-600: #002c88;
+  --rs-ok-fg: #004d21;
+  --rs-warn-fg: #5a3200;
+  --rs-bad-fg: #861118;
+  --rs-info-fg: #133c8b;
   --rs-bg: #ffffff;
   --rs-surface: #ffffff;
   --rs-surface-2: #ffffff;
-  --rs-surface-3: oklch(0.94 0 0);
-  --rs-border: oklch(0.45 0.01 265);
-  --rs-border-strong: oklch(0.28 0.01 265);
-  --rs-control-border: oklch(0.28 0.01 265);
-  --rs-hairline: oklch(0.7 0.01 265);
-  --rs-text: oklch(0.16 0.01 265);
-  --rs-text-muted: oklch(0.32 0.01 265);
-  --rs-text-faint: oklch(0.36 0.01 265);
-  --rs-text-placeholder: oklch(0.44 0.01 265);
-  --rs-ring: 0 0 0 3px oklch(0.55 0.16 262);
+  --rs-surface-3: #ebebeb;
+  --rs-border: #52555b;
+  --rs-border-strong: #26292e;
+  --rs-control-border: #26292e;
+  --rs-hairline: #9b9ea5;
+  --rs-text: #0b0d12;
+  --rs-text-muted: #303338;
+  --rs-text-faint: #3a3d43;
+  --rs-text-placeholder: #505358;
+  --rs-ring: 0 0 0 3px #3a6cce;
   --rs-shadow-1: none;
-  --rs-shadow-2: 0 0 0 1px oklch(0.45 0.01 265);
+  --rs-shadow-2: 0 0 0 1px #52555b;
 }
 
 /* Плотность */
@@ -180,6 +186,110 @@
 [data-density='roomy'] { --rs-control-h: 38px; --rs-control-h-sm: 32px; --rs-row-pad: 16px; --rs-pad-card: 24px; --rs-fs-ui: 13px; }
 
 [data-density='mobile'] { --rs-control-h: 44px; --rs-control-h-sm: 38px; --rs-row-pad: 14px; --rs-pad-card: 16px; --rs-fs-ui: 13.5px; --rs-fs-label: 12px; --rs-fs-body: 15px; --rs-radius: 16px; --rs-radius-sm: 12px; --rs-radius-lg: 20px; }
+
+/* Цвет в oklch — там, где браузер его понимает. */
+@supports (color: oklch(0 0 0)) {
+  :root,
+  [data-theme='light'] {
+    --rs-accent-50: oklch(0.972 0.018 262);
+    --rs-accent-100: oklch(0.94 0.035 262);
+    --rs-accent-200: oklch(0.86 0.06 262);
+    --rs-accent-400: oklch(0.72 0.11 262);
+    --rs-accent-500: oklch(0.54 0.14 262);
+    --rs-accent-600: oklch(0.47 0.14 262);
+    --rs-accent-700: oklch(0.4 0.12 262);
+    --rs-ok: oklch(0.58 0.13 155);
+    --rs-ok-bg: oklch(0.955 0.045 155);
+    --rs-ok-fg: oklch(0.42 0.11 155);
+    --rs-warn: oklch(0.72 0.13 75);
+    --rs-warn-bg: oklch(0.965 0.05 80);
+    --rs-warn-fg: oklch(0.44 0.1 70);
+    --rs-bad: oklch(0.56 0.16 25);
+    --rs-bad-bg: oklch(0.96 0.035 25);
+    --rs-bad-fg: oklch(0.46 0.14 25);
+    --rs-info-bg: oklch(0.955 0.035 262);
+    --rs-info-fg: oklch(0.44 0.13 262);
+    --rs-bg: oklch(0.985 0.004 265);
+    --rs-surface-2: oklch(0.982 0.004 265);
+    --rs-surface-3: oklch(0.955 0.005 265);
+    --rs-border: oklch(0.91 0.008 265);
+    --rs-border-strong: oklch(0.86 0.01 265);
+    --rs-control-border: oklch(0.62 0.012 265);
+    --rs-hairline: oklch(0.95 0.005 265);
+    --rs-text: oklch(0.24 0.012 265);
+    --rs-text-muted: oklch(0.52 0.014 265);
+    --rs-text-faint: oklch(0.53 0.014 265);
+    --rs-text-placeholder: oklch(0.56 0.012 265);
+    --rs-ring: 0 0 0 3px oklch(0.93 0.04 262);
+    --rs-ring-bad: 0 0 0 3px oklch(0.93 0.04 25);
+  }
+  
+  [data-theme='dark'] {
+    --rs-accent-50: oklch(0.28 0.05 262);
+    --rs-accent-100: oklch(0.34 0.07 262);
+    --rs-accent-200: oklch(0.42 0.1 262);
+    --rs-accent-400: oklch(0.62 0.13 262);
+    --rs-accent-500: oklch(0.68 0.14 262);
+    --rs-accent-600: oklch(0.74 0.13 262);
+    --rs-accent-700: oklch(0.8 0.11 262);
+    --rs-ok-bg: oklch(0.32 0.06 155);
+    --rs-ok-fg: oklch(0.84 0.11 155);
+    --rs-warn-bg: oklch(0.34 0.06 75);
+    --rs-warn-fg: oklch(0.87 0.11 85);
+    --rs-bad-bg: oklch(0.33 0.07 25);
+    --rs-bad-fg: oklch(0.86 0.1 25);
+    --rs-info-bg: oklch(0.32 0.06 262);
+    --rs-info-fg: oklch(0.85 0.09 262);
+    --rs-bg: oklch(0.2 0.012 265);
+    --rs-surface: oklch(0.24 0.014 265);
+    --rs-surface-2: oklch(0.27 0.014 265);
+    --rs-surface-3: oklch(0.31 0.016 265);
+    --rs-border: oklch(0.34 0.014 265);
+    --rs-border-strong: oklch(0.42 0.016 265);
+    --rs-control-border: oklch(0.6 0.016 265);
+    --rs-hairline: oklch(0.29 0.014 265);
+    --rs-text: oklch(0.95 0.006 265);
+    --rs-text-muted: oklch(0.74 0.012 265);
+    --rs-text-faint: oklch(0.7 0.012 265);
+    --rs-text-placeholder: oklch(0.64 0.012 265);
+    --rs-text-invert: oklch(0.18 0.012 265);
+    --rs-ring: 0 0 0 3px oklch(0.42 0.09 262);
+  }
+  
+  [data-theme='warm'] {
+    --rs-bg: oklch(0.976 0.008 85);
+    --rs-surface-2: oklch(0.978 0.008 85);
+    --rs-surface-3: oklch(0.955 0.012 85);
+    --rs-border: oklch(0.92 0.01 85);
+    --rs-border-strong: oklch(0.87 0.014 85);
+    --rs-control-border: oklch(0.62 0.014 85);
+    --rs-hairline: oklch(0.955 0.008 85);
+    --rs-text: oklch(0.26 0.014 70);
+    --rs-text-muted: oklch(0.52 0.016 70);
+    --rs-text-faint: oklch(0.53 0.016 70);
+    --rs-text-placeholder: oklch(0.56 0.014 70);
+  }
+  
+  [data-theme='contrast'] {
+    --rs-accent-500: oklch(0.42 0.18 262);
+    --rs-accent-600: oklch(0.34 0.16 262);
+    --rs-ok-fg: oklch(0.36 0.11 155);
+    --rs-warn-fg: oklch(0.36 0.09 70);
+    --rs-bad-fg: oklch(0.4 0.15 25);
+    --rs-info-fg: oklch(0.38 0.14 262);
+    --rs-surface-3: oklch(0.94 0 0);
+    --rs-border: oklch(0.45 0.01 265);
+    --rs-border-strong: oklch(0.28 0.01 265);
+    --rs-control-border: oklch(0.28 0.01 265);
+    --rs-hairline: oklch(0.7 0.01 265);
+    --rs-text: oklch(0.16 0.01 265);
+    --rs-text-muted: oklch(0.32 0.01 265);
+    --rs-text-faint: oklch(0.36 0.01 265);
+    --rs-text-placeholder: oklch(0.44 0.01 265);
+    --rs-ring: 0 0 0 3px oklch(0.55 0.16 262);
+    --rs-shadow-2: 0 0 0 1px oklch(0.45 0.01 265);
+  }
+}
 
 /* --- 2. База ------------------------------------------------- */
 .rs { font-family: var(--rs-font); color: var(--rs-text); background: var(--rs-bg); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
@@ -223,6 +333,13 @@
 }
 .rs-btn:hover { background: var(--rs-surface-2); border-color: var(--rs-border-strong); }
 .rs-btn:active { background: var(--rs-surface-3); }
+/* Кольцо фокуса в три шага ради браузеров без :focus-visible.
+   Первое правило — фоллбэк: кольцо на любом фокусе, включая клик мышью.
+   Второе гасит его там, где :focus-visible понимают (в старых браузерах
+   селектор невалиден и правило целиком игнорируется — фоллбэк уцелеет).
+   Третье возвращает кольцо клавиатуре. Порядок менять нельзя. */
+.rs-btn:focus { outline: none; box-shadow: var(--rs-ring); }
+.rs-btn:focus:not(:focus-visible) { box-shadow: none; }
 .rs-btn:focus-visible { outline: none; box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
 .rs-btn[disabled], .rs-btn.is-disabled { opacity: 0.5; cursor: not-allowed; background: var(--rs-surface-2); }
 .rs-btn--primary { background: var(--rs-accent-500); border-color: transparent; color: var(--rs-text-invert); }
@@ -230,7 +347,7 @@
 .rs-btn--primary:active { background: var(--rs-accent-700); }
 .rs-btn--ghost { background: transparent; border-color: transparent; color: var(--rs-text-muted); }
 .rs-btn--ghost:hover { background: var(--rs-surface-3); color: var(--rs-text); border-color: transparent; }
-.rs-btn--danger { color: var(--rs-bad-fg); border-color: color-mix(in oklab, var(--rs-bad) 40%, var(--rs-border)); }
+.rs-btn--danger { color: var(--rs-bad-fg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-bad) 40%, var(--rs-border)); }
 .rs-btn--danger:hover { background: var(--rs-bad-bg); }
 .rs-btn--sm { height: var(--rs-control-h-sm); padding: 0 10px; font-size: var(--rs-fs-label); }
 .rs-btn--icon { width: var(--rs-control-h); padding: 0; }
@@ -265,7 +382,7 @@
 .rs-input[aria-invalid='true'], .rs-input.is-error { border-color: var(--rs-bad); }
 .rs-input[aria-invalid='true']:focus, .rs-input.is-error:focus { box-shadow: var(--rs-ring-bad); }
 .rs-input[disabled], .rs-input[readonly] { background: var(--rs-surface-2); color: var(--rs-text-muted); cursor: not-allowed; }
-.rs-select { appearance: none; padding-right: 30px; }
+.rs-select { -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 30px; }
 
 .rs-check, .rs-radio { width: 16px; height: 16px; border: 1px solid var(--rs-control-border); background: var(--rs-surface); display: inline-flex; align-items: center; justify-content: center; flex: none; }
 .rs-check { border-radius: var(--rs-radius-sm); }
@@ -301,6 +418,12 @@
 .rs-choice__input:checked + .rs-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--rs-accent-500); animation: rs-pop var(--rs-dur-instant) var(--rs-ease-out) both; }
 .rs-choice__input:checked + .rs-switch { background: var(--rs-accent-500); border-color: var(--rs-accent-500); }
 .rs-choice__input:checked + .rs-switch::after { transform: translateX(14px); }
+.rs-choice__input:focus + .rs-check,
+.rs-choice__input:focus + .rs-radio,
+.rs-choice__input:focus + .rs-switch { box-shadow: var(--rs-ring); }
+.rs-choice__input:focus:not(:focus-visible) + .rs-check,
+.rs-choice__input:focus:not(:focus-visible) + .rs-radio,
+.rs-choice__input:focus:not(:focus-visible) + .rs-switch { box-shadow: none; }
 .rs-choice__input:focus-visible + .rs-check,
 .rs-choice__input:focus-visible + .rs-radio,
 .rs-choice__input:focus-visible + .rs-switch { box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
@@ -348,9 +471,9 @@
 /* --- 9. Обратная связь -------------------------------------- */
 /* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
    висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
-.rs-backdrop { position: fixed; inset: 0; z-index: 40; background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
+.rs-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 40; background: rgba(20, 22, 35, 0.4); background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
 .rs-layer { position: fixed; z-index: 41; }
-.rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
+.rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100vh - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
 .rs-layer--right { top: 0; right: 0; bottom: 0; display: flex; }
 .rs-drawer { width: min(460px, 100vw); height: 100%; display: flex; flex-direction: column; background: var(--rs-surface); border-left: 1px solid var(--rs-border); box-shadow: var(--rs-shadow-3); }
 .rs-drawer__head, .rs-dialog__head { flex: none; display: flex; align-items: center; gap: 12px; padding: 14px var(--rs-pad-card); border-bottom: 1px solid var(--rs-hairline); }
@@ -367,7 +490,7 @@
 .rs-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; text-align: center; padding: var(--rs-space-7) var(--rs-space-5); }
 .rs-empty__art { width: 56px; height: 40px; border-radius: var(--rs-radius-sm); border: 1px solid var(--rs-border); background: repeating-linear-gradient(45deg, var(--rs-surface-3) 0 5px, var(--rs-surface) 5px 10px); }
 .rs-skeleton { height: 11px; border-radius: 3px; background: var(--rs-surface-3); position: relative; overflow: hidden; }
-.rs-skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rs-surface) 70%, transparent), transparent); animation: rs-shimmer 1.3s infinite; }
+.rs-skeleton::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rs-surface) 70%, transparent), transparent); animation: rs-shimmer 1.3s infinite; }
 @keyframes rs-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
 /* --- 10. Данные --------------------------------------------- */
@@ -409,6 +532,8 @@
 .rs-md hr { border: 0; height: 1px; background: var(--rs-hairline); margin: 22px 0; }
 
 /* --- 13. Утилиты и доступность ------------------------------ */
+.rs-focusable:focus { outline: none; box-shadow: var(--rs-ring); }
+.rs-focusable:focus:not(:focus-visible) { box-shadow: none; }
 .rs-focusable:focus-visible { outline: none; box-shadow: var(--rs-ring); }
 .rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
@@ -496,13 +621,13 @@
 .rs-alert__mark { width: 3px; border-radius: 2px; background: var(--rs-text-faint); flex: none; }
 .rs-alert__title { font: 500 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); }
 .rs-alert__text { font: 400 var(--rs-fs-label) / 1.5 var(--rs-font); color: var(--rs-text-muted); margin-top: 3px; }
-.rs-alert--ok { background: var(--rs-ok-bg); border-color: color-mix(in oklab, var(--rs-ok) 30%, transparent); }
+.rs-alert--ok { background: var(--rs-ok-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-ok) 30%, transparent); }
 .rs-alert--ok .rs-alert__mark { background: var(--rs-ok); }
-.rs-alert--warn { background: var(--rs-warn-bg); border-color: color-mix(in oklab, var(--rs-warn) 30%, transparent); }
+.rs-alert--warn { background: var(--rs-warn-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-warn) 30%, transparent); }
 .rs-alert--warn .rs-alert__mark { background: var(--rs-warn); }
-.rs-alert--bad { background: var(--rs-bad-bg); border-color: color-mix(in oklab, var(--rs-bad) 30%, transparent); }
+.rs-alert--bad { background: var(--rs-bad-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-bad) 30%, transparent); }
 .rs-alert--bad .rs-alert__mark { background: var(--rs-bad); }
-.rs-alert--info { background: var(--rs-info-bg); border-color: color-mix(in oklab, var(--rs-info) 25%, transparent); }
+.rs-alert--info { background: var(--rs-info-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-info) 25%, transparent); }
 .rs-alert--info .rs-alert__mark { background: var(--rs-info); }
 
 /* --- 23. Прочее ----------------------------------------------- */
@@ -576,7 +701,7 @@
 /* Админка — приложение, а не страница: высота равна окну, скроллится
    только рабочая область, шапка и подвал приклеены. Страница целиком
    не листается никогда. */
-.rs-app { height: 100dvh; display: flex; overflow: hidden; }
+.rs-app { height: 100vh; height: 100dvh; display: flex; overflow: hidden; }
 .rs-app__main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 .rs-app__bar { flex: none; }
 .rs-pane { flex: 1; min-height: 0; overflow: auto; }

@@ -40,6 +40,13 @@
 }
 .rs-btn:hover { background: var(--rs-surface-2); border-color: var(--rs-border-strong); }
 .rs-btn:active { background: var(--rs-surface-3); }
+/* Кольцо фокуса в три шага ради браузеров без :focus-visible.
+   Первое правило — фоллбэк: кольцо на любом фокусе, включая клик мышью.
+   Второе гасит его там, где :focus-visible понимают (в старых браузерах
+   селектор невалиден и правило целиком игнорируется — фоллбэк уцелеет).
+   Третье возвращает кольцо клавиатуре. Порядок менять нельзя. */
+.rs-btn:focus { outline: none; box-shadow: var(--rs-ring); }
+.rs-btn:focus:not(:focus-visible) { box-shadow: none; }
 .rs-btn:focus-visible { outline: none; box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
 .rs-btn[disabled], .rs-btn.is-disabled { opacity: 0.5; cursor: not-allowed; background: var(--rs-surface-2); }
 .rs-btn--primary { background: var(--rs-accent-500); border-color: transparent; color: var(--rs-text-invert); }
@@ -47,7 +54,7 @@
 .rs-btn--primary:active { background: var(--rs-accent-700); }
 .rs-btn--ghost { background: transparent; border-color: transparent; color: var(--rs-text-muted); }
 .rs-btn--ghost:hover { background: var(--rs-surface-3); color: var(--rs-text); border-color: transparent; }
-.rs-btn--danger { color: var(--rs-bad-fg); border-color: color-mix(in oklab, var(--rs-bad) 40%, var(--rs-border)); }
+.rs-btn--danger { color: var(--rs-bad-fg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-bad) 40%, var(--rs-border)); }
 .rs-btn--danger:hover { background: var(--rs-bad-bg); }
 .rs-btn--sm { height: var(--rs-control-h-sm); padding: 0 10px; font-size: var(--rs-fs-label); }
 .rs-btn--icon { width: var(--rs-control-h); padding: 0; }
@@ -82,7 +89,7 @@
 .rs-input[aria-invalid='true'], .rs-input.is-error { border-color: var(--rs-bad); }
 .rs-input[aria-invalid='true']:focus, .rs-input.is-error:focus { box-shadow: var(--rs-ring-bad); }
 .rs-input[disabled], .rs-input[readonly] { background: var(--rs-surface-2); color: var(--rs-text-muted); cursor: not-allowed; }
-.rs-select { appearance: none; padding-right: 30px; }
+.rs-select { -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 30px; }
 
 .rs-check, .rs-radio { width: 16px; height: 16px; border: 1px solid var(--rs-control-border); background: var(--rs-surface); display: inline-flex; align-items: center; justify-content: center; flex: none; }
 .rs-check { border-radius: var(--rs-radius-sm); }
@@ -118,6 +125,12 @@
 .rs-choice__input:checked + .rs-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--rs-accent-500); animation: rs-pop var(--rs-dur-instant) var(--rs-ease-out) both; }
 .rs-choice__input:checked + .rs-switch { background: var(--rs-accent-500); border-color: var(--rs-accent-500); }
 .rs-choice__input:checked + .rs-switch::after { transform: translateX(14px); }
+.rs-choice__input:focus + .rs-check,
+.rs-choice__input:focus + .rs-radio,
+.rs-choice__input:focus + .rs-switch { box-shadow: var(--rs-ring); }
+.rs-choice__input:focus:not(:focus-visible) + .rs-check,
+.rs-choice__input:focus:not(:focus-visible) + .rs-radio,
+.rs-choice__input:focus:not(:focus-visible) + .rs-switch { box-shadow: none; }
 .rs-choice__input:focus-visible + .rs-check,
 .rs-choice__input:focus-visible + .rs-radio,
 .rs-choice__input:focus-visible + .rs-switch { box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
@@ -165,9 +178,9 @@
 /* --- 9. Обратная связь -------------------------------------- */
 /* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
    висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
-.rs-backdrop { position: fixed; inset: 0; z-index: 40; background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
+.rs-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 40; background: rgba(20, 22, 35, 0.4); background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
 .rs-layer { position: fixed; z-index: 41; }
-.rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
+.rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100vh - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
 .rs-layer--right { top: 0; right: 0; bottom: 0; display: flex; }
 .rs-drawer { width: min(460px, 100vw); height: 100%; display: flex; flex-direction: column; background: var(--rs-surface); border-left: 1px solid var(--rs-border); box-shadow: var(--rs-shadow-3); }
 .rs-drawer__head, .rs-dialog__head { flex: none; display: flex; align-items: center; gap: 12px; padding: 14px var(--rs-pad-card); border-bottom: 1px solid var(--rs-hairline); }
@@ -184,7 +197,7 @@
 .rs-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; text-align: center; padding: var(--rs-space-7) var(--rs-space-5); }
 .rs-empty__art { width: 56px; height: 40px; border-radius: var(--rs-radius-sm); border: 1px solid var(--rs-border); background: repeating-linear-gradient(45deg, var(--rs-surface-3) 0 5px, var(--rs-surface) 5px 10px); }
 .rs-skeleton { height: 11px; border-radius: 3px; background: var(--rs-surface-3); position: relative; overflow: hidden; }
-.rs-skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rs-surface) 70%, transparent), transparent); animation: rs-shimmer 1.3s infinite; }
+.rs-skeleton::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rs-surface) 70%, transparent), transparent); animation: rs-shimmer 1.3s infinite; }
 @keyframes rs-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
 /* --- 10. Данные --------------------------------------------- */
@@ -226,6 +239,8 @@
 .rs-md hr { border: 0; height: 1px; background: var(--rs-hairline); margin: 22px 0; }
 
 /* --- 13. Утилиты и доступность ------------------------------ */
+.rs-focusable:focus { outline: none; box-shadow: var(--rs-ring); }
+.rs-focusable:focus:not(:focus-visible) { box-shadow: none; }
 .rs-focusable:focus-visible { outline: none; box-shadow: var(--rs-ring); }
 .rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
@@ -313,13 +328,13 @@
 .rs-alert__mark { width: 3px; border-radius: 2px; background: var(--rs-text-faint); flex: none; }
 .rs-alert__title { font: 500 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); }
 .rs-alert__text { font: 400 var(--rs-fs-label) / 1.5 var(--rs-font); color: var(--rs-text-muted); margin-top: 3px; }
-.rs-alert--ok { background: var(--rs-ok-bg); border-color: color-mix(in oklab, var(--rs-ok) 30%, transparent); }
+.rs-alert--ok { background: var(--rs-ok-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-ok) 30%, transparent); }
 .rs-alert--ok .rs-alert__mark { background: var(--rs-ok); }
-.rs-alert--warn { background: var(--rs-warn-bg); border-color: color-mix(in oklab, var(--rs-warn) 30%, transparent); }
+.rs-alert--warn { background: var(--rs-warn-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-warn) 30%, transparent); }
 .rs-alert--warn .rs-alert__mark { background: var(--rs-warn); }
-.rs-alert--bad { background: var(--rs-bad-bg); border-color: color-mix(in oklab, var(--rs-bad) 30%, transparent); }
+.rs-alert--bad { background: var(--rs-bad-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-bad) 30%, transparent); }
 .rs-alert--bad .rs-alert__mark { background: var(--rs-bad); }
-.rs-alert--info { background: var(--rs-info-bg); border-color: color-mix(in oklab, var(--rs-info) 25%, transparent); }
+.rs-alert--info { background: var(--rs-info-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-info) 25%, transparent); }
 .rs-alert--info .rs-alert__mark { background: var(--rs-info); }
 
 /* --- 23. Прочее ----------------------------------------------- */
@@ -393,7 +408,7 @@
 /* Админка — приложение, а не страница: высота равна окну, скроллится
    только рабочая область, шапка и подвал приклеены. Страница целиком
    не листается никогда. */
-.rs-app { height: 100dvh; display: flex; overflow: hidden; }
+.rs-app { height: 100vh; height: 100dvh; display: flex; overflow: hidden; }
 .rs-app__main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 .rs-app__bar { flex: none; }
 .rs-pane { flex: 1; min-height: 0; overflow: auto; }
