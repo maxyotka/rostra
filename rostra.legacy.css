@@ -1,0 +1,669 @@
+/* ============================================================
+   rostra.legacy.css — сборка для браузеров без кастомных свойств.
+   Тема: light. Плотность: medium. СГЕНЕРИРОВАНО, не править руками.
+   Пересборка: node scripts/build-legacy.mjs --theme=light --density=medium
+
+   Отличия от rostra.css:
+   — значения токенов подставлены, поэтому тема и плотность здесь
+     фиксированы: переключение на лету требует подмены файла;
+   — gap заменён отступами соседних элементов;
+   — grid заменён flex и float;
+   — oklch, color-mix, dvh, :has() и :focus-visible убраны вместе с
+     правилами, которые старый браузер всё равно не применил бы.
+
+   Подключать вместо rostra.css и только старым браузерам — см. README.
+   ============================================================ */
+/* ============================================================
+   rostra.css — v0.1.0
+   Ядро дизайн-системы Rostra: токены, темы, плотность, компоненты.
+   Фреймворк-независимо: подключите файл и используйте классы rs-*.
+   Тема: data-theme="light|dark|warm|contrast" на любом контейнере.
+   Плотность: data-density="compact|medium|roomy|mobile".
+
+   Шрифт не подключается отсюда: rostra.css не делает сетевых запросов.
+   Подключите fonts.css или свою локальную копию Golos Text — см. README.
+   ============================================================ */
+
+/* Плотность */
+
+/* --- 2. База ------------------------------------------------- */
+.rs { font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; background: #f9fafd; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+.rs *, .rs *::before, .rs *::after { -moz-box-sizing: border-box; box-sizing: border-box; }
+.rs a { color: #3f6bbf; text-decoration: none; }
+.rs a:hover { color: #2c56a8; text-decoration: underline; text-underline-offset: 2px; }
+/* Надзаголовок секции: капс + волосяная линия до конца блока.
+   Линия структурирует страницу; черта-«тире» слева убрана как декорация. */
+.rs-eyebrow { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.07em; }
+.rs-eyebrow > * + * { margin-left: 10px; }
+.rs-eyebrow::after { content: ''; -webkit-flex: 1; -ms-flex: 1; flex: 1; height: 1px; background: #edeef2; margin-left: 10px; }
+.rs-eyebrow--sentence { text-transform: none; letter-spacing: 0; }
+.rs-eyebrow--bare::after { display: none; }
+/* Официальных вариантов три, у каждого своё место:
+   .rs-eyebrow        — секции страниц и библиотеки: линия задаёт ритм страницы;
+   .rs-eyebrow--tick  — внутри карточек и панелей, где линия спорила бы с границей;
+   .rs-eyebrow--tag   — над группой карточек: ярлык весомее, читается как раздел.
+   Четвёртого не вводим: больше вариантов — меньше системы. */
+.rs-eyebrow--tick { }
+.rs-eyebrow--tick > * + * { margin-left: 7px; }
+.rs-eyebrow--tick::before { content: ''; width: 10px; height: 2px; border-radius: 1px; background: #3f6bbf; -webkit-flex: none; -ms-flex: none; flex: none; margin-right: 7px; }
+.rs-eyebrow--tick::after { display: none; }
+.rs-eyebrow--tag > span:first-child { background: #eef0f4; border-radius: 4px; padding: 5px 8px; -webkit-flex: none; -ms-flex: none; flex: none; white-space: nowrap; }
+/* Капс разрешён ровно в двух местах: надзаголовок секции и код/аббревиатура.
+   Никогда — в кнопках, заголовках, предложениях и статусах длиннее слова. */
+.rs-caps { text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; font-size: 11.5px; }
+.rs-code { text-transform: uppercase; letter-spacing: 0.02em; color: #686c74; }
+/* Имя класса или свойства — как в коде, без капса */
+.rs-api { text-transform: none; letter-spacing: 0; color: #656971; background: #f8f9fc; border: 1px solid #edeef2; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+.rs-title { font: 600 20px / 1.25 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; margin: 0; }
+.rs-section-title { font: 600 15.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 0; }
+.rs-text { font: 400 13.5px / 1.6 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-muted { color: #656971; }
+.rs-faint { color: #686c74; }
+
+/* --- 3. Кнопки ----------------------------------------------- */
+.rs-btn {
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center;
+  height: 32px; padding: 0 12px; border: 1px solid #dfe1e7;
+  border-radius: 6px; background: #ffffff; color: #1c1f25;
+  font: 500 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; white-space: nowrap;
+  -webkit-transition: background 180ms cubic-bezier(0.4, 0, 0.2, 1), border-color 180ms cubic-bezier(0.4, 0, 0.2, 1), color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 180ms cubic-bezier(0.4, 0, 0.2, 1), border-color 180ms cubic-bezier(0.4, 0, 0.2, 1), color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rs-btn > * + * { margin-left: 6px; }
+.rs-btn:hover { background: #f8f9fc; border-color: #ced1d8; }
+.rs-btn:active { background: #eef0f4; }
+/* Кольцо фокуса в три шага ради браузеров без :focus-visible.
+   Первое правило — фоллбэк: кольцо на любом фокусе, включая клик мышью.
+   Второе гасит его там, где :focus-visible понимают (в старых браузерах
+   селектор невалиден и правило целиком игнорируется — фоллбэк уцелеет).
+   Третье возвращает кольцо клавиатуре. Порядок менять нельзя. */
+.rs-btn:focus { outline: none; box-shadow: 0 0 0 3px #dae9ff; }
+.rs-btn[disabled], .rs-btn.is-disabled { opacity: 0.5; cursor: not-allowed; background: #f8f9fc; }
+.rs-btn--primary { background: #3f6bbf; border-color: transparent; color: #ffffff; }
+.rs-btn--primary:hover { background: #2c56a8; border-color: transparent; }
+.rs-btn--primary:active { background: #214487; }
+.rs-btn--ghost { background: transparent; border-color: transparent; color: #656971; }
+.rs-btn--ghost:hover { background: #eef0f4; color: #1c1f25; border-color: transparent; }
+.rs-btn--danger { color: #972e2d; border-color: #dfe1e7; }
+.rs-btn--danger:hover { background: #ffe9e6; }
+.rs-btn--sm { height: 28px; padding: 0 10px; font-size: 11.5px; }
+.rs-btn--icon { width: 32px; padding: 0; }
+.rs-btn.is-loading { color: transparent; position: relative; }
+.rs-btn.is-loading::after {
+  content: ''; position: absolute; width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid currentColor; border-top-color: transparent; color: #ffffff;
+  -webkit-animation: rs-spin 700ms linear infinite;
+          animation: rs-spin 700ms linear infinite;
+}
+.rs-btn--primary.is-loading::after { color: #ffffff; }
+@-webkit-keyframes rs-spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+@keyframes rs-spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+
+/* --- 4. Поля ------------------------------------------------- */
+.rs-field { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-field > * + * { margin-top: 6px; }
+.rs-label { font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-hint { font: 400 11.5px / 1.45 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; }
+.rs-error { font: 400 11.5px / 1.45 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #972e2d; }
+.rs-input, .rs-select, .rs-textarea {
+  height: 32px; padding: 0 11px; border: 1px solid #83868e;
+  border-radius: 6px; background: #ffffff; color: #1c1f25;
+  font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; width: 100%;
+  -webkit-transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rs-textarea { height: auto; padding: 9px 11px; line-height: 1.4; resize: vertical; }
+.rs-input::-webkit-input-placeholder, .rs-textarea::-webkit-input-placeholder { color: #71747c; }
+.rs-input::-moz-placeholder, .rs-textarea::-moz-placeholder { color: #71747c; }
+.rs-input:-ms-input-placeholder, .rs-textarea:-ms-input-placeholder { color: #71747c; }
+.rs-input::-ms-input-placeholder, .rs-textarea::-ms-input-placeholder { color: #71747c; }
+.rs-input::placeholder, .rs-textarea::placeholder { color: #71747c; }
+.rs-input:hover, .rs-select:hover { border-color: #ced1d8; }
+.rs-input:focus, .rs-select:focus, .rs-textarea:focus { outline: none; border-color: #7fa4ea; box-shadow: 0 0 0 3px #dae9ff; }
+.rs-input[aria-invalid='true'], .rs-input.is-error { border-color: #c04442; }
+.rs-input[aria-invalid='true']:focus, .rs-input.is-error:focus { box-shadow: 0 0 0 3px #ffdedb; }
+.rs-input[disabled], .rs-input[readonly] { background: #f8f9fc; color: #656971; cursor: not-allowed; }
+.rs-select { -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 30px; }
+
+.rs-check, .rs-radio { width: 16px; height: 16px; border: 1px solid #83868e; background: #ffffff; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-check { border-radius: 4px; }
+.rs-radio { border-radius: 999px; }
+.rs-check.is-on, .rs-radio.is-on { background: #3f6bbf; border-color: #3f6bbf; color: #ffffff; }
+.rs-radio.is-on { background: #ffffff; border-color: #3f6bbf; }
+.rs-radio.is-on::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #3f6bbf; }
+/* Выключенный переключатель на белой карточке отличался от фона только
+   подложкой surface-3 — это ~1.1:1. Граница делает его видимым. */
+.rs-switch { width: 32px; height: 18px; border-radius: 999px; background: #eef0f4; border: 1px solid #83868e; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 1px; -webkit-flex: none; -ms-flex: none; flex: none; -webkit-transition: background 260ms cubic-bezier(0.4, 0, 0.2, 1), border-color 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: background 260ms cubic-bezier(0.4, 0, 0.2, 1), border-color 260ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-switch::after { content: ''; width: 14px; height: 14px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 2px rgba(20, 22, 35, 0.05); -webkit-transition: -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-switch.is-on { background: #3f6bbf; border-color: #3f6bbf; }
+.rs-switch.is-on::after { -webkit-transform: translateX(14px); transform: translateX(14px); }
+
+/* Нативные контролы под визуалом системы.
+   Разметка: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
+   <span class="rs-check"></span><span>подпись</span></label>
+   Состояние держит сам input, поэтому доступность, формы и клавиатура
+   работают без единой строки js — .is-on нужен только там, где визуал
+   рисуется без input (например, ячейка таблицы).
+   Галочка рисуется рамкой, чтобы базовый чекбокс не тянул иконочный шрифт. */
+.rs-choice { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; position: relative; font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }
+.rs-choice > * + * { margin-left: 9px; }
+.rs-choice__input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; pointer-events: none; }
+.rs-choice__input:disabled ~ * { opacity: 0.5; cursor: not-allowed; }
+.rs-choice__input:checked + .rs-check { background: #3f6bbf; border-color: #3f6bbf; color: #ffffff; }
+.rs-choice__input:checked + .rs-check::after,
+.rs-choice__input:indeterminate + .rs-check::after { content: ''; display: block; }
+.rs-choice__input:checked + .rs-check::after { width: 4px; height: 8px; border: 2px solid currentColor; border-top: 0; border-left: 0; -webkit-transform: translateY(-1px) rotate(45deg); transform: translateY(-1px) rotate(45deg); }
+.rs-choice__input:indeterminate + .rs-check { background: #3f6bbf; border-color: #3f6bbf; color: #ffffff; }
+.rs-choice__input:indeterminate + .rs-check::after { width: 8px; height: 2px; border-radius: 1px; background: currentColor; }
+.rs-choice__input:checked + .rs-radio { background: #ffffff; border-color: #3f6bbf; }
+.rs-choice__input:checked + .rs-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #3f6bbf; -webkit-animation: rs-pop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-pop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-choice__input:checked + .rs-switch { background: #3f6bbf; border-color: #3f6bbf; }
+.rs-choice__input:checked + .rs-switch::after { -webkit-transform: translateX(14px); transform: translateX(14px); }
+.rs-choice__input:focus + .rs-check,
+.rs-choice__input:focus + .rs-radio,
+.rs-choice__input:focus + .rs-switch { box-shadow: 0 0 0 3px #dae9ff; }
+
+/* --- 5. Поверхности ------------------------------------------ */
+.rs-card { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; }
+.rs-card__body { padding: 18px; }
+.rs-divider { height: 1px; background: #edeef2; border: 0; margin: 16px 0; }
+
+/* --- 6. Статусы --------------------------------------------- */
+.rs-badge { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 22px; white-space: nowrap; padding: 0 8px; border-radius: 4px; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; background: #eef0f4; color: #656971; }
+.rs-badge > * + * { margin-left: 6px; }
+.rs-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; -webkit-flex: none; -ms-flex: none; flex: none; margin-right: 6px; }
+.rs-badge--plain::before { display: none; }
+.rs-badge--ok { background: #d9fae3; color: #005e31; }
+.rs-badge--warn { background: #fff1ce; color: #754700; }
+.rs-badge--bad { background: #ffe9e6; color: #972e2d; }
+.rs-badge--info { background: #e4f1ff; color: #284e99; }
+.rs-chip { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; white-space: nowrap; height: 28px; padding: 0 10px; border: 1px solid #dfe1e7; border-radius: 6px; background: #ffffff; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-chip > * + * { margin-left: 6px; }
+.rs-chip.is-on { border-color: #bcd2f9; background: #eff6ff; color: #284e99; font-weight: 500; }
+.rs-chip--add { border-style: dashed; color: #656971; }
+
+/* --- 7. Таблица --------------------------------------------- */
+.rs-table { width: 100%; border-collapse: collapse; font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+.rs-table th { text-align: left; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; background: #f8f9fc; border-bottom: 1px solid #dfe1e7; white-space: nowrap; }
+.rs-table td { font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; padding: 12px 14px; border-bottom: 1px solid #edeef2; }
+.rs-table tbody tr:hover td { background: #f8f9fc; }
+.rs-table .rs-num { text-align: right; font-variant-numeric: tabular-nums; }
+.rs-table--zebra tbody tr:nth-child(even) td { background: #f8f9fc; }
+.rs-table--sentence-head th { text-transform: none; letter-spacing: 0; }
+.rs-table__group td { background: #f8f9fc; font-weight: 500; color: #1c1f25; }
+.rs-table-wrap { border: 1px solid #dfe1e7; border-radius: 6px; overflow: hidden; background: #ffffff; }
+
+/* --- 8. Навигация ------------------------------------------- */
+.rs-tabs { display: -webkit-flex; display: -ms-flexbox; display: flex; border-bottom: 1px solid #dfe1e7; }
+.rs-tabs > * + * { margin-left: 20px; }
+.rs-tab { padding: 0 0 10px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; cursor: pointer; }
+.rs-tab.is-on { color: #1c1f25; font-weight: 500; box-shadow: inset 0 -2px 0 #3f6bbf; }
+.rs-nav-item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 0 10px; border-radius: 6px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; cursor: pointer; }
+.rs-nav-item > * + * { margin-left: 10px; }
+.rs-nav-item:hover { background: #f8f9fc; color: #1c1f25; }
+.rs-nav-item.is-on { background: #eef0f4; color: #1c1f25; font-weight: 500; }
+.rs-crumbs { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-crumbs > * + * { margin-left: 8px; }
+.rs-seg { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; padding: 2px; background: #eef0f4; border-radius: 6px; }
+.rs-seg > * + * { margin-left: 2px; }
+.rs-seg__btn { height: 28px; padding: 0 11px; border: 0; border-radius: -webkit-calc(6px - 2px); border-radius: calc(6px - 2px); background: transparent; color: #656971; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; }
+.rs-seg__btn.is-on { background: #ffffff; color: #1c1f25; font-weight: 500; box-shadow: 0 1px 2px rgba(20, 22, 35, 0.05); }
+
+/* --- 9. Обратная связь -------------------------------------- */
+/* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
+   висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
+.rs-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 40; background: rgba(20, 22, 35, 0.4); }
+.rs-layer { position: fixed; z-index: 41; }
+.rs-layer--center { top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); max-width: -webkit-calc(100vw - 2 * 20px); max-width: calc(100vw - 2 * 20px); max-height: -webkit-calc(100vh - 2 * 20px); max-height: calc(100vh - 2 * 20px); display: -webkit-flex; display: -ms-flexbox; display: flex; }
+.rs-layer--right { top: 0; right: 0; bottom: 0; display: -webkit-flex; display: -ms-flexbox; display: flex; }
+.rs-drawer { width: min(460px, 100vw); height: 100%; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; background: #ffffff; border-left: 1px solid #dfe1e7; box-shadow: 0 20px 50px -22px rgba(20, 22, 35, 0.45); }
+.rs-drawer__head, .rs-dialog__head { -webkit-flex: none; -ms-flex: none; flex: none; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 14px 18px; border-bottom: 1px solid #edeef2; }
+.rs-drawer__head > * + *, .rs-dialog__head > * + * { margin-left: 12px; }
+.rs-drawer__body, .rs-dialog__body { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-height: 0; overflow: auto; padding: 18px; }
+.rs-drawer__foot, .rs-dialog__foot { -webkit-flex: none; -ms-flex: none; flex: none; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-justify-content: flex-end; -ms-flex-pack: end; justify-content: flex-end; padding: 12px 18px; border-top: 1px solid #edeef2; background: #f8f9fc; }
+.rs-drawer__foot > * + *, .rs-dialog__foot > * + * { margin-left: 8px; }
+.rs-toast-viewport { position: fixed; z-index: 42; top: 16px; right: 16px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; pointer-events: none; }
+.rs-toast-viewport > * + * { margin-top: 8px; }
+.rs-toast-viewport > * { pointer-events: auto; }
+.rs-toast { display: -webkit-flex; display: -ms-flexbox; display: flex; padding: 11px 12px; background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; box-shadow: 0 8px 24px -10px rgba(20, 22, 35, 0.22); width: 340px; }
+.rs-toast > * + * { margin-left: 10px; }
+.rs-toast__title { font: 500 12.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-toast__text { font: 400 11.5px / 1.45 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; margin-top: 2px; }
+.rs-dialog { width: 440px; max-width: 100%; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; background: #ffffff; border: 1px solid #dfe1e7; border-radius: 10px; box-shadow: 0 20px 50px -22px rgba(20, 22, 35, 0.45); overflow: hidden; }
+.rs-popover { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; box-shadow: 0 8px 24px -10px rgba(20, 22, 35, 0.22); padding: 12px 14px; }
+.rs-tooltip { display: inline-block; background: #1c1f25; color: #ffffff; font: 400 11.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; padding: 5px 8px; border-radius: 4px; }
+.rs-empty { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; text-align: center; padding: 32px 20px; }
+.rs-empty > * + * { margin-top: 9px; }
+.rs-empty__art { width: 56px; height: 40px; border-radius: 4px; border: 1px solid #dfe1e7; background: -webkit-repeating-linear-gradient(45deg, #eef0f4 0 5px, #ffffff 5px 10px); background: repeating-linear-gradient(45deg, #eef0f4 0 5px, #ffffff 5px 10px); }
+.rs-skeleton { height: 11px; border-radius: 3px; background: #eef0f4; position: relative; overflow: hidden; }
+.rs-skeleton::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; background: -webkit-linear-gradient(left, transparent, rgba(255, 255, 255, 0.7), transparent); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); -webkit-animation: rs-shimmer 1.3s infinite; animation: rs-shimmer 1.3s infinite; }
+@-webkit-keyframes rs-shimmer { from { -webkit-transform: translateX(-100%); transform: translateX(-100%); } to { -webkit-transform: translateX(100%); transform: translateX(100%); } }
+@keyframes rs-shimmer { from { -webkit-transform: translateX(-100%); transform: translateX(-100%); } to { -webkit-transform: translateX(100%); transform: translateX(100%); } }
+
+/* --- 10. Данные --------------------------------------------- */
+.rs-metric { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; padding: 13px 15px; }
+.rs-metric__label { font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-metric__value { font: 600 21px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-meter { height: 6px; border-radius: 3px; background: #eef0f4; overflow: hidden; }
+.rs-meter__fill { height: 6px; border-radius: 3px; background: #3f6bbf; }
+.rs-steps { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; }
+.rs-step { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-step > * + * { margin-left: 9px; }
+.rs-step__dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #dfe1e7; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; background: #ffffff; }
+.rs-step.is-now { color: #1c1f25; font-weight: 500; }
+.rs-step.is-now .rs-step__dot { border-color: #3f6bbf; color: #3f6bbf; }
+.rs-step.is-done .rs-step__dot { background: #3f6bbf; border-color: #3f6bbf; color: #ffffff; }
+.rs-step__line { -webkit-flex: 1; -ms-flex: 1; flex: 1; height: 1px; background: #dfe1e7; margin: 0 12px; }
+.rs-step__line.is-done { background: #3f6bbf; }
+
+/* --- 11. Каркас --------------------------------------------- */
+.rs-shell { display: -webkit-flex; display: -ms-flexbox; display: flex; min-height: 100%; background: #f9fafd; }
+.rs-shell__side { -webkit-flex: none; -ms-flex: none; flex: none; width: 236px; background: #ffffff; border-right: 1px solid #edeef2; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-shell__side[data-collapsed='true'] { width: 64px; }
+.rs-shell__main { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-width: 0; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-shell__topbar { height: 52px; background: #ffffff; border-bottom: 1px solid #edeef2; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 0 20px; }
+.rs-shell__topbar > * + * { margin-left: 14px; }
+.rs-shell__content { padding: 20px; }
+
+/* --- 12. Markdown ------------------------------------------- */
+.rs-md { font: 400 13.5px / 1.6 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-md h1 { font: 600 21px / 1.3 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 0 0 8px; }
+.rs-md h2 { font: 600 15.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 22px 0 10px; }
+.rs-md p { margin: 0 0 12px; }
+.rs-md ul, .rs-md ol { margin: 0 0 12px; padding-left: 20px; }
+.rs-md li { margin: 0 0 6px; }
+.rs-md ul { list-style: none; padding-left: 15px; }
+.rs-md ul li { position: relative; }
+.rs-md ul li::before { content: ''; position: absolute; left: -15px; top: 9px; width: 5px; height: 5px; border-radius: 1px; background: #3f6bbf; }
+.rs-md blockquote { margin: 16px 0; padding-left: 15px; border-left: 2px solid #dfe1e7; color: #656971; }
+.rs-md code { background: #f8f9fc; border: 1px solid #edeef2; border-radius: 3px; padding: 1px 5px; font: inherit; font-size: 12.5px; }
+.rs-md pre { background: #f8f9fc; border: 1px solid #dfe1e7; border-radius: 6px; padding: 13px 15px; font: 400 12.5px / 1.7 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: auto; }
+.rs-md hr { border: 0; height: 1px; background: #edeef2; margin: 22px 0; }
+
+/* --- 13. Утилиты и доступность ------------------------------ */
+.rs-focusable:focus { outline: none; box-shadow: 0 0 0 3px #dae9ff; }
+.rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .rs *, .rs *::before, .rs *::after {
+    -webkit-animation-duration: 1ms !important;
+            animation-duration: 1ms !important; -webkit-animation-iteration-count: 1 !important; animation-iteration-count: 1 !important;
+    -webkit-transition-duration: 1ms !important;
+            transition-duration: 1ms !important; scroll-behavior: auto !important;
+  }
+}
+
+/* --- 14. Календарь и период ---------------------------------- */
+.rs-cal { width: 246px; }
+.rs-cal__head { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 0 2px 10px; }
+.rs-cal__head > * + * { margin-left: 8px; }
+.rs-cal__month { font: 500 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-cal__grid { display: block; }
+.rs-cal__dow { font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; text-align: center; padding: 0 0 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.rs-cal__day { height: 30px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; border-radius: 4px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }
+.rs-cal__day:hover { background: #eef0f4; }
+.rs-cal__day.is-out { color: #686c74; }
+.rs-cal__day.is-today { box-shadow: inset 0 0 0 1px #ced1d8; }
+.rs-cal__day.is-range { background: #eff6ff; border-radius: 0; color: #284e99; }
+.rs-cal__day.is-sel { background: #3f6bbf; color: #ffffff; font-weight: 500; }
+.rs-cal__day.is-sel:first-of-type { border-radius: 4px; }
+.rs-cal__day.is-off { color: #686c74; opacity: 0.45; cursor: not-allowed; }
+
+/* --- 15. Мультиселект и комбобокс ---------------------------- */
+.rs-combo { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-align-items: center; -ms-flex-align: center; align-items: center; min-height: 32px; padding: 4px 8px; border: 1px solid #83868e; border-radius: 6px; background: #ffffff; }
+.rs-combo > * + * { margin-left: 5px; }
+.rs-combo:focus-within { border-color: #7fa4ea; box-shadow: 0 0 0 3px #dae9ff; }
+.rs-token { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 22px; padding: 0 4px 0 8px; border-radius: 4px; background: #eef0f4; font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; white-space: nowrap; }
+.rs-token > * + * { margin-left: 6px; }
+.rs-token__x { color: #686c74; cursor: pointer; padding: 0 3px; }
+.rs-token__x:hover { color: #1c1f25; }
+.rs-menu { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; box-shadow: 0 8px 24px -10px rgba(20, 22, 35, 0.22); padding: 4px; min-width: 200px; }
+.rs-menu__item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 0 9px; border-radius: 4px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }
+.rs-menu__item > * + * { margin-left: 9px; }
+.rs-menu__item:hover, .rs-menu__item.is-focus { background: #f8f9fc; }
+.rs-menu__item.is-on { color: #284e99; font-weight: 500; }
+.rs-menu__sep { height: 1px; background: #edeef2; margin: 4px 0; }
+.rs-menu__hint { margin-left: auto; color: #686c74; font-size: 11.5px; }
+
+/* --- 16. Инлайн-редактирование ------------------------------- */
+.rs-cell-edit { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; min-height: 24px; margin: -3px -7px; padding: 3px 7px; border: 1px solid transparent; border-radius: 4px; cursor: text; }
+.rs-cell-edit > * + * { margin-left: 6px; }
+.rs-cell-edit:hover { border-color: #dfe1e7; background: #ffffff; }
+.rs-cell-edit.is-editing { border-color: #7fa4ea; box-shadow: 0 0 0 3px #dae9ff; background: #ffffff; }
+.rs-cell-edit.is-dirty { border-color: #d49838; background: #fff1ce; }
+.rs-cell-edit__pen { opacity: 0; color: #686c74; font-size: 13px; }
+.rs-cell-edit:hover .rs-cell-edit__pen { opacity: 1; }
+
+/* --- 17. Дерево ---------------------------------------------- */
+.rs-tree__row { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 8px 10px; border-radius: 4px; font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; }
+.rs-tree__row > * + * { margin-left: 9px; }
+.rs-tree__row:hover { background: #f8f9fc; }
+.rs-tree__row.is-on { background: #eff6ff; color: #284e99; }
+.rs-tree__toggle { width: 16px; color: #686c74; -webkit-flex: none; -ms-flex: none; flex: none; text-align: center; }
+.rs-tree__kids { margin-left: 17px; padding-left: 13px; border-left: 1px solid #edeef2; }
+
+/* --- 18. Файлы ------------------------------------------------ */
+.rs-drop { border: 1px dashed #83868e; border-radius: 6px; background: #f8f9fc; padding: 24px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; text-align: center; }
+.rs-drop > * + * { margin-top: 7px; }
+.rs-drop.is-over { border-color: #3f6bbf; background: #eff6ff; }
+.rs-file { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 10px 12px; border: 1px solid #dfe1e7; border-radius: 6px; background: #ffffff; }
+.rs-file > * + * { margin-left: 11px; }
+.rs-file__icon { width: 30px; height: 34px; border-radius: 3px; border: 1px solid #dfe1e7; background: #f8f9fc; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: flex-end; -ms-flex-align: end; align-items: flex-end; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; padding-bottom: 4px; font: 500 9px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.04em; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-file__name { font: 400 12.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-file__meta { font: 400 11.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+
+/* --- 19. Канбан ----------------------------------------------- */
+.rs-board { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: flex-start; -ms-flex-align: start; align-items: flex-start; }
+.rs-board > * + * { margin-left: 12px; }
+.rs-board__col { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-width: 0; background: #f8f9fc; border: 1px solid #edeef2; border-radius: 6px; padding: 10px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-board__col > * + * { margin-top: 8px; }
+.rs-board__head { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 2px 2px 4px; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.07em; }
+.rs-board__head > * + * { margin-left: 8px; }
+.rs-board__count { margin-left: auto; color: #686c74; letter-spacing: 0; }
+.rs-board__card { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; padding: 11px 12px; box-shadow: 0 1px 2px rgba(20, 22, 35, 0.05); cursor: -webkit-grab; cursor: grab; }
+.rs-board__card:hover { border-color: #ced1d8; }
+.rs-board__ghost { border: 1px dashed #7fa4ea; background: #eff6ff; border-radius: 6px; height: 62px; }
+
+/* --- 20. Лента событий ---------------------------------------- */
+.rs-timeline { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-timeline__item { display: -ms-flexbox; display: -webkit-flex; display: flex; padding: 0 0 16px; }
+.rs-timeline__when { font: 400 11.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-align: right; padding-top: 2px; }
+.rs-timeline__rail { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; }
+.rs-timeline__dot { width: 9px; height: 9px; border-radius: 50%; background: #ffffff; border: 2px solid #3f6bbf; margin-top: 4px; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-timeline__dot--muted { border-color: #ced1d8; }
+.rs-timeline__line { -webkit-flex: 1; -ms-flex: 1; flex: 1; width: 1px; background: #edeef2; margin: 4px 0 -14px; }
+.rs-timeline__body { font: 400 12.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; padding-bottom: 2px; }
+
+/* --- 21. Подсказка клавиши ------------------------------------ */
+.rs-kbd { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 19px; padding: 0 5px; border: 1px solid #dfe1e7; border-bottom-width: 2px; border-radius: 4px; background: #f8f9fc; font: 500 10.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+
+/* --- 22. Баннеры ---------------------------------------------- */
+.rs-alert { display: -webkit-flex; display: -ms-flexbox; display: flex; padding: 12px 14px; border: 1px solid #dfe1e7; border-radius: 6px; background: #f8f9fc; }
+.rs-alert > * + * { margin-left: 11px; }
+.rs-alert__mark { width: 3px; border-radius: 2px; background: #686c74; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-alert__title { font: 500 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-alert__text { font: 400 11.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; margin-top: 3px; }
+.rs-alert--ok { background: #d9fae3; border-color: #dfe1e7; }
+.rs-alert--ok .rs-alert__mark { background: #249057; }
+.rs-alert--warn { background: #fff1ce; border-color: #dfe1e7; }
+.rs-alert--warn .rs-alert__mark { background: #d49838; }
+.rs-alert--bad { background: #ffe9e6; border-color: #dfe1e7; }
+.rs-alert--bad .rs-alert__mark { background: #c04442; }
+.rs-alert--info { background: #e4f1ff; border-color: #dfe1e7; }
+.rs-alert--info .rs-alert__mark { background: #3f6bbf; }
+
+/* --- 23. Прочее ----------------------------------------------- */
+.rs-avatar { width: 28px; height: 28px; border-radius: 6px; background: #eef0f4; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; font: 600 10.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-avatar--round { border-radius: 50%; }
+.rs-stack { display: -webkit-flex; display: -ms-flexbox; display: flex; }
+.rs-stack .rs-avatar { margin-left: -5px; box-shadow: 0 0 0 2px #ffffff; padding-right: 2px; }
+.rs-stack .rs-avatar:first-child { margin-left: 0; }
+.rs-kv { display: block; overflow: hidden; font: 400 12.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+.rs-kv dt { color: #656971; margin: 0; }
+.rs-kv dd { color: #1c1f25; margin: 0; }
+
+/* --- 24. Мобильный контур ------------------------------------- */
+/* Включается на контейнере: data-density="mobile". Те же токены,
+   другие значения: крупнее текст, радиусы 16, зоны нажатия 44. */
+.rs-m-card { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 16px; padding: 15px 16px; }
+.rs-m-card__foot { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; margin-top: 14px; padding-top: 13px; border-top: 1px solid #edeef2; }
+.rs-m-card__foot > * + * { margin-left: 16px; }
+.rs-m-nav { display: -ms-flexbox; display: -webkit-flex; display: flex; background: #ffffff; border-top: 1px solid #edeef2; padding: 9px 12px 22px; }
+.rs-m-nav__item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; min-height: 44px; font: 400 12px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-m-nav__item > * + * { margin-top: 5px; }
+.rs-m-nav__item.is-on { color: #3f6bbf; font-weight: 500; }
+.rs-sheet { background: #ffffff; border-radius: 24px 24px 0 0; padding: 10px 18px 26px; box-shadow: 0 20px 50px -22px rgba(20, 22, 35, 0.45); }
+.rs-sheet__grip { width: 38px; height: 4px; border-radius: 2px; background: #dfe1e7; margin: 0 auto 16px; }
+.rs-m-scroller { display: -webkit-flex; display: -ms-flexbox; display: flex; overflow-x: auto; scrollbar-width: none; }
+.rs-m-scroller > * + * { margin-left: 8px; }
+.rs-m-scroller::-webkit-scrollbar { display: none; }
+.rs-m-chip { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 38px; padding: 0 15px; border-radius: 12px; border: 1px solid #dfe1e7; background: #ffffff; font: 400 13.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-m-chip.is-on { background: #3f6bbf; border-color: transparent; color: #ffffff; font-weight: 500; }
+.rs-m-action { height: 52px; border-radius: 15px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; background: #3f6bbf; color: #ffffff; font: 500 15px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; border: 0; width: 100%; }
+.rs-m-action > * + * { margin-left: 8px; }
+
+/* --- 25. Системные состояния страниц --------------------------- */
+/* 403/404/500, обслуживание, первый запуск. Одна разметка, разный тон. */
+.rs-state { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; text-align: center; max-width: 420px; margin: 0 auto; padding: 40px 20px; }
+.rs-state > * + * { margin-top: 9px; }
+/* Значок не в рамке: иконка живёт в строке кода, а не отдельным блоком —
+   пустая страница и без того привлекает внимание, подложка её только утяжеляет. */
+.rs-state__code { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; text-transform: uppercase; letter-spacing: 0.07em; }
+.rs-state__code > * + * { margin-left: 7px; }
+.rs-state__mark { font-size: 15px; color: #686c74; }
+.rs-state__mark--warn { color: #d49838; }
+.rs-state__mark--bad { color: #c04442; }
+.rs-state__mark--info { color: #3f6bbf; }
+.rs-state__title { font: 600 15.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
+.rs-state__text { font: 400 12.5px / 1.55 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
+.rs-state__actions { display: -webkit-flex; display: -ms-flexbox; display: flex; margin-top: 6px; }
+.rs-state__actions > * + * { margin-left: 8px; }
+.rs-state__tech { margin-top: 14px; padding-top: 12px; border-top: 1px solid #edeef2; width: 100%; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; font: 400 11.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; }
+.rs-state__tech > * + * { margin-left: 14px; }
+
+/* --- 26. Планшет 768–1024 -------------------------------------- */
+/* Сайдбар становится рельсом, таблица скроллится с залипающей первой колонкой,
+   фильтры собираются под одну кнопку. Атрибут ставит приложение, а не медиазапрос,
+   чтобы то же работало в узкой панели на большом экране. */
+.rs-shell[data-viewport='tablet'] .rs-shell__side { width: 60px; }
+.rs-shell[data-viewport='tablet'] .rs-shell__content { padding: 16px; }
+.rs-rail { width: 60px; -webkit-flex: none; -ms-flex: none; flex: none; background: #ffffff; border-right: 1px solid #edeef2; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 12px 0; }
+.rs-rail > * + * { margin-top: 4px; }
+.rs-rail__item { width: 40px; height: 40px; border-radius: 6px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; color: #656971; font-size: 20px; cursor: pointer; }
+.rs-rail__item:hover { background: #f8f9fc; color: #1c1f25; }
+.rs-rail__item.is-on { background: #eff6ff; color: #3f6bbf; }
+[data-theme='dark'] .rs-rail__item.is-on { background: #eff6ff; color: #2c56a8; }
+
+.rs-table-scroll { overflow-x: auto; }
+.rs-table--sticky th:first-child, .rs-table--sticky td:first-child { position: -webkit-sticky; position: sticky; left: 0; z-index: 1; background: #ffffff; }
+.rs-table--sticky th:first-child { background: #f8f9fc; z-index: 2; }
+.rs-table--sticky th:first-child::after, .rs-table--sticky td:first-child::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px; background: #dfe1e7; }
+.rs-table--sticky tbody tr:hover td:first-child { background: #f8f9fc; }
+
+@media (max-width: 1024px) {
+  .rs-hide-tablet { display: none !important; }
+}
+@media (max-width: 768px) {
+  .rs-hide-mobile { display: none !important; }
+}
+
+/* --- 27. Правило одного экрана --------------------------------- */
+/* Админка — приложение, а не страница: высота равна окну, скроллится
+   только рабочая область, шапка и подвал приклеены. Страница целиком
+   не листается никогда. */
+.rs-app { height: 100vh; display: -webkit-flex; display: -ms-flexbox; display: flex; overflow: hidden; }
+.rs-app__main { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-width: 0; min-height: 0; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+.rs-app__bar { -webkit-flex: none; -ms-flex: none; flex: none; }
+.rs-pane { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-height: 0; overflow: auto; }
+.rs-pane--fixed { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-height: 0; overflow: hidden; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+
+/* --- 28. Свои полосы прокрутки таблицы ------------------------- */
+/* Широкая таблица получает две полосы: над шапкой и под последней строкой.
+   Верхняя нужна, чтобы не уезжать в конец списка ради прокрутки вправо. */
+.rs-xscroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+.rs-xscroll::-webkit-scrollbar { display: none; }
+.rs-xbar { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 7px 14px; background: #ffffff; }
+.rs-xbar > * + * { margin-left: 10px; }
+.rs-xbar--top { border-bottom: 1px solid #edeef2; }
+.rs-xbar--bottom { border-top: 1px solid #edeef2; }
+.rs-xbar__track { position: relative; -webkit-flex: 1; -ms-flex: 1; flex: 1; height: 6px; border-radius: 3px; background: #eef0f4; cursor: pointer; }
+.rs-xbar__thumb { position: absolute; top: 0; height: 6px; border-radius: 3px; background: #83868e; -webkit-transition: background 180ms cubic-bezier(0.4, 0, 0.2, 1); transition: background 180ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-xbar__track:hover .rs-xbar__thumb { background: #686c74; }
+.rs-xbar__thumb:active { background: #3f6bbf; }
+.rs-xbar__label { -webkit-flex: none; -ms-flex: none; flex: none; font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; white-space: nowrap; }
+
+
+/* ============================================================
+   24. Движение
+   Одна идея: всё входящее долго тормозит в конце (easeOutQuint),
+   всё уходящее — коротко разгоняется. Поэтому появление читается
+   как «положили на стол», а не как «дёрнули».
+   ============================================================ */
+
+@-webkit-keyframes rs-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes rs-fade { from { opacity: 0; } to { opacity: 1; } }
+@-webkit-keyframes rs-rise {
+  from { opacity: 0; -webkit-transform: translate3d(0, 10px, 0) scale(0.985); transform: translate3d(0, 10px, 0) scale(0.985); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@keyframes rs-rise {
+  from { opacity: 0; -webkit-transform: translate3d(0, 10px, 0) scale(0.985); transform: translate3d(0, 10px, 0) scale(0.985); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@-webkit-keyframes rs-drop {
+  from { opacity: 0; -webkit-transform: translate3d(0, -6px, 0) scale(0.97); transform: translate3d(0, -6px, 0) scale(0.97); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@keyframes rs-drop {
+  from { opacity: 0; -webkit-transform: translate3d(0, -6px, 0) scale(0.97); transform: translate3d(0, -6px, 0) scale(0.97); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@-webkit-keyframes rs-pop {
+  from { opacity: 0; -webkit-transform: translate3d(0, 8px, 0) scale(0.96); transform: translate3d(0, 8px, 0) scale(0.96); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@keyframes rs-pop {
+  from { opacity: 0; -webkit-transform: translate3d(0, 8px, 0) scale(0.96); transform: translate3d(0, 8px, 0) scale(0.96); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@-webkit-keyframes rs-slide-right {
+  from { opacity: 0; -webkit-transform: translate3d(36px, 0, 0) scale(0.97); transform: translate3d(36px, 0, 0) scale(0.97); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@keyframes rs-slide-right {
+  from { opacity: 0; -webkit-transform: translate3d(36px, 0, 0) scale(0.97); transform: translate3d(36px, 0, 0) scale(0.97); }
+  to { opacity: 1; -webkit-transform: none; transform: none; }
+}
+@-webkit-keyframes rs-panel-in { from { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } to { -webkit-transform: none; transform: none; } }
+@keyframes rs-panel-in { from { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } to { -webkit-transform: none; transform: none; } }
+
+/* Уход: та же геометрия вдвое короче и по разгоняющейся кривой.
+   Возвращаться элемент должен быстрее, чем приходил, иначе закрытие
+   ощущается как задержка интерфейса. */
+@-webkit-keyframes rs-fade-out { to { opacity: 0; } }
+@keyframes rs-fade-out { to { opacity: 0; } }
+@-webkit-keyframes rs-rise-out { to { opacity: 0; -webkit-transform: translate3d(0, 6px, 0) scale(0.99); transform: translate3d(0, 6px, 0) scale(0.99); } }
+@keyframes rs-rise-out { to { opacity: 0; -webkit-transform: translate3d(0, 6px, 0) scale(0.99); transform: translate3d(0, 6px, 0) scale(0.99); } }
+@-webkit-keyframes rs-drop-out { to { opacity: 0; -webkit-transform: translate3d(0, -5px, 0) scale(0.98); transform: translate3d(0, -5px, 0) scale(0.98); } }
+@keyframes rs-drop-out { to { opacity: 0; -webkit-transform: translate3d(0, -5px, 0) scale(0.98); transform: translate3d(0, -5px, 0) scale(0.98); } }
+@-webkit-keyframes rs-pop-out { to { opacity: 0; -webkit-transform: translate3d(0, 5px, 0) scale(0.97); transform: translate3d(0, 5px, 0) scale(0.97); } }
+@keyframes rs-pop-out { to { opacity: 0; -webkit-transform: translate3d(0, 5px, 0) scale(0.97); transform: translate3d(0, 5px, 0) scale(0.97); } }
+@-webkit-keyframes rs-slide-right-out { to { opacity: 0; -webkit-transform: translate3d(28px, 0, 0) scale(0.98); transform: translate3d(28px, 0, 0) scale(0.98); } }
+@keyframes rs-slide-right-out { to { opacity: 0; -webkit-transform: translate3d(28px, 0, 0) scale(0.98); transform: translate3d(28px, 0, 0) scale(0.98); } }
+@-webkit-keyframes rs-panel-out { to { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } }
+@keyframes rs-panel-out { to { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } }
+@-webkit-keyframes rs-bar { from { -webkit-transform: scaleY(0.02); transform: scaleY(0.02); } to { -webkit-transform: scaleY(1); transform: scaleY(1); } }
+@keyframes rs-bar { from { -webkit-transform: scaleY(0.02); transform: scaleY(0.02); } to { -webkit-transform: scaleY(1); transform: scaleY(1); } }
+@-webkit-keyframes rs-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.28; } }
+@keyframes rs-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.28; } }
+@-webkit-keyframes rs-track { 0% { -webkit-transform: translateX(-70%); transform: translateX(-70%); } 100% { -webkit-transform: translateX(280%); transform: translateX(280%); } }
+@keyframes rs-track { 0% { -webkit-transform: translateX(-70%); transform: translateX(-70%); } 100% { -webkit-transform: translateX(280%); transform: translateX(280%); } }
+@-webkit-keyframes rs-nudge {
+  0% { -webkit-transform: none; transform: none; } 18% { -webkit-transform: translateX(-4px); transform: translateX(-4px); } 42% { -webkit-transform: translateX(3px); transform: translateX(3px); }
+  68% { -webkit-transform: translateX(-2px); transform: translateX(-2px); } 100% { -webkit-transform: none; transform: none; }
+}
+@keyframes rs-nudge {
+  0% { -webkit-transform: none; transform: none; } 18% { -webkit-transform: translateX(-4px); transform: translateX(-4px); } 42% { -webkit-transform: translateX(3px); transform: translateX(3px); }
+  68% { -webkit-transform: translateX(-2px); transform: translateX(-2px); } 100% { -webkit-transform: none; transform: none; }
+}
+
+/* Утилиты входа */
+.rs-in { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-in--fade { -webkit-animation-name: rs-fade; animation-name: rs-fade; }
+.rs-in--drop { -webkit-animation-name: rs-drop; animation-name: rs-drop; -webkit-transform-origin: top center; transform-origin: top center; }
+.rs-in--pop { -webkit-animation-name: rs-pop; animation-name: rs-pop; }
+.rs-in--right { -webkit-animation-name: rs-slide-right; animation-name: rs-slide-right; }
+.rs-in--slow { -webkit-animation-duration: 380ms; animation-duration: 380ms; }
+
+/* Утилиты выхода. Вешаются за --rs-dur-out до размонтирования. */
+.rs-out { -webkit-animation: rs-rise-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-rise-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
+.rs-out--fade { -webkit-animation-name: rs-fade-out; animation-name: rs-fade-out; }
+.rs-out--drop { -webkit-animation-name: rs-drop-out; animation-name: rs-drop-out; }
+.rs-out--pop { -webkit-animation-name: rs-pop-out; animation-name: rs-pop-out; }
+.rs-out--right { -webkit-animation-name: rs-slide-right-out; animation-name: rs-slide-right-out; }
+.rs-out--panel { -webkit-animation-name: rs-panel-out; animation-name: rs-panel-out; -webkit-animation-duration: 240ms; animation-duration: 240ms; }
+
+/* Лесенка: шаг 45 мс, потолок на девятом элементе */
+.rs-stagger > * { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-stagger > *:nth-child(2) { -webkit-animation-delay: 45ms; animation-delay: 45ms; }
+.rs-stagger > *:nth-child(3) { -webkit-animation-delay: 90ms; animation-delay: 90ms; }
+.rs-stagger > *:nth-child(4) { -webkit-animation-delay: 135ms; animation-delay: 135ms; }
+.rs-stagger > *:nth-child(5) { -webkit-animation-delay: 180ms; animation-delay: 180ms; }
+.rs-stagger > *:nth-child(6) { -webkit-animation-delay: 225ms; animation-delay: 225ms; }
+.rs-stagger > *:nth-child(7) { -webkit-animation-delay: 270ms; animation-delay: 270ms; }
+.rs-stagger > *:nth-child(8) { -webkit-animation-delay: 315ms; animation-delay: 315ms; }
+.rs-stagger > *:nth-child(n + 9) { -webkit-animation-delay: 360ms; animation-delay: 360ms; }
+
+/* Слои появляются сами. Подложка идёт первой, содержимое — на 40 мс позже:
+   глаз успевает понять, что фон ушёл на второй план. */
+.rs-backdrop { -webkit-animation: rs-fade 180ms linear both; animation: rs-fade 180ms linear both; }
+.rs-toast { -webkit-animation: rs-slide-right 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-slide-right 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-dialog { -webkit-animation: rs-pop 260ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both; animation: rs-pop 260ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both; }
+.rs-drawer { -webkit-animation: rs-panel-in 440ms cubic-bezier(0.16, 1, 0.3, 1) both; animation: rs-panel-in 440ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.rs-popover, .rs-menu { -webkit-animation: rs-drop 180ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-drop 180ms cubic-bezier(0.22, 1, 0.36, 1) both; -webkit-transform-origin: top center; transform-origin: top center; }
+.rs-tooltip { -webkit-animation: rs-drop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-drop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Закрытие: класс is-out перебивает анимацию появления */
+.rs-backdrop.is-out { -webkit-animation: rs-fade-out 160ms linear both; animation: rs-fade-out 160ms linear both; }
+.rs-toast.is-out { -webkit-animation: rs-slide-right-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-slide-right-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
+.rs-dialog.is-out { -webkit-animation: rs-pop-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-pop-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
+.rs-drawer.is-out { -webkit-animation: rs-panel-out 240ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-panel-out 240ms cubic-bezier(0.55, 0, 1, 0.45) both; }
+.rs-popover.is-out, .rs-menu.is-out { -webkit-animation: rs-drop-out 120ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-drop-out 120ms cubic-bezier(0.55, 0, 1, 0.45) both; }
+
+/* Состояния. Вход в состояние быстрее выхода — курсор ощущается «липким». */
+.rs-nav-item, .rs-menu__item, .rs-tab, .rs-chip, .rs-cal__day, .rs-tree__row,
+.rs-cell-edit, .rs-seg__btn, .rs-file, .rs-board__card, .rs-table tbody tr td {
+  -webkit-transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rs-nav-item:hover, .rs-menu__item:hover, .rs-chip:hover, .rs-cal__day:hover,
+.rs-tree__row:hover, .rs-board__card:hover, .rs-table tbody tr:hover td {
+  -webkit-transition-duration: 120ms;
+          transition-duration: 120ms;
+}
+.rs-btn { -webkit-transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), color 120ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 120ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), color 120ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 120ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), color 120ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 120ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), color 120ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1), transform 120ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 120ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-btn:active, .rs-chip:active, .rs-seg__btn:active { -webkit-transform: scale(0.985); transform: scale(0.985); }
+.rs-meter__fill { -webkit-transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1); transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1); }
+.rs-step__dot, .rs-step__line { -webkit-transition: background-color 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms cubic-bezier(0.22, 1, 0.36, 1), color 260ms cubic-bezier(0.22, 1, 0.36, 1); transition: background-color 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms cubic-bezier(0.22, 1, 0.36, 1), color 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.rs-check, .rs-radio { -webkit-transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-radio.is-on::after { -webkit-animation: rs-pop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-pop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-switch { -webkit-transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1); }
+.rs-switch::after { -webkit-transition: -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); }
+.rs-badge { -webkit-transition: background-color 260ms cubic-bezier(0.4, 0, 0.2, 1), color 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 260ms cubic-bezier(0.4, 0, 0.2, 1), color 260ms cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Бесконечное — только для живых данных */
+.rs-live { -webkit-animation: rs-pulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation: rs-pulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.rs-progress { height: 2px; background: #eef0f4; overflow: hidden; border-radius: 1px; }
+.rs-progress__bar { height: 2px; width: 32%; border-radius: 1px; background: #3f6bbf; -webkit-animation: rs-track 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation: rs-track 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.rs-skeleton::after { -webkit-animation-duration: 1.6s; animation-duration: 1.6s; }
+
+/* Ошибка формы: затухающий толчок, один раз при отправке */
+.rs-shake { -webkit-animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* Столбцы графика вырастают снизу */
+.rs-grow { -webkit-transform-origin: bottom; transform-origin: bottom; -webkit-animation: rs-bar 380ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-bar 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Демонстрация: проигрывается при наведении на карточку целиком */
+.rs-demo__stage { position: relative; overflow: hidden; }
+.rs-demo:hover .rs-demo__obj { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-demo-stagger-card:hover .rs-demo-stagger > * { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(2) { -webkit-animation-delay: 45ms; animation-delay: 45ms; }
+.rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(3) { -webkit-animation-delay: 90ms; animation-delay: 90ms; }
+.rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(4) { -webkit-animation-delay: 135ms; animation-delay: 135ms; }
+.rs-demo-shake:hover .rs-input { -webkit-animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+/* Раскладки, которым в IE нужен явный размер: grid их больше не расставляет. */
+.rs-kv dt { float: left; clear: left; width: 150px; padding-bottom: 10px; }
+.rs-kv dd { margin-left: 166px; padding-bottom: 10px; }
+.rs-cal__grid > * { display: inline-block; width: 14.28%; vertical-align: top; }
+.rs-m-nav > * { -ms-flex: 1 1 25%; -webkit-flex: 1 1 25%; flex: 1 1 25%; }
+.rs-timeline__when { -ms-flex: none; -webkit-flex: none; flex: none; width: 132px; }
+.rs-timeline__rail { -ms-flex: none; -webkit-flex: none; flex: none; width: 16px; }
+.rs-timeline__body { -ms-flex: 1 1 auto; -webkit-flex: 1 1 auto; flex: 1 1 auto; }

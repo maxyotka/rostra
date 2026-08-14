@@ -20,6 +20,7 @@ jobs:
       - run: npm run check:tokens
       - run: npm run check:contrast
       - run: npm run check:support
+      - run: npm run build:legacy
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
