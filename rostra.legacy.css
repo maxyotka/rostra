@@ -1,58 +1,59 @@
 /* ============================================================
-   rostra.legacy.css — сборка для браузеров без кастомных свойств.
-   Тема: light. Плотность: medium. СГЕНЕРИРОВАНО, не править руками.
-   Пересборка: node scripts/build-legacy.mjs --theme=light --density=medium
+   rostra.legacy.css — the build for browsers without custom properties.
+   Theme: light. Density: medium. GENERATED, do not edit by hand.
+   Rebuild with: node scripts/build-legacy.mjs --theme=light --density=medium
 
-   Отличия от rostra.css:
-   — значения токенов подставлены, поэтому тема и плотность здесь
-     фиксированы: переключение на лету требует подмены файла;
-   — gap заменён отступами соседних элементов;
-   — grid заменён flex и float;
-   — oklch, color-mix, dvh, :has() и :focus-visible убраны вместе с
-     правилами, которые старый браузер всё равно не применил бы.
+   Differences from rostra.css:
+   — token values are inlined, so theme and density are fixed here:
+     switching at runtime means swapping the file;
+   — gap is replaced with margins on adjacent elements;
+   — grid is replaced with flex and float;
+   — oklch, color-mix, dvh, :has() and :focus-visible are removed along with
+     the rules an old browser would not have applied anyway.
 
-   Подключать вместо rostra.css и только старым браузерам — см. README.
+   Load instead of rostra.css, and only for old browsers — see the README.
    ============================================================ */
 /* ============================================================
    rostra.css — v0.1.0
-   Ядро дизайн-системы Rostra: токены, темы, плотность, компоненты.
-   Фреймворк-независимо: подключите файл и используйте классы rs-*.
-   Тема: data-theme="light|dark|warm|contrast" на любом контейнере.
-   Плотность: data-density="compact|medium|roomy|mobile".
+   Core of the Rostra design system: tokens, themes, density, components.
+   Framework-independent: link the file and use the rs-* classes.
+   Theme: data-theme="light|dark|warm|contrast" on any container.
+   Density: data-density="compact|medium|roomy|mobile".
 
-   Шрифт не подключается отсюда: rostra.css не делает сетевых запросов.
-   Подключите fonts.css или свою локальную копию Golos Text — см. README.
+   No font is loaded from here: rostra.css makes no network requests.
+   Link fonts.css or your own local copy of Golos Text — see the README.
    ============================================================ */
 
-/* Плотность */
+/* Density */
 
-/* --- 2. База ------------------------------------------------- */
+/* --- 2. Base ------------------------------------------------- */
 .rs { font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; background: #f9fafd; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
 .rs *, .rs *::before, .rs *::after { -moz-box-sizing: border-box; box-sizing: border-box; }
 .rs a { color: #3f6bbf; text-decoration: none; }
 .rs a:hover { color: #2c56a8; text-decoration: underline; text-underline-offset: 2px; }
-/* Надзаголовок секции: капс + волосяная линия до конца блока.
-   Линия структурирует страницу; черта-«тире» слева убрана как декорация. */
+/* Section eyebrow: uppercase plus a hairline running to the end of the block.
+   The line gives the page its rhythm; a leading dash would be pure decoration. */
 .rs-eyebrow { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.07em; }
 .rs-eyebrow > * + * { margin-left: 10px; }
 .rs-eyebrow::after { content: ''; -webkit-flex: 1; -ms-flex: 1; flex: 1; height: 1px; background: #edeef2; margin-left: 10px; }
 .rs-eyebrow--sentence { text-transform: none; letter-spacing: 0; }
 .rs-eyebrow--bare::after { display: none; }
-/* Официальных вариантов три, у каждого своё место:
-   .rs-eyebrow        — секции страниц и библиотеки: линия задаёт ритм страницы;
-   .rs-eyebrow--tick  — внутри карточек и панелей, где линия спорила бы с границей;
-   .rs-eyebrow--tag   — над группой карточек: ярлык весомее, читается как раздел.
-   Четвёртого не вводим: больше вариантов — меньше системы. */
+/* Three official variants, each with its place:
+   .rs-eyebrow        — page and library sections: the line sets the page rhythm;
+   .rs-eyebrow--tick  — inside cards and panels, where a line fights the border;
+   .rs-eyebrow--tag   — above a group of cards: the label reads as a section.
+   There is no fourth: more variants mean less system. */
 .rs-eyebrow--tick { }
 .rs-eyebrow--tick > * + * { margin-left: 7px; }
 .rs-eyebrow--tick::before { content: ''; width: 10px; height: 2px; border-radius: 1px; background: #3f6bbf; -webkit-flex: none; -ms-flex: none; flex: none; margin-right: 7px; }
 .rs-eyebrow--tick::after { display: none; }
 .rs-eyebrow--tag > span:first-child { background: #eef0f4; border-radius: 4px; padding: 5px 8px; -webkit-flex: none; -ms-flex: none; flex: none; white-space: nowrap; }
-/* Капс разрешён ровно в двух местах: надзаголовок секции и код/аббревиатура.
-   Никогда — в кнопках, заголовках, предложениях и статусах длиннее слова. */
+/* Uppercase is allowed in exactly two places: the section eyebrow and a code
+   or abbreviation. Never in buttons, headings, sentences, or statuses longer
+   than a single word. */
 .rs-caps { text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; font-size: 11.5px; }
 .rs-code { text-transform: uppercase; letter-spacing: 0.02em; color: #686c74; }
-/* Имя класса или свойства — как в коде, без капса */
+/* A class or property name reads as code, so no uppercase */
 .rs-api { text-transform: none; letter-spacing: 0; color: #656971; background: #f8f9fc; border: 1px solid #edeef2; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
 .rs-title { font: 600 20px / 1.25 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; margin: 0; }
 .rs-section-title { font: 600 15.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 0; }
@@ -60,7 +61,7 @@
 .rs-muted { color: #656971; }
 .rs-faint { color: #686c74; }
 
-/* --- 3. Кнопки ----------------------------------------------- */
+/* --- 3. Buttons -------------------------------------------- */
 .rs-btn {
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -74,11 +75,12 @@
 .rs-btn > * + * { margin-left: 6px; }
 .rs-btn:hover { background: #f8f9fc; border-color: #ced1d8; }
 .rs-btn:active { background: #eef0f4; }
-/* Кольцо фокуса в три шага ради браузеров без :focus-visible.
-   Первое правило — фоллбэк: кольцо на любом фокусе, включая клик мышью.
-   Второе гасит его там, где :focus-visible понимают (в старых браузерах
-   селектор невалиден и правило целиком игнорируется — фоллбэк уцелеет).
-   Третье возвращает кольцо клавиатуре. Порядок менять нельзя. */
+/* The focus ring takes three rules for the sake of browsers without
+   :focus-visible. The first is the fallback: a ring on any focus, mouse
+   included. The second removes it where :focus-visible is understood — in
+   older browsers that selector is invalid, so the whole rule is skipped and
+   the fallback survives. The third gives the ring back to the keyboard.
+   The order must not change. */
 .rs-btn:focus { outline: none; box-shadow: 0 0 0 3px #dae9ff; }
 .rs-btn[disabled], .rs-btn.is-disabled { opacity: 0.5; cursor: not-allowed; background: #f8f9fc; }
 .rs-btn--primary { background: #3f6bbf; border-color: transparent; color: #ffffff; }
@@ -91,8 +93,9 @@
 .rs-btn--sm { height: 28px; padding: 0 10px; font-size: 11.5px; }
 .rs-btn--icon { width: 32px; padding: 0; }
 .rs-btn.is-loading { color: transparent; position: relative; }
-/* Цвет спиннера идёт от фона кнопки, а не от её текста: текст в загрузке
-   прозрачный. На светлой кнопке белый спиннер был бы не виден вовсе. */
+/* The spinner colour follows the button surface, not its text: text is
+   transparent while loading. A white spinner on a light button would be
+   invisible. */
 .rs-btn.is-loading::after {
   content: ''; position: absolute; width: 13px; height: 13px; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent; color: #1c1f25;
@@ -103,7 +106,7 @@
 @-webkit-keyframes rs-spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 @keyframes rs-spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 
-/* --- 4. Поля ------------------------------------------------- */
+/* --- 4. Fields --------------------------------------------- */
 .rs-field { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
 .rs-field > * + * { margin-top: 6px; }
 .rs-label { font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
@@ -135,20 +138,20 @@
 .rs-check.is-on, .rs-radio.is-on { background: #3f6bbf; border-color: #3f6bbf; color: #ffffff; }
 .rs-radio.is-on { background: #ffffff; border-color: #3f6bbf; }
 .rs-radio.is-on::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #3f6bbf; }
-/* Выключенный переключатель на белой карточке отличался от фона только
-   подложкой surface-3 — это ~1.1:1. Граница делает его видимым. */
+/* An unchecked switch on a white card differed from the background only by
+   its surface-3 fill — about 1.1:1. The border makes it visible. */
 .rs-switch { width: 32px; height: 18px; border-radius: 999px; background: #eef0f4; border: 1px solid #83868e; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 1px; -webkit-flex: none; -ms-flex: none; flex: none; -webkit-transition: background 260ms cubic-bezier(0.4, 0, 0.2, 1), border-color 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: background 260ms cubic-bezier(0.4, 0, 0.2, 1), border-color 260ms cubic-bezier(0.4, 0, 0.2, 1); }
 .rs-switch::after { content: ''; width: 14px; height: 14px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 2px rgba(20, 22, 35, 0.05); -webkit-transition: -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 260ms cubic-bezier(0.4, 0, 0.2, 1); }
 .rs-switch.is-on { background: #3f6bbf; border-color: #3f6bbf; }
 .rs-switch.is-on::after { -webkit-transform: translateX(14px); transform: translateX(14px); }
 
-/* Нативные контролы под визуалом системы.
-   Разметка: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
-   <span class="rs-check"></span><span>подпись</span></label>
-   Состояние держит сам input, поэтому доступность, формы и клавиатура
-   работают без единой строки js — .is-on нужен только там, где визуал
-   рисуется без input (например, ячейка таблицы).
-   Галочка рисуется рамкой, чтобы базовый чекбокс не тянул иконочный шрифт. */
+/* Native controls wearing the system's visuals.
+   Markup: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
+   <span class="rs-check"></span><span>label</span></label>
+   The input owns the state, so accessibility, forms and keyboard work without
+   a line of JavaScript — .is-on is only needed where the visual is drawn
+   without an input, a table cell for example.
+   The checkmark is drawn with borders so a basic checkbox pulls in no icon font. */
 .rs-choice { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; position: relative; font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }
 .rs-choice > * + * { margin-left: 9px; }
 .rs-choice__input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; pointer-events: none; }
@@ -167,12 +170,12 @@
 .rs-choice__input:focus + .rs-radio,
 .rs-choice__input:focus + .rs-switch { box-shadow: 0 0 0 3px #dae9ff; }
 
-/* --- 5. Поверхности ------------------------------------------ */
+/* --- 5. Surfaces ------------------------------------------- */
 .rs-card { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; }
 .rs-card__body { padding: 18px; }
 .rs-divider { height: 1px; background: #edeef2; border: 0; margin: 16px 0; }
 
-/* --- 6. Статусы --------------------------------------------- */
+/* --- 6. Status --------------------------------------------- */
 .rs-badge { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 22px; white-space: nowrap; padding: 0 8px; border-radius: 4px; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; background: #eef0f4; color: #656971; }
 .rs-badge > * + * { margin-left: 6px; }
 .rs-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; -webkit-flex: none; -ms-flex: none; flex: none; margin-right: 6px; }
@@ -186,7 +189,7 @@
 .rs-chip.is-on { border-color: #bcd2f9; background: #eff6ff; color: #284e99; font-weight: 500; }
 .rs-chip--add { border-style: dashed; color: #656971; }
 
-/* --- 7. Таблица --------------------------------------------- */
+/* --- 7. Table ---------------------------------------------- */
 .rs-table { width: 100%; border-collapse: collapse; font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; }
 .rs-table th { text-align: left; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; background: #f8f9fc; border-bottom: 1px solid #dfe1e7; white-space: nowrap; }
 .rs-table td { font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; padding: 12px 14px; border-bottom: 1px solid #edeef2; }
@@ -197,15 +200,16 @@
 .rs-table__group td { background: #f8f9fc; font-weight: 500; color: #1c1f25; }
 .rs-table-wrap { border: 1px solid #dfe1e7; border-radius: 6px; overflow: hidden; background: #ffffff; }
 
-/* --- 8. Навигация ------------------------------------------- */
+/* --- 8. Navigation ----------------------------------------- */
 .rs-tabs { display: -webkit-flex; display: -ms-flexbox; display: flex; border-bottom: 1px solid #dfe1e7; }
 .rs-tabs > * + * { margin-left: 20px; }
-/* Вкладка может быть и div, и button — у кнопки браузер рисует свой фон,
-   рамку и шрифт, поэтому сброс обязателен, иначе вкладки выглядят кнопками. */
+/* A tab may be a div or a button. For a button the browser paints its own
+   background, border and font, so the reset is mandatory — otherwise tabs
+   look like buttons. */
 .rs-tab { -moz-appearance: none; appearance: none; -webkit-appearance: none; background: none; border: 0; padding: 0 0 10px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; cursor: pointer; }
-/* Состояние приходит с двух сторон: .is-on ставит разметка вручную,
-   data-state — библиотека поведения в React-слое. Оба варианта равноправны,
-   иначе ядро оказалось бы привязано к одному способу применения. */
+/* State arrives from two directions: .is-on is set by hand-written markup,
+   data-state by the behaviour library in the React layer. Both are equal
+   citizens — otherwise the core would be tied to one way of using it. */
 .rs-tab.is-on,
 .rs-tab[data-state='active'] { color: #1c1f25; font-weight: 500; box-shadow: inset 0 -2px 0 #3f6bbf; }
 .rs-nav-item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 0 10px; border-radius: 6px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; cursor: pointer; }
@@ -219,9 +223,10 @@
 .rs-seg__btn { height: 28px; padding: 0 11px; border: 0; border-radius: -webkit-calc(6px - 2px); border-radius: calc(6px - 2px); background: transparent; color: #656971; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; }
 .rs-seg__btn.is-on { background: #ffffff; color: #1c1f25; font-weight: 500; box-shadow: 0 1px 2px rgba(20, 22, 35, 0.05); }
 
-/* --- 9. Обратная связь -------------------------------------- */
-/* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
-   висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
+/* --- 9. Feedback ------------------------------------------- */
+/* Geometry of floating layers. Their appearance is defined below; this is
+   only where they hang — without it every consumer would position dialogs
+   with inline styles. */
 .rs-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 40; background: rgba(20, 22, 35, 0.4); }
 .rs-layer { position: fixed; z-index: 41; }
 .rs-layer--center { top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); max-width: -webkit-calc(100vw - 2 * 20px); max-width: calc(100vw - 2 * 20px); max-height: -webkit-calc(100vh - 2 * 20px); max-height: calc(100vh - 2 * 20px); display: -webkit-flex; display: -ms-flexbox; display: flex; }
@@ -250,7 +255,7 @@
 @-webkit-keyframes rs-shimmer { from { -webkit-transform: translateX(-100%); transform: translateX(-100%); } to { -webkit-transform: translateX(100%); transform: translateX(100%); } }
 @keyframes rs-shimmer { from { -webkit-transform: translateX(-100%); transform: translateX(-100%); } to { -webkit-transform: translateX(100%); transform: translateX(100%); } }
 
-/* --- 10. Данные --------------------------------------------- */
+/* --- 10. Data ---------------------------------------------- */
 .rs-metric { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; padding: 13px 15px; }
 .rs-metric__label { font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
 .rs-metric__value { font: 600 21px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
@@ -266,7 +271,7 @@
 .rs-step__line { -webkit-flex: 1; -ms-flex: 1; flex: 1; height: 1px; background: #dfe1e7; margin: 0 12px; }
 .rs-step__line.is-done { background: #3f6bbf; }
 
-/* --- 11. Каркас --------------------------------------------- */
+/* --- 11. Shell --------------------------------------------- */
 .rs-shell { display: -webkit-flex; display: -ms-flexbox; display: flex; min-height: 100%; background: #f9fafd; }
 .rs-shell__side { -webkit-flex: none; -ms-flex: none; flex: none; width: 236px; background: #ffffff; border-right: 1px solid #edeef2; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
 .rs-shell__side[data-collapsed='true'] { width: 64px; }
@@ -275,7 +280,7 @@
 .rs-shell__topbar > * + * { margin-left: 14px; }
 .rs-shell__content { padding: 20px; }
 
-/* --- 12. Markdown ------------------------------------------- */
+/* --- 12. Markdown ------------------------------------------ */
 .rs-md { font: 400 13.5px / 1.6 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
 .rs-md h1 { font: 600 21px / 1.3 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 0 0 8px; }
 .rs-md h2 { font: 600 15.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 22px 0 10px; }
@@ -290,7 +295,7 @@
 .rs-md pre { background: #f8f9fc; border: 1px solid #dfe1e7; border-radius: 6px; padding: 13px 15px; font: 400 12.5px / 1.7 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: auto; }
 .rs-md hr { border: 0; height: 1px; background: #edeef2; margin: 22px 0; }
 
-/* --- 13. Утилиты и доступность ------------------------------ */
+/* --- 13. Utilities and accessibility ----------------------- */
 .rs-focusable:focus { outline: none; box-shadow: 0 0 0 3px #dae9ff; }
 .rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
@@ -302,7 +307,7 @@
   }
 }
 
-/* --- 14. Календарь и период ---------------------------------- */
+/* --- 14. Calendar and date range --------------------------- */
 .rs-cal { width: 246px; }
 .rs-cal__head { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 0 2px 10px; }
 .rs-cal__head > * + * { margin-left: 8px; }
@@ -318,7 +323,7 @@
 .rs-cal__day.is-sel:first-of-type { border-radius: 4px; }
 .rs-cal__day.is-off { color: #686c74; opacity: 0.45; cursor: not-allowed; }
 
-/* --- 15. Мультиселект и комбобокс ---------------------------- */
+/* --- 15. Multiselect and combobox -------------------------- */
 .rs-combo { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-align-items: center; -ms-flex-align: center; align-items: center; min-height: 32px; padding: 4px 8px; border: 1px solid #83868e; border-radius: 6px; background: #ffffff; }
 .rs-combo > * + * { margin-left: 5px; }
 .rs-combo:focus-within { border-color: #7fa4ea; box-shadow: 0 0 0 3px #dae9ff; }
@@ -329,15 +334,15 @@
 .rs-menu { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; box-shadow: 0 8px 24px -10px rgba(20, 22, 35, 0.22); padding: 4px; min-width: 200px; }
 .rs-menu__item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 0 9px; border-radius: 4px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }
 .rs-menu__item > * + * { margin-left: 9px; }
-/* is-focus — ручная разметка, data-highlighted — пункт, на который увели
-   клавишами: без него навигация стрелками не видна на экране. */
+/* is-focus for hand-written markup, data-highlighted for the item the
+   keyboard moved to — without it arrow navigation is invisible on screen. */
 .rs-menu__item:hover, .rs-menu__item.is-focus, .rs-menu__item[data-highlighted] { background: #f8f9fc; outline: none; }
 .rs-menu__item.is-on, .rs-menu__item[data-state='checked'] { color: #284e99; font-weight: 500; }
 .rs-menu__item.is-disabled, .rs-menu__item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
 .rs-menu__sep { height: 1px; background: #edeef2; margin: 4px 0; }
 .rs-menu__hint { margin-left: auto; color: #686c74; font-size: 11.5px; }
 
-/* --- 16. Инлайн-редактирование ------------------------------- */
+/* --- 16. Inline editing ------------------------------------ */
 .rs-cell-edit { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; min-height: 24px; margin: -3px -7px; padding: 3px 7px; border: 1px solid transparent; border-radius: 4px; cursor: text; }
 .rs-cell-edit > * + * { margin-left: 6px; }
 .rs-cell-edit:hover { border-color: #dfe1e7; background: #ffffff; }
@@ -346,7 +351,7 @@
 .rs-cell-edit__pen { opacity: 0; color: #686c74; font-size: 13px; }
 .rs-cell-edit:hover .rs-cell-edit__pen { opacity: 1; }
 
-/* --- 17. Дерево ---------------------------------------------- */
+/* --- 17. Tree ---------------------------------------------- */
 .rs-tree__row { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 8px 10px; border-radius: 4px; font: 400 12.5px / 1.4 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; }
 .rs-tree__row > * + * { margin-left: 9px; }
 .rs-tree__row:hover { background: #f8f9fc; }
@@ -354,7 +359,7 @@
 .rs-tree__toggle { width: 16px; color: #686c74; -webkit-flex: none; -ms-flex: none; flex: none; text-align: center; }
 .rs-tree__kids { margin-left: 17px; padding-left: 13px; border-left: 1px solid #edeef2; }
 
-/* --- 18. Файлы ------------------------------------------------ */
+/* --- 18. Files --------------------------------------------- */
 .rs-drop { border: 1px dashed #83868e; border-radius: 6px; background: #f8f9fc; padding: 24px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; text-align: center; }
 .rs-drop > * + * { margin-top: 7px; }
 .rs-drop.is-over { border-color: #3f6bbf; background: #eff6ff; }
@@ -364,7 +369,7 @@
 .rs-file__name { font: 400 12.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; }
 .rs-file__meta { font: 400 11.5px / 1.35 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
 
-/* --- 19. Канбан ----------------------------------------------- */
+/* --- 19. Board --------------------------------------------- */
 .rs-board { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: flex-start; -ms-flex-align: start; align-items: flex-start; }
 .rs-board > * + * { margin-left: 12px; }
 .rs-board__col { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-width: 0; background: #f8f9fc; border: 1px solid #edeef2; border-radius: 6px; padding: 10px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
@@ -376,7 +381,7 @@
 .rs-board__card:hover { border-color: #ced1d8; }
 .rs-board__ghost { border: 1px dashed #7fa4ea; background: #eff6ff; border-radius: 6px; height: 62px; }
 
-/* --- 20. Лента событий ---------------------------------------- */
+/* --- 20. Timeline ------------------------------------------ */
 .rs-timeline { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
 .rs-timeline__item { display: -ms-flexbox; display: -webkit-flex; display: flex; padding: 0 0 16px; }
 .rs-timeline__when { font: 400 11.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; text-align: right; padding-top: 2px; }
@@ -386,10 +391,10 @@
 .rs-timeline__line { -webkit-flex: 1; -ms-flex: 1; flex: 1; width: 1px; background: #edeef2; margin: 4px 0 -14px; }
 .rs-timeline__body { font: 400 12.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; padding-bottom: 2px; }
 
-/* --- 21. Подсказка клавиши ------------------------------------ */
+/* --- 21. Keyboard hint ------------------------------------- */
 .rs-kbd { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 19px; padding: 0 5px; border: 1px solid #dfe1e7; border-bottom-width: 2px; border-radius: 4px; background: #f8f9fc; font: 500 10.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; }
 
-/* --- 22. Баннеры ---------------------------------------------- */
+/* --- 22. Alerts -------------------------------------------- */
 .rs-alert { display: -webkit-flex; display: -ms-flexbox; display: flex; padding: 12px 14px; border: 1px solid #dfe1e7; border-radius: 6px; background: #f8f9fc; }
 .rs-alert > * + * { margin-left: 11px; }
 .rs-alert__mark { width: 3px; border-radius: 2px; background: #686c74; -webkit-flex: none; -ms-flex: none; flex: none; }
@@ -404,7 +409,7 @@
 .rs-alert--info { background: #e4f1ff; border-color: #dfe1e7; }
 .rs-alert--info .rs-alert__mark { background: #3f6bbf; }
 
-/* --- 23. Прочее ----------------------------------------------- */
+/* --- 23. Misc ---------------------------------------------- */
 .rs-avatar { width: 28px; height: 28px; border-radius: 6px; background: #eef0f4; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; font: 600 10.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #656971; -webkit-flex: none; -ms-flex: none; flex: none; }
 .rs-avatar--round { border-radius: 50%; }
 .rs-stack { display: -webkit-flex; display: -ms-flexbox; display: flex; }
@@ -414,9 +419,9 @@
 .rs-kv dt { color: #656971; margin: 0; }
 .rs-kv dd { color: #1c1f25; margin: 0; }
 
-/* --- 24. Мобильный контур ------------------------------------- */
-/* Включается на контейнере: data-density="mobile". Те же токены,
-   другие значения: крупнее текст, радиусы 16, зоны нажатия 44. */
+/* --- 24. Mobile shell -------------------------------------- */
+/* Enabled on the container: data-density="mobile". Same tokens, different
+   values: larger text, 16px radii, 44px touch targets. */
 .rs-m-card { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 16px; padding: 15px 16px; }
 .rs-m-card__foot { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; margin-top: 14px; padding-top: 13px; border-top: 1px solid #edeef2; }
 .rs-m-card__foot > * + * { margin-left: 16px; }
@@ -434,12 +439,13 @@
 .rs-m-action { height: 52px; border-radius: 15px; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; background: #3f6bbf; color: #ffffff; font: 500 15px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; border: 0; width: 100%; }
 .rs-m-action > * + * { margin-left: 8px; }
 
-/* --- 25. Системные состояния страниц --------------------------- */
-/* 403/404/500, обслуживание, первый запуск. Одна разметка, разный тон. */
+/* --- 25. System state pages -------------------------------- */
+/* 403/404/500, maintenance, first run. One markup, different tone. */
 .rs-state { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; text-align: center; max-width: 420px; margin: 0 auto; padding: 40px 20px; }
 .rs-state > * + * { margin-top: 9px; }
-/* Значок не в рамке: иконка живёт в строке кода, а не отдельным блоком —
-   пустая страница и без того привлекает внимание, подложка её только утяжеляет. */
+/* The mark has no frame: the icon lives inside the code line rather than in a
+   block of its own — an empty page already draws attention, and a backdrop
+   would only weigh it down. */
 .rs-state__code { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; font: 500 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; text-transform: uppercase; letter-spacing: 0.07em; }
 .rs-state__code > * + * { margin-left: 7px; }
 .rs-state__mark { font-size: 15px; color: #686c74; }
@@ -453,10 +459,11 @@
 .rs-state__tech { margin-top: 14px; padding-top: 12px; border-top: 1px solid #edeef2; width: 100%; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-justify-content: center; -ms-flex-pack: center; justify-content: center; font: 400 11.5px / 1.5 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #686c74; }
 .rs-state__tech > * + * { margin-left: 14px; }
 
-/* --- 26. Планшет 768–1024 -------------------------------------- */
-/* Сайдбар становится рельсом, таблица скроллится с залипающей первой колонкой,
-   фильтры собираются под одну кнопку. Атрибут ставит приложение, а не медиазапрос,
-   чтобы то же работало в узкой панели на большом экране. */
+/* --- 26. Tablet 768–1024 ----------------------------------- */
+/* The sidebar becomes a rail, the table scrolls with a pinned first column,
+   filters collapse behind one button. The application sets the attribute
+   rather than a media query, so the same layout works inside a narrow panel
+   on a large screen. */
 .rs-shell[data-viewport='tablet'] .rs-shell__side { width: 60px; }
 .rs-shell[data-viewport='tablet'] .rs-shell__content { padding: 16px; }
 .rs-rail { width: 60px; -webkit-flex: none; -ms-flex: none; flex: none; background: #ffffff; border-right: 1px solid #edeef2; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 12px 0; }
@@ -479,19 +486,20 @@
   .rs-hide-mobile { display: none !important; }
 }
 
-/* --- 27. Правило одного экрана --------------------------------- */
-/* Админка — приложение, а не страница: высота равна окну, скроллится
-   только рабочая область, шапка и подвал приклеены. Страница целиком
-   не листается никогда. */
+/* --- 27. One-screen rule ----------------------------------- */
+/* An admin panel is an application, not a page: its height equals the window,
+   only the working area scrolls, header and footer are pinned. The page as a
+   whole never scrolls. */
 .rs-app { height: 100vh; display: -webkit-flex; display: -ms-flexbox; display: flex; overflow: hidden; }
 .rs-app__main { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-width: 0; min-height: 0; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
 .rs-app__bar { -webkit-flex: none; -ms-flex: none; flex: none; }
 .rs-pane { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-height: 0; overflow: auto; }
 .rs-pane--fixed { -webkit-flex: 1; -ms-flex: 1; flex: 1; min-height: 0; overflow: hidden; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
 
-/* --- 28. Свои полосы прокрутки таблицы ------------------------- */
-/* Широкая таблица получает две полосы: над шапкой и под последней строкой.
-   Верхняя нужна, чтобы не уезжать в конец списка ради прокрутки вправо. */
+/* --- 28. Custom table scrollbars --------------------------- */
+/* A wide table gets two scrollbars: above the header and below the last row.
+   The top one exists so that scrolling right does not require travelling to
+   the end of the list first. */
 .rs-xscroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
 .rs-xscroll::-webkit-scrollbar { display: none; }
 .rs-xbar { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; padding: 7px 14px; background: #ffffff; }
@@ -506,10 +514,10 @@
 
 
 /* ============================================================
-   24. Движение
-   Одна идея: всё входящее долго тормозит в конце (easeOutQuint),
-   всё уходящее — коротко разгоняется. Поэтому появление читается
-   как «положили на стол», а не как «дёрнули».
+   24. Motion
+   One idea: everything entering decelerates for a long time at the end
+   (easeOutQuint), everything leaving accelerates briefly. That is why an
+   entrance reads as "placed on the table" rather than "yanked into view".
    ============================================================ */
 
 @-webkit-keyframes rs-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -550,9 +558,9 @@
 @-webkit-keyframes rs-panel-in { from { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } to { -webkit-transform: none; transform: none; } }
 @keyframes rs-panel-in { from { -webkit-transform: translate3d(101%, 0, 0); transform: translate3d(101%, 0, 0); } to { -webkit-transform: none; transform: none; } }
 
-/* Уход: та же геометрия вдвое короче и по разгоняющейся кривой.
-   Возвращаться элемент должен быстрее, чем приходил, иначе закрытие
-   ощущается как задержка интерфейса. */
+/* Exit: the same geometry at half the length, on an accelerating curve.
+   An element must leave faster than it arrived, otherwise closing feels
+   like interface lag. */
 @-webkit-keyframes rs-fade-out { to { opacity: 0; } }
 @keyframes rs-fade-out { to { opacity: 0; } }
 @-webkit-keyframes rs-rise-out { to { opacity: 0; -webkit-transform: translate3d(0, 6px, 0) scale(0.99); transform: translate3d(0, 6px, 0) scale(0.99); } }
@@ -580,7 +588,7 @@
   68% { -webkit-transform: translateX(-2px); transform: translateX(-2px); } 100% { -webkit-transform: none; transform: none; }
 }
 
-/* Утилиты входа */
+/* Entrance utilities */
 .rs-in { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .rs-in--fade { -webkit-animation-name: rs-fade; animation-name: rs-fade; }
 .rs-in--drop { -webkit-animation-name: rs-drop; animation-name: rs-drop; -webkit-transform-origin: top center; transform-origin: top center; }
@@ -588,7 +596,7 @@
 .rs-in--right { -webkit-animation-name: rs-slide-right; animation-name: rs-slide-right; }
 .rs-in--slow { -webkit-animation-duration: 380ms; animation-duration: 380ms; }
 
-/* Утилиты выхода. Вешаются за --rs-dur-out до размонтирования. */
+/* Exit utilities. Applied --rs-dur-out before unmounting. */
 .rs-out { -webkit-animation: rs-rise-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-rise-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
 .rs-out--fade { -webkit-animation-name: rs-fade-out; animation-name: rs-fade-out; }
 .rs-out--drop { -webkit-animation-name: rs-drop-out; animation-name: rs-drop-out; }
@@ -596,7 +604,7 @@
 .rs-out--right { -webkit-animation-name: rs-slide-right-out; animation-name: rs-slide-right-out; }
 .rs-out--panel { -webkit-animation-name: rs-panel-out; animation-name: rs-panel-out; -webkit-animation-duration: 240ms; animation-duration: 240ms; }
 
-/* Лесенка: шаг 45 мс, потолок на девятом элементе */
+/* Stagger: 45ms step, capped at the ninth child */
 .rs-stagger > * { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .rs-stagger > *:nth-child(2) { -webkit-animation-delay: 45ms; animation-delay: 45ms; }
 .rs-stagger > *:nth-child(3) { -webkit-animation-delay: 90ms; animation-delay: 90ms; }
@@ -607,8 +615,8 @@
 .rs-stagger > *:nth-child(8) { -webkit-animation-delay: 315ms; animation-delay: 315ms; }
 .rs-stagger > *:nth-child(n + 9) { -webkit-animation-delay: 360ms; animation-delay: 360ms; }
 
-/* Слои появляются сами. Подложка идёт первой, содержимое — на 40 мс позже:
-   глаз успевает понять, что фон ушёл на второй план. */
+/* Layers animate themselves. The backdrop goes first, the content 40ms later:
+   the eye has time to register that the background stepped back. */
 .rs-backdrop { -webkit-animation: rs-fade 180ms linear both; animation: rs-fade 180ms linear both; }
 .rs-toast { -webkit-animation: rs-slide-right 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-slide-right 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .rs-dialog { -webkit-animation: rs-pop 260ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both; animation: rs-pop 260ms cubic-bezier(0.22, 1, 0.36, 1) 40ms both; }
@@ -616,14 +624,14 @@
 .rs-popover, .rs-menu { -webkit-animation: rs-drop 180ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-drop 180ms cubic-bezier(0.22, 1, 0.36, 1) both; -webkit-transform-origin: top center; transform-origin: top center; }
 .rs-tooltip { -webkit-animation: rs-drop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-drop 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-/* Закрытие: класс is-out перебивает анимацию появления */
+/* Closing: the is-out class overrides the entrance animation */
 .rs-backdrop.is-out { -webkit-animation: rs-fade-out 160ms linear both; animation: rs-fade-out 160ms linear both; }
 .rs-toast.is-out { -webkit-animation: rs-slide-right-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-slide-right-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
 .rs-dialog.is-out { -webkit-animation: rs-pop-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-pop-out 160ms cubic-bezier(0.55, 0, 1, 0.45) both; }
 .rs-drawer.is-out { -webkit-animation: rs-panel-out 240ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-panel-out 240ms cubic-bezier(0.55, 0, 1, 0.45) both; }
 .rs-popover.is-out, .rs-menu.is-out { -webkit-animation: rs-drop-out 120ms cubic-bezier(0.55, 0, 1, 0.45) both; animation: rs-drop-out 120ms cubic-bezier(0.55, 0, 1, 0.45) both; }
 
-/* Состояния. Вход в состояние быстрее выхода — курсор ощущается «липким». */
+/* States. Entering a state is faster than leaving it, which makes the cursor feel sticky. */
 .rs-nav-item, .rs-menu__item, .rs-tab, .rs-chip, .rs-cal__day, .rs-tree__row,
 .rs-cell-edit, .rs-seg__btn, .rs-file, .rs-board__card, .rs-table tbody tr td {
   -webkit-transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -650,19 +658,19 @@
 .rs-switch::after { -webkit-transition: -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1); transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), -webkit-transform 180ms cubic-bezier(0.22, 1, 0.36, 1); }
 .rs-badge { -webkit-transition: background-color 260ms cubic-bezier(0.4, 0, 0.2, 1), color 260ms cubic-bezier(0.4, 0, 0.2, 1); transition: background-color 260ms cubic-bezier(0.4, 0, 0.2, 1), color 260ms cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* Бесконечное — только для живых данных */
+/* Infinite animation is only for live data */
 .rs-live { -webkit-animation: rs-pulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation: rs-pulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 .rs-progress { height: 2px; background: #eef0f4; overflow: hidden; border-radius: 1px; }
 .rs-progress__bar { height: 2px; width: 32%; border-radius: 1px; background: #3f6bbf; -webkit-animation: rs-track 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation: rs-track 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
 .rs-skeleton::after { -webkit-animation-duration: 1.6s; animation-duration: 1.6s; }
 
-/* Ошибка формы: затухающий толчок, один раз при отправке */
+/* Form error: a decaying nudge, once per submit */
 .rs-shake { -webkit-animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 
-/* Столбцы графика вырастают снизу */
+/* Chart bars grow from the bottom */
 .rs-grow { -webkit-transform-origin: bottom; transform-origin: bottom; -webkit-animation: rs-bar 380ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-bar 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-/* Демонстрация: проигрывается при наведении на карточку целиком */
+/* Demo: plays when the whole card is hovered */
 .rs-demo__stage { position: relative; overflow: hidden; }
 .rs-demo:hover .rs-demo__obj { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .rs-demo-stagger-card:hover .rs-demo-stagger > * { -webkit-animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; animation: rs-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -670,7 +678,7 @@
 .rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(3) { -webkit-animation-delay: 90ms; animation-delay: 90ms; }
 .rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(4) { -webkit-animation-delay: 135ms; animation-delay: 135ms; }
 .rs-demo-shake:hover .rs-input { -webkit-animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; animation: rs-nudge 380ms cubic-bezier(0.4, 0, 0.2, 1) both; }
-/* Раскладки, которым в IE нужен явный размер: grid их больше не расставляет. */
+/* Layouts that need an explicit size in IE, now that grid no longer places them. */
 .rs-kv dt { float: left; clear: left; width: 150px; padding-bottom: 10px; }
 .rs-kv dd { margin-left: 166px; padding-bottom: 10px; }
 .rs-cal__grid > * { display: inline-block; width: 14.28%; vertical-align: top; }

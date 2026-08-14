@@ -1,11 +1,12 @@
 /* ============================================================
-   fonts.css — необязательный слой: Golos Text с Google Fonts.
-   Вынесен из rostra.css, потому что @import внутри таблицы стилей
-   блокирует рендер, а в корпоративном контуре за файрволом
-   googleapis.com часто просто недоступен.
+   fonts.css — optional layer: Golos Text from Google Fonts.
 
-   Внедрение в закрытом контуре: положите файлы шрифта рядом,
-   объявите @font-face локально и не подключайте этот файл.
-   Ядро работает без него — упадёт на system-ui из --rs-font.
+   Kept out of rostra.css because an @import inside a stylesheet blocks
+   rendering, and inside a corporate network behind a firewall
+   googleapis.com is often simply unreachable.
+
+   For a closed network: place the font files next to your assets, declare
+   @font-face locally, and do not load this file. The core works without it
+   and falls back to system-ui from --rs-font.
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&display=swap');

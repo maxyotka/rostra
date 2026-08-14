@@ -1,56 +1,56 @@
-// Считает минимальную версию браузера по данным caniuse-lite.
-// Не «мы думаем, что работает», а «вот фича, вот версия, где она появилась».
+// Derives the minimum browser version from caniuse-lite data.
+// Not "we think it works", but "here is the feature and the version it landed in".
 // `node scripts/check-support.mjs`
 import { feature, features } from 'caniuse-lite'
 import { legacyTargets } from './legacy-targets.mjs'
 
 /**
- * Фичи, без которых система ломается: раскладка едет или переменные не
- * работают вовсе. Они и задают нижнюю границу поддержки.
+ * Features without which the system breaks: the layout falls apart or custom
+ * properties do not work at all. These set the support floor.
  */
 const required = {
-  'css-variables': 'токены — вся система построена на кастомных свойствах',
-  'flexbox-gap': 'gap во flex — 43 места, без него отступы схлопываются',
-  'css-grid': 'grid — KeyValue, календарь, лента событий, мобильная навигация',
-  calc: 'calc() — размеры слоёв и отступы',
+  'css-variables': 'tokens — the whole system is built on custom properties',
+  'flexbox-gap': 'gap in flexbox — 43 places; without it spacing collapses',
+  'css-grid': 'grid — KeyValue, calendar, event timeline, mobile navigation',
+  calc: 'calc() — layer sizes and spacing',
 }
 
 /**
- * Фичи, которые деградируют мягко: интерфейс остаётся рабочим и читаемым,
- * просто без части удобств. Нижнюю границу они не поднимают.
+ * Features that degrade gracefully: the interface stays usable and readable,
+ * just without some conveniences. They do not raise the floor.
  */
 const progressive = {
-  // Неизвестное at-rule браузер пропускает целиком, а вместе с ним и
-  // oklch-ветку — остаётся sRGB-блок, объявленный до него. Это ровно то
-  // поведение, которое нужно, поэтому @supports в обязательные не входит.
-  'css-supports-api': '@supports — без него берётся sRGB-блок, объявленный раньше',
-  'css-lch-lab': 'oklch — старые берут sRGB-двойник из блока до @supports',
-  'css-color-function': 'color-mix — перед ним объявлен статический цвет',
-  'css-focus-visible': ':focus-visible — фоллбэк даёт кольцо на любом фокусе',
-  'css-has': ':has() — только курсор not-allowed у выключенного контрола',
-  'viewport-unit-variants': 'dvh — перед ним объявлен vh',
-  'css-sticky': 'sticky — первая колонка таблицы просто не залипает',
-  'css-appearance': 'appearance — рядом объявлены префиксные варианты',
-  'text-underline-offset': 'отступ подчёркивания ссылки',
-  'prefers-reduced-motion': 'гашение анимаций — иначе они просто играют',
+  // An unknown at-rule is skipped whole, and the oklch branch with it — what
+  // remains is the sRGB block declared before it. That is exactly the desired
+  // behaviour, which is why @supports is not in the required list.
+  'css-supports-api': '@supports — without it the earlier sRGB block applies',
+  'css-lch-lab': 'oklch — older browsers take the sRGB twin declared before @supports',
+  'css-color-function': 'color-mix — a static colour is declared before it',
+  'css-focus-visible': ':focus-visible — the fallback shows the ring on any focus',
+  'css-has': ':has() — only the not-allowed cursor on a disabled control',
+  'viewport-unit-variants': 'dvh — vh is declared before it',
+  'css-sticky': 'sticky — the first table column simply does not pin',
+  'css-appearance': 'appearance — prefixed variants are declared alongside',
+  'text-underline-offset': 'link underline offset',
+  'prefers-reduced-motion': 'muting animation — otherwise it just plays',
 }
 
 /**
- * Что держит rostra.legacy.css. Префиксы там уже проставлены, поэтому
- * поддержка считается вместе с частичной ('a'): для flexbox это как раз
- * старый -ms- и -webkit- синтаксис, ради которого сборка и существует.
+ * What rostra.legacy.css holds. Prefixes are already in place there, so support
+ * counts partial ('a') too: for flexbox that is precisely the old -ms- and
+ * -webkit- syntax the build exists for.
  */
 const legacyRequired = {
-  flexbox: 'вся раскладка — сайдбар, шапка, карточки, фильтры, строки',
-  calc: 'calc() — размеры слоёв и отступы',
-  'css-mediaqueries': 'медиазапросы — планшетный и мобильный контур',
-  'css-gencontent': '::before и ::after — точки статусов, галочки, линии',
-  transforms2d: 'transform — переключатель, кнопки, слои',
-  'css-transitions': 'переходы состояний',
-  'border-radius': 'скругления — без них система выглядит чужой',
-  'css-boxshadow': 'тени всплывающих слоёв и кольцо фокуса',
-  'css3-colors': 'rgba — подложка модального окна',
-  'viewport-units': 'vh — высота приложения и слоёв',
+  flexbox: 'the entire layout — sidebar, header, cards, filters, rows',
+  calc: 'calc() — layer sizes and spacing',
+  'css-mediaqueries': 'media queries — tablet and mobile shells',
+  'css-gencontent': '::before and ::after — status dots, checkmarks, lines',
+  transforms2d: 'transform — switch, buttons, layers',
+  'css-transitions': 'state transitions',
+  'border-radius': 'rounded corners — without them the system looks foreign',
+  'css-boxshadow': 'shadows of floating layers and the focus ring',
+  'css3-colors': 'rgba — the modal backdrop',
+  'viewport-units': 'vh — application and layer height',
 }
 
 const browsers = {
@@ -65,23 +65,23 @@ const browsers = {
   ie: 'Internet Explorer',
 }
 
-// caniuse хранит для Chrome и Firefox под Android только текущую версию,
-// поэтому «с какой начали поддерживать» по этим данным не восстановить —
-// их десктопные близнецы отвечают на тот же вопрос точнее.
+// caniuse keeps only the current version for Chrome and Firefox on Android, so
+// "which version started supporting this" cannot be recovered from that data —
+// their desktop twins answer the same question more precisely.
 
-// Версия может быть диапазоном ("14.5-14.8") — берём нижнюю границу.
+// A version may be a range ("14.5-14.8") — take the lower bound.
 const versionKey = (v) => parseFloat(String(v).split('-')[0])
-// caniuse держит и нечисловые метки: TP у Safari, "all" у мобильных.
+// caniuse also stores non-numeric labels: TP for Safari, "all" for mobile.
 const isRealVersion = (v) => Number.isFinite(versionKey(v))
 
 /**
- * Первая версия браузера с поддержкой; null — не поддержана нигде.
- * `withPartial` засчитывает и частичную ('a') — она означает префиксный или
- * устаревший синтаксис, который в legacy-сборке уже проставлен.
+ * First version of the browser with support; null if never supported.
+ * `withPartial` also counts partial ('a') support — that means prefixed or
+ * legacy syntax, which the legacy build already emits.
  */
 function firstSupported(featureId, browser, withPartial = false) {
   const data = features[featureId]
-  if (!data) throw new Error(`caniuse не знает фичу ${featureId}`)
+  if (!data) throw new Error(`caniuse does not know the feature ${featureId}`)
   const stats = feature(data).stats[browser]
   if (!stats) return null
   const ok = (support) => support.startsWith('y') || (withPartial && support.startsWith('a'))
@@ -111,17 +111,17 @@ for (const browser of Object.keys(browsers)) {
   report[browser] = { min, blocker, unsupported }
 }
 
-console.log('Минимальная версия — определяется самой поздней из обязательных фич:\n')
+console.log('rostra.css — the floor is set by the latest of the required features:\n')
 for (const [browser, label] of Object.entries(browsers)) {
   const { min, blocker, unsupported } = report[browser]
   if (unsupported) {
-    console.log(`  ${label.padEnd(18)} не поддерживается: ${unsupported}`)
+    console.log(`  ${label.padEnd(18)} unsupported: ${unsupported}`)
   } else {
-    console.log(`  ${label.padEnd(18)} ${String(min).padEnd(6)} ← ${blocker}`)
+    console.log(`  ${label.padEnd(18)} ${String(min).padEnd(6)} <- ${blocker}`)
   }
 }
 
-console.log('\n\nrostra.legacy.css — сборка для старых браузеров:\n')
+console.log('\n\nrostra.legacy.css — the build for old browsers:\n')
 for (const [browser, label] of Object.entries(browsers)) {
   let min = null
   let blocker = null
@@ -138,29 +138,30 @@ for (const [browser, label] of Object.entries(browsers)) {
     }
   }
   if (unsupported) {
-    console.log(`  ${label.padEnd(18)} не поддерживается: ${unsupported}`)
+    console.log(`  ${label.padEnd(18)} unsupported: ${unsupported}`)
     continue
   }
-  // Одной поддержки браузером мало: нужны ещё и префиксы, а их autoprefixer
-  // расставляет ровно по целям сборки. Обещаем меньшее из двух.
+  // Browser support alone is not enough: the prefixes have to be there too, and
+  // autoprefixer emits them strictly for the build targets. Promise the lower
+  // of the two.
   const target = legacyTargets[browser]
   if (target !== undefined && versionKey(target) > versionKey(min)) {
-    console.log(`  ${label.padEnd(18)} ${String(target).padEnd(6)} ← цель сборки (браузер умеет с ${min}: ${blocker})`)
+    console.log(`  ${label.padEnd(18)} ${String(target).padEnd(6)} <- build target (the browser can do it from ${min}: ${blocker})`)
   } else {
-    console.log(`  ${label.padEnd(18)} ${String(min).padEnd(6)} ← ${blocker}`)
+    console.log(`  ${label.padEnd(18)} ${String(min).padEnd(6)} <- ${blocker}`)
   }
 }
 
-// Практический предел задаёт не css, а транспорт: браузер без TLS 1.2 не
-// установит соединение с современным сервером и до стилей просто не дойдёт.
-console.log('\n\nTLS 1.2 — ниже этих версий браузер не откроет сайт по https:\n')
+// The practical floor is set by transport, not CSS: a browser without TLS 1.2
+// will not reach a modern server and never gets to the stylesheet at all.
+console.log('\n\nTLS 1.2 — below these versions a browser cannot open the site over https:\n')
 for (const [browser, label] of Object.entries(browsers)) {
   const version = firstSupported('tls1-2', browser)
-  console.log(`  ${label.padEnd(18)} ${version ?? 'не поддерживает'}`)
+  console.log(`  ${label.padEnd(18)} ${version ?? 'not supported'}`)
 }
-console.log('  (во внутренней сети по http ограничение не действует)')
+console.log('  (on an internal network over plain http this limit does not apply)')
 
-console.log('\nДеградируют мягко, нижнюю границу не поднимают:\n')
+console.log('\nDegrade gracefully, do not raise the floor:\n')
 for (const [id, why] of Object.entries(progressive)) {
   if (!features[id]) continue
   const chrome = firstSupported(id, 'chrome')

@@ -5,7 +5,7 @@ import { cx } from './cx'
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
   variant?: 'default' | 'primary' | 'ghost' | 'danger'
   size?: 'md' | 'sm'
-  /** Квадратная кнопка под одну иконку. Требует aria-label. */
+  /** Square button for a single icon. Requires an aria-label. */
   icon?: boolean
   loading?: boolean
 }
@@ -26,8 +26,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         loading && 'is-loading',
         className
       )}
-      // Кнопка в загрузке остаётся в потоке фокуса, но не срабатывает:
-      // disabled увёл бы фокус в никуда прямо в момент отправки формы.
+      // A loading button stays in the focus order but does not fire: disabled
+      // would drop focus into nowhere at the exact moment the form is submitted.
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
       disabled={disabled}
@@ -44,7 +44,7 @@ export interface FieldProps extends Omit<ComponentPropsWithoutRef<'div'>, 'child
   hint?: ReactNode
   error?: ReactNode
   required?: boolean
-  /** Получает id, aria-describedby и aria-invalid — связывать руками не нужно. */
+  /** Receives id, aria-describedby and aria-invalid — nothing to wire up by hand. */
   children: (props: {
     id: string
     'aria-describedby'?: string
@@ -78,7 +78,7 @@ export function Field({ label, hint, error, required, className, children, ...re
           {hint}
         </span>
       )}
-      {/* role=alert, чтобы диктор прочитал ошибку валидации сразу после отправки */}
+      {/* role=alert so the validation error is announced right after submit */}
       {error && (
         <span className="rs-error" id={errorId} role="alert">
           {error}
@@ -101,7 +101,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, ComponentPropsWithoutRef
   }
 )
 
-/** Нативный select: даром получает клавиатуру, поиск по букве и мобильный контур ОС. */
+/** Native select: keyboard, type-ahead and the mobile OS picker come for free. */
 export const Select = forwardRef<HTMLSelectElement, ComponentPropsWithoutRef<'select'>>(
   function Select({ className, ...rest }, ref) {
     return <select ref={ref} className={cx('rs-select', className)} {...rest} />
@@ -110,7 +110,7 @@ export const Select = forwardRef<HTMLSelectElement, ComponentPropsWithoutRef<'se
 
 type ChoiceProps = ComponentPropsWithoutRef<'input'> & { children?: ReactNode }
 
-/** Общая обвязка нативных чекбокса, радио и переключателя. */
+/** Shared wiring for the native checkbox, radio and switch. */
 function choice(visual: 'rs-check' | 'rs-radio' | 'rs-switch', type: 'checkbox' | 'radio', role?: 'switch') {
   return forwardRef<HTMLInputElement, ChoiceProps>(function Choice(
     { className, children, ...rest },

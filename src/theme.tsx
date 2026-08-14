@@ -17,7 +17,7 @@ export const useRostraTheme = (): ThemeSettings => useContext(ThemeContext)
 
 export interface RostraProps extends ComponentPropsWithoutRef<'div'>, Partial<ThemeSettings> {}
 
-/** Корень системы: тема, плотность и режим окна для поддерева. */
+/** Root of the system: theme, density and viewport mode for the subtree. */
 export const Rostra = forwardRef<HTMLDivElement, RostraProps>(function Rostra(
   { theme = 'light', density = 'medium', viewport, className, ...rest },
   ref
@@ -38,8 +38,8 @@ export const Rostra = forwardRef<HTMLDivElement, RostraProps>(function Rostra(
 })
 
 /**
- * Обёртка содержимого портала. Слой рендерится в конец body, вне .rs,
- * поэтому токены темы до него не доходят — здесь они ставятся заново.
+ * Wrapper for portal content. A layer renders at the end of body, outside
+ * .rs, so theme tokens never reach it — they are applied again here.
  */
 export function LayerScope({ children }: { children: ReactNode }) {
   const { theme, density } = useRostraTheme()

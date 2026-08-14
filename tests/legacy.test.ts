@@ -3,27 +3,28 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-// Комментарии заголовка перечисляют убранное — по тексту искать нельзя.
+// The header comment lists what was removed, so searching the raw text would
+// find those words in the comment itself.
 const raw = readFileSync(join(process.cwd(), 'rostra.legacy.css'), 'utf8')
 const css = raw.replace(/\/\*[\s\S]*?\*\//g, '')
 
-describe('сборка для старых браузеров', () => {
-  it('пересобирается из текущего rostra.css без расхождений', () => {
+describe('legacy build', () => {
+  it('rebuilds from the current rostra.css with no drift', () => {
     const before = raw
     execFileSync(process.execPath, ['scripts/build-legacy.mjs'], { cwd: process.cwd(), stdio: 'pipe' })
     expect(readFileSync(join(process.cwd(), 'rostra.legacy.css'), 'utf8')).toBe(before)
   })
 
-  it('не содержит ничего, чего старый браузер не поймёт', () => {
+  it('contains nothing an old browser cannot parse', () => {
     const forbidden = {
-      'кастомные свойства': /--rs-[\w-]+\s*:/,
+      'custom properties': /--rs-[\w-]+\s*:/,
       'var()': /var\(/,
       oklch: /oklch\(/,
       'color-mix()': /color-mix\(/,
-      'единицы dvh/svh/lvh': /\d(dvh|dvw|svh|lvh)/,
+      'dvh/svh/lvh units': /\d(dvh|dvw|svh|lvh)/,
       ':has()': /:has\(/,
       ':focus-visible': /:focus-visible/,
-      'gap во flex': /(^|[^-\w])(row-|column-)?gap\s*:/m,
+      'gap in flexbox': /(^|[^-\w])(row-|column-)?gap\s*:/m,
       'display: grid': /display:\s*(inline-)?grid/,
       '@supports': /@supports/,
     }
@@ -33,23 +34,24 @@ describe('сборка для старых браузеров', () => {
     expect(found).toEqual([])
   })
 
-  it('раскладка переведена на флексбокс с префиксами для IE', () => {
+  it('lays out with flexbox and the IE prefixes', () => {
     expect(css).toMatch(/display:\s*-ms-flexbox/)
     expect(css).toMatch(/-ms-flex-align/)
     expect(css).toMatch(/-ms-flex-pack/)
   })
 
-  it('отступы, которые задавал gap, перенесены на соседей и псевдоэлементы', () => {
-    // Точка бейджа и риска надзаголовка отделялись от текста через gap:
-    // соседский селектор их не достаёт, поэтому отступ висит на них самих.
+  it('moves the spacing gap provided onto siblings and pseudo-elements', () => {
+    // The badge dot and the eyebrow tick were separated from their text by gap:
+    // an adjacent-sibling selector cannot reach them, so the margin sits on the
+    // pseudo-element itself.
     expect(css).toMatch(/\.rs-badge::before\s*\{[^}]*margin-right/)
     expect(css).toMatch(/\.rs-eyebrow--tick::before\s*\{[^}]*margin-right/)
     expect(css).toMatch(/\.rs-btn\s*>\s*\*\s*\+\s*\*\s*\{[^}]*margin-left/)
   })
 
-  it('цвета совпадают с sRGB-ветвью основной сборки', () => {
+  it('uses the same colours as the sRGB branch of the main build', () => {
     const main = readFileSync(join(process.cwd(), 'rostra.css'), 'utf8')
-    // Акцент светлой темы, посчитанный при сборке основного файла.
+    // The light theme accent, as computed while building the main file.
     const accent = /--rs-accent-500:\s*(#[0-9a-f]{6})/.exec(main)?.[1]
     expect(accent).toBeTruthy()
     expect(css).toContain(accent as string)

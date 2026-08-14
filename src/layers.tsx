@@ -10,17 +10,17 @@ import { LayerScope } from './theme'
 interface OverlayProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  /** Элемент, открывающий слой. Без него слоем управляет only `open`. */
+  /** The element that opens the layer. Without it the layer is driven by `open`. */
   trigger?: ReactNode
   title: ReactNode
-  /** Читается диктором вместе с заголовком. Если нет — описание скрывается. */
+  /** Announced together with the title. When absent, the description is hidden. */
   description?: ReactNode
   footer?: ReactNode
   children?: ReactNode
   className?: string
 }
 
-/** Модальное окно: фокус заперт внутри, Esc закрывает, фон недоступен. */
+/** Modal window: focus is trapped, Escape closes, the background is inert. */
 export function Dialog({
   open,
   onOpenChange,
@@ -59,7 +59,7 @@ export function Dialog({
   )
 }
 
-/** Панель справа. Тот же примитив, что и диалог: фокус заперт, Esc закрывает. */
+/** Right-hand panel. Same primitive as the dialog: focus trapped, Escape closes. */
 export function Drawer({
   open,
   onOpenChange,
@@ -98,7 +98,7 @@ export function Drawer({
   )
 }
 
-/** Кнопка закрытия слоя: работает внутри Dialog и Drawer. */
+/** Closes the layer: works inside both Dialog and Drawer. */
 export function DialogClose({ children }: { children: ReactNode }) {
   return <RDialog.Close asChild>{children}</RDialog.Close>
 }
@@ -132,13 +132,13 @@ export interface TooltipProps {
   children: ReactNode
   label: ReactNode
   side?: 'top' | 'right' | 'bottom' | 'left'
-  /** Задержка перед показом; 0 — мгновенно. */
+  /** Delay before showing; 0 means immediately. */
   delay?: number
 }
 
 /**
- * Подсказка. Radix показывает её и по фокусу с клавиатуры, но подсказка
- * не заменяет подпись: у кнопки-иконки всё равно должен быть aria-label.
+ * Tooltip. Radix also shows it on keyboard focus, but a tooltip is not a
+ * label: an icon-only button still needs its own aria-label.
  */
 export function Tooltip({ children, label, side = 'top', delay = 300 }: TooltipProps) {
   return (
@@ -160,10 +160,10 @@ export function Tooltip({ children, label, side = 'top', delay = 300 }: TooltipP
 export interface MenuItem {
   label: ReactNode
   onSelect?: () => void
-  /** Подпись горячей клавиши справа. */
+  /** Keyboard shortcut hint, shown on the right. */
   hint?: ReactNode
   disabled?: boolean
-  /** Разделитель перед пунктом. */
+  /** A separator before this item. */
   separated?: boolean
 }
 
@@ -223,8 +223,8 @@ export interface ToastRecord {
 }
 
 /**
- * Очередь тостов. Показ, автоскрытие, снятие — больше от менеджера
- * уведомлений в админке обычно ничего не нужно.
+ * Toast queue. Show, auto-dismiss, dismiss — an admin panel rarely needs
+ * more than that from a notification manager.
  */
 export function useToasts(timeout = 5000) {
   const [toasts, setToasts] = useState<ToastRecord[]>([])
@@ -254,12 +254,21 @@ export function useToasts(timeout = 5000) {
 }
 
 /**
- * Место, куда падают тосты. aria-live="polite" — уведомление дочитывается
- * после текущей фразы диктора, а не перебивает её.
+ * Where toasts land. aria-live="polite" means an announcement waits for the
+ * screen reader to finish its current sentence instead of interrupting it.
  */
-export function ToastViewport({ toasts, onDismiss }: { toasts: ToastRecord[]; onDismiss?: (id: number) => void }) {
+export function ToastViewport({
+  toasts,
+  onDismiss,
+  label = 'Notifications',
+}: {
+  toasts: ToastRecord[]
+  onDismiss?: (id: number) => void
+  /** Region name for screen readers. Translate it for a localised interface. */
+  label?: string
+}) {
   return (
-    <div className="rs-toast-viewport" role="region" aria-live="polite" aria-label="Уведомления">
+    <div className="rs-toast-viewport" role="region" aria-live="polite" aria-label={label}>
       {toasts.map((toast) => (
         <Toast
           key={toast.id}

@@ -6,7 +6,7 @@ type Status = 'ok' | 'warn' | 'bad' | 'info'
 
 export interface EyebrowProps extends ComponentPropsWithoutRef<'div'> {
   variant?: 'line' | 'tick' | 'tag'
-  /** Надпись длиннее двух слов: капс отключается, иначе строка не читается. */
+  /** Label longer than two words: uppercase is dropped, or the line stops reading. */
   sentence?: boolean
   bare?: boolean
 }
@@ -45,7 +45,7 @@ export function Divider(props: ComponentPropsWithoutRef<'hr'>) {
 
 export interface BadgeProps extends ComponentPropsWithoutRef<'span'> {
   status?: Status
-  /** Без цветной точки перед текстом. */
+  /** Without the coloured dot before the text. */
   plain?: boolean
 }
 
@@ -95,7 +95,7 @@ export function Metric({ label, value, foot, className, ...rest }: MetricProps) 
 }
 
 export interface MeterProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
-  /** 0–100. Значения вне диапазона подрезаются, чтобы полоса не выехала. */
+  /** 0–100. Out-of-range values are clamped so the bar cannot overflow. */
   value: number
   label?: string
 }
@@ -119,9 +119,9 @@ export function Meter({ value, label, className, ...rest }: MeterProps) {
 
 export interface TableProps extends ComponentPropsWithoutRef<'table'> {
   zebra?: boolean
-  /** Первая колонка залипает при горизонтальной прокрутке. */
+  /** The first column pins during horizontal scrolling. */
   sticky?: boolean
-  /** Шапка предложением, а не капсом: для заголовков длиннее двух слов. */
+  /** Sentence-case header instead of uppercase: for headings longer than two words. */
   sentenceHead?: boolean
 }
 
@@ -148,7 +148,7 @@ export function TableWrap({ className, ...rest }: ComponentPropsWithoutRef<'div'
   return <div className={cx('rs-table-wrap', className)} {...rest} />
 }
 
-/** Числовая ячейка: правый край и табличные цифры, чтобы колонка не прыгала. */
+/** Numeric cell: right-aligned tabular figures, so the column does not jump. */
 export function Num({ className, ...rest }: ComponentPropsWithoutRef<'td'>) {
   return <td className={cx('rs-num', className)} {...rest} />
 }
@@ -157,7 +157,7 @@ export interface EmptyStateProps extends Omit<ComponentPropsWithoutRef<'div'>, '
   title: ReactNode
   text?: ReactNode
   action?: ReactNode
-  /** Штриховой прямоугольник вместо иллюстрации. */
+  /** A hatched rectangle instead of an illustration. */
   art?: boolean
 }
 
@@ -181,7 +181,7 @@ export function Skeleton({ width, height, className, style, ...rest }: SkeletonP
   return (
     <div
       className={cx('rs-skeleton', className)}
-      // Заглушка — служебная графика: диктору читать нечего, но статус загрузки нужен.
+      // A placeholder is service graphics: nothing for a screen reader to read.
       aria-hidden="true"
       style={{ width, height, ...style }}
       {...rest}
@@ -191,7 +191,7 @@ export function Skeleton({ width, height, className, style, ...rest }: SkeletonP
 
 export interface StepsProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   steps: ReactNode[]
-  /** Индекс текущего шага; всё до него считается пройденным. */
+  /** Index of the current step; everything before it counts as done. */
   current: number
 }
 
@@ -225,7 +225,7 @@ export function Alert({ status, title, className, children, ...rest }: AlertProp
   return (
     <div
       className={cx('rs-alert', status && `rs-alert--${status}`, className)}
-      // Ошибка и предупреждение перебивают чтение, остальное ждёт паузы.
+      // Errors interrupt the screen reader; everything else waits for a pause.
       role={status === 'bad' ? 'alert' : 'status'}
       {...rest}
     >
@@ -239,7 +239,7 @@ export function Alert({ status, title, className, children, ...rest }: AlertProp
 }
 
 export interface AvatarProps extends ComponentPropsWithoutRef<'span'> {
-  /** Имя целиком: инициалы система соберёт сама. */
+  /** The full name: initials are derived from it. */
   name: string
   round?: boolean
 }

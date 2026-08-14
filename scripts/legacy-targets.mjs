@@ -1,11 +1,12 @@
 /**
- * Цели legacy-сборки. Отсюда их берут и autoprefixer, и отчёт о поддержке,
- * чтобы обещание в README не разошлось с тем, какие префиксы реально стоят.
+ * Targets for the legacy build. Both autoprefixer and the support report read
+ * them from here, so the promise in the README cannot drift away from the
+ * prefixes that are actually emitted.
  *
- * Ниже этих версий флексбокс существовал только в синтаксисе 2009 года
- * (`display: box`) — принципиально другая модель без переноса строк.
- * Autoprefixer его умеет, но раскладка получилась бы заметно иной, а вся
- * затея с legacy-сборкой держится на том, что вёрстка остаётся прежней.
+ * Below these versions flexbox only existed in the 2009 syntax
+ * (`display: box`) — a fundamentally different model without line wrapping.
+ * Autoprefixer can emit it, but the whole point of the legacy build is that
+ * the layout stays the same.
  */
 export const legacyTargets = {
   ie: 10,
@@ -18,7 +19,7 @@ export const legacyTargets = {
   samsung: 4,
 }
 
-/** Формат, который понимает browserslist. */
+/** The same list in the form browserslist understands. */
 export const browserslistQuery = [
   'ie 11',
   'ie 10',

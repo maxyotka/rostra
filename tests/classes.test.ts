@@ -10,9 +10,9 @@ const sources = readdirSync(src)
   .map((f) => ({ file: f, code: readFileSync(join(src, f), 'utf8') }))
 
 /**
- * Классы, которые React собирает из шаблона (`rs-btn--${variant}`): регулярка
- * видит только огрызок, поэтому варианты перечислены явно. Список короткий
- * ровно потому, что вариантов в системе намеренно мало.
+ * Classes React assembles from a template (`rs-btn--${variant}`): the regular
+ * expression only sees the stump, so the variants are listed explicitly. The
+ * list is short precisely because the system has deliberately few variants.
  */
 const templated = [
   'rs-btn--primary',
@@ -35,7 +35,7 @@ const templated = [
 
 function classesIn(code: string): string[] {
   const found = new Set<string>()
-  // Классы живут только в строковых литералах: className, cx(), visual-аргументы.
+  // Classes only live in string literals: className, cx(), visual arguments.
   for (const match of code.matchAll(/['"`]([^'"`]*)['"`]/g)) {
     for (const token of (match[1] ?? '').split(/\s+/)) {
       if (/^rs-[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(token) && !token.endsWith('-')) found.add(token)
@@ -44,42 +44,42 @@ function classesIn(code: string): string[] {
   return [...found]
 }
 
-describe('классы React-слоя', () => {
-  it.each(sources)('$file ссылается только на существующие классы', ({ code }) => {
+describe('classes used by the React layer', () => {
+  it.each(sources)('$file references only classes that exist', ({ code }) => {
     const missing = classesIn(code).filter((cls) => !css.includes(`.${cls}`))
     expect(missing).toEqual([])
   })
 
-  it('варианты, собираемые из шаблона, тоже описаны в css', () => {
+  it('variants assembled from a template are described in the css too', () => {
     expect(templated.filter((cls) => !css.includes(`.${cls}`))).toEqual([])
   })
 })
 
 /**
- * Radix ставит состояние атрибутом, а не классом. Пока css знает только про
- * .is-on, активная вкладка не подсвечена, а пункт меню под стрелками ничем
- * не отличается от остальных — и ни один тест поведения этого не заметит,
- * потому что роли и атрибуты при этом правильные.
+ * Radix sets state through attributes rather than classes. While the css only
+ * knows about .is-on, the active tab is not highlighted and the menu item under
+ * the arrow keys looks like any other — and no behaviour test notices, because
+ * the roles and attributes are correct all along.
  */
-describe('состояния, которые ставит библиотека поведения', () => {
+describe('state set by the behaviour library', () => {
   it.each([
-    ['вкладка', "[data-state='active']"],
-    ['пункт меню под стрелками', '[data-highlighted]'],
-    ['отключённый пункт меню', '[data-disabled]'],
-  ])('%s имеет описание в css', (_, selector) => {
+    ['tab', "[data-state='active']"],
+    ['menu item under arrow keys', '[data-highlighted]'],
+    ['disabled menu item', '[data-disabled]'],
+  ])('%s is described in the css', (_, selector) => {
     expect(css).toContain(selector)
   })
 
-  it('вкладка сбрасывает стили кнопки — Radix рендерит button', () => {
+  it('a tab resets button styling — Radix renders a button', () => {
     const rule = /\.rs-tab \{[^}]*\}/.exec(css)?.[0] ?? ''
     expect(rule).toMatch(/appearance:\s*none/)
     expect(rule).toMatch(/background:\s*none/)
     expect(rule).toMatch(/border:\s*0/)
   })
 
-  it('спиннер кнопки виден на светлом фоне', () => {
-    // Текст в загрузке прозрачный, поэтому currentColor тут не помощник:
-    // белый спиннер на белой кнопке не видно вовсе.
+  it('the button spinner is visible on a light surface', () => {
+    // Text is transparent while loading, so currentColor is no help here:
+    // a white spinner on a white button cannot be seen at all.
     const rule = /\.rs-btn\.is-loading::after \{[^}]*\}/.exec(css)?.[0] ?? ''
     expect(rule).toContain('color: var(--rs-text)')
   })

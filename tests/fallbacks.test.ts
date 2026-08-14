@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-// Комментарии выкидываются сразу: иначе они прилипают к следующему селектору.
+// Comments go first: otherwise they stick to the selector that follows.
 const css = readFileSync(join(process.cwd(), 'rostra.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 
-// Блок @supports адресован только новым браузерам — фоллбэки живут вне его.
+// The @supports block is addressed to modern browsers only — fallbacks live
+// outside it.
 const supportsBlock = /@supports[^{]*\{[\s\S]*?\n\}/.exec(css)?.[0] ?? ''
 const legacy = css.replace(supportsBlock, '')
 
@@ -26,7 +27,7 @@ const rules: Rule[] = [...legacy.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((match) 
     }),
 }))
 
-/** Объявления, которые старый браузер отбросит, — каждому нужен предшественник. */
+/** Declarations an old browser will drop — each needs a predecessor. */
 function unguarded(pattern: RegExp): string[] {
   const problems: string[] = []
   for (const rule of rules) {
@@ -39,30 +40,30 @@ function unguarded(pattern: RegExp): string[] {
   return problems
 }
 
-describe('фоллбэки для старых браузеров', () => {
-  it('перед каждым color-mix() объявлен обычный цвет', () => {
+describe('fallbacks for old browsers', () => {
+  it('every color-mix() is preceded by a plain colour', () => {
     expect(unguarded(/color-mix\(/)).toEqual([])
   })
 
-  it('перед каждой динамической единицей вьюпорта объявлена статическая', () => {
+  it('every dynamic viewport unit is preceded by a static one', () => {
     expect(unguarded(/\d(dvh|dvw|svh|lvh)/)).toEqual([])
   })
 
-  it('цвета вне @supports не используют oklch', () => {
+  it('colours outside @supports do not use oklch', () => {
     const oklchOutside = rules.flatMap((rule) =>
       rule.declarations.filter((d) => d.value.includes('oklch(')).map((d) => `${rule.selector} { ${d.prop} }`)
     )
     expect(oklchOutside).toEqual([])
   })
 
-  it('каждый токен из блока @supports объявлен и в sRGB-версии', () => {
+  it('every token in the @supports block is also declared in sRGB', () => {
     const inSupports = [...supportsBlock.matchAll(/(--rs-[\w-]+):/g)].map((m) => m[1])
     expect(inSupports.length).toBeGreaterThan(50)
     const missing = [...new Set(inSupports)].filter((token) => !legacy.includes(`${token}:`))
     expect(missing).toEqual([])
   })
 
-  it('каждому правилу с :focus-visible отвечает правило с :focus', () => {
+  it('every :focus-visible rule has a matching :focus rule', () => {
     const selectors = rules
       .map((r) => r.selector)
       .filter((s) => s.includes(':focus-visible') && !s.includes(':not(:focus-visible)'))

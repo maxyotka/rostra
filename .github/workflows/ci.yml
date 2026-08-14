@@ -15,8 +15,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      # Порядок неслучаен: сначала дешёвые проверки, которые ломаются чаще —
-      # расхождение css с токенами и провал контраста видно за секунды.
+      # The order is deliberate: the cheap checks that break most often come
+      # first — css drifting from the tokens and a failed contrast pair show
+      # up within seconds.
       - run: npm run check:tokens
       - run: npm run check:contrast
       - run: npm run check:support
@@ -24,9 +25,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      # Собранный пакет должен ещё и импортироваться: «сборка прошла» и
-      # «из пакета что-то экспортируется» — разные утверждения.
-      - name: Собранный пакет отдаёт компоненты
+      # A built package must also import: "the build succeeded" and "the
+      # package exports something" are different claims.
+      - name: Built package exposes its components
         run: |
-          node -e "import('./dist/index.js').then(m => { if (!m.Button || !m.Dialog || !m.Rostra) throw new Error('esm без экспортов') })"
-          node -e "if (!require('./dist/index.cjs').Button) throw new Error('cjs без экспортов')"
+          node -e "import('./dist/index.js').then(m => { if (!m.Button || !m.Dialog || !m.Rostra) throw new Error('esm exports nothing') })"
+          node -e "if (!require('./dist/index.cjs').Button) throw new Error('cjs exports nothing')"

@@ -1,9 +1,9 @@
-// Собирает rostra.legacy.css — сборку для браузеров без кастомных свойств.
-// Основная сборка при этом не меняется: современный браузер грузит только её,
-// старый — только legacy. Подключение описано в README.
+// Builds rostra.legacy.css — the build for browsers without custom properties.
+// The main build is untouched: a modern browser loads only that one, an old one
+// only the legacy file. Wiring both up is described in the README.
 //
 // `node scripts/build-legacy.mjs`                  — light, medium
-// `node scripts/build-legacy.mjs --theme=dark`     — другая тема
+// `node scripts/build-legacy.mjs --theme=dark`     — another theme
 // `node scripts/build-legacy.mjs --density=compact`
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -23,10 +23,10 @@ const theme = arg('theme', tokens.$meta.defaultTheme)
 const density = arg('density', tokens.$meta.defaultDensity)
 const outName = arg('out', theme === tokens.$meta.defaultTheme ? 'rostra.legacy.css' : `rostra.legacy.${theme}.css`)
 
-if (!tokens.themes[theme]) throw new Error(`нет темы ${theme}`)
-if (!tokens.density[density]) throw new Error(`нет плотности ${density}`)
+if (!tokens.themes[theme]) throw new Error(`no such theme: ${theme}`)
+if (!tokens.density[density]) throw new Error(`no such density: ${density}`)
 
-/** Плоская карта значений: базовая тема, поверх — выбранная, поверх — плотность. */
+/** Flat value map: base theme, then the chosen theme, then the density. */
 function buildValues() {
   const flat = {
     ...tokens.themes[tokens.$meta.defaultTheme],
@@ -36,10 +36,10 @@ function buildValues() {
     ...tokens.density[density],
   }
   const values = {}
-  // Токены в json заданы в oklch — для этой сборки нужен sRGB-двойник,
-  // тот же, что уходит в основной css до блока @supports.
+  // Tokens in the json are authored in oklch — this build needs the sRGB twin,
+  // the same one that goes into the main css before the @supports block.
   for (const [key, value] of Object.entries(flat)) values[`--rs-${key}`] = toSrgb(value) ?? String(value)
-  // Ссылки вида --rs-info: var(--rs-accent-500) разворачиваем до упора.
+  // References such as --rs-info: var(--rs-accent-500) are resolved all the way.
   for (let pass = 0; pass < 5; pass++) {
     let changed = false
     for (const [key, value] of Object.entries(values)) {
@@ -56,7 +56,7 @@ function buildValues() {
 
 const values = buildValues()
 
-/** Раскрывает var() в конкретное значение — переменных в legacy быть не должно. */
+/** Expands var() into a concrete value — the legacy build must contain none. */
 function resolve(value) {
   let out = value
   for (let pass = 0; pass < 5 && out.includes('var('); pass++) {
@@ -66,9 +66,9 @@ function resolve(value) {
 }
 
 /**
- * Правила, где gap стоит не рядом с display: наследуют раскладку от базового
- * класса, поэтому направление приходится знать заранее. Список короткий и
- * проверяется тестом — если появится новое такое правило, тест упадёт.
+ * Rules where gap is not declared next to display inherit their layout from a
+ * base class, so the direction has to be known in advance. The list is short
+ * and covered by a test — a new rule of this kind makes the test fail.
  */
 const inheritedFlex = { '.rs-eyebrow--tick': 'row' }
 
@@ -76,10 +76,11 @@ const source = readFileSync(join(root, 'rostra.css'), 'utf8')
 const css = postcss.parse(source)
 
 const notes = { vars: 0, gap: 0, pseudo: 0, grid: 0, dropped: 0, supports: 0 }
-/** Селекторы, у которых gap уже разобран: нужны для отступов псевдоэлементов. */
+/** Selectors whose gap is already handled: needed for pseudo-element spacing. */
 const gapped = new Map()
 
-// 1. Блок @supports с oklch адресован новым браузерам — в legacy он лишний.
+// 1. The @supports block with oklch is addressed to modern browsers — here it
+//    is dead weight.
 css.walkAtRules('supports', (rule) => {
   if (rule.params.includes('oklch')) {
     rule.remove()
@@ -87,8 +88,9 @@ css.walkAtRules('supports', (rule) => {
   }
 })
 
-// 2. Правила с непонятными старому браузеру псевдоклассами: :has() выбрасываем,
-//    из пары :focus / :focus-visible оставляем :focus — он и есть фоллбэк.
+// 2. Rules whose selectors use pseudo-classes an old browser cannot parse:
+//    :has() is dropped, and of the :focus / :focus-visible pair the plain
+//    :focus stays — that is the fallback.
 css.walkRules((rule) => {
   if (rule.selector.includes(':has(')) {
     rule.remove()
@@ -101,8 +103,8 @@ css.walkRules((rule) => {
   }
 })
 
-// 3. Объявления, которые IE отбросил бы сам. Удаляем явно, чтобы не мешали
-//    autoprefixer и не путали при чтении файла.
+// 3. Declarations IE would discard on its own. Removed explicitly so they do
+//    not confuse autoprefixer or a human reading the file.
 css.walkDecls((decl) => {
   if (/color-mix\(|oklch\(|\d(dvh|dvw|svh|lvh)/.test(decl.value)) {
     decl.remove()
@@ -110,7 +112,7 @@ css.walkDecls((decl) => {
   }
 })
 
-// 4. Разворачиваем переменные.
+// 4. Resolve custom properties.
 css.walkDecls((decl) => {
   if (decl.prop.startsWith('--')) {
     decl.remove()
@@ -123,13 +125,13 @@ css.walkDecls((decl) => {
   }
 })
 
-// Пустые правила после удаления переменных не нужны.
+// Rules left empty after the custom properties were removed serve no purpose.
 css.walkRules((rule) => {
   if (rule.nodes.length === 0) rule.remove()
 })
 
-// 5. gap → отступы соседей. IE11 знает flexbox, но не gap, поэтому
-//    расстояние между элементами задаём margin по направлению раскладки.
+// 5. gap -> margins on siblings. IE11 knows flexbox but not gap, so the spacing
+//    between items becomes a margin along the layout direction.
 css.walkRules((rule) => {
   const gapDecl = rule.nodes.find((n) => n.type === 'decl' && ['gap', 'row-gap', 'column-gap'].includes(n.prop))
   if (!gapDecl) return
@@ -145,7 +147,7 @@ css.walkRules((rule) => {
     'row'
   const column = direction.startsWith('column')
 
-  // gap: «8px» или «10px 16px» — по строке и по колонке.
+  // gap is either "8px" or "10px 16px" — row gap and column gap.
   const parts = gapDecl.value.split(/\s+/)
   const rowGap = parts[0]
   const columnGap = parts[1] ?? parts[0]
@@ -160,9 +162,10 @@ css.walkRules((rule) => {
 })
 
 /**
- * gap разделял и псевдоэлементы: точку бейджа, линию надзаголовка, риску.
- * Соседский селектор их не достаёт — ни ::before, ни текстовый узел рядом
- * с ним не являются «* + *». Поэтому отступ вешается на сам псевдоэлемент.
+ * gap also separated pseudo-elements: the badge dot, the eyebrow line, the
+ * tick. An adjacent-sibling selector cannot reach them — neither ::before nor
+ * the text node next to it is a "* + *". So the margin goes on the
+ * pseudo-element itself.
  */
 css.walkRules((rule) => {
   const match = /^(.+?)::(before|after)$/.exec(rule.selector.trim())
@@ -176,14 +179,15 @@ css.walkRules((rule) => {
     : match[2] === 'before'
       ? 'margin-right'
       : 'margin-left'
-  // display:none у псевдоэлемента — он отключён в этом варианте, отступ не нужен.
+  // display:none on the pseudo-element means it is switched off in this
+  // variant, so it needs no spacing.
   if (rule.nodes.some((n) => n.type === 'decl' && n.prop === 'display' && n.value === 'none')) return
   rule.append({ prop: side, value: parent.step })
   notes.pseudo++
 })
 
-// 6. grid → раскладка, доступная IE. Точных эквивалентов нет, поэтому
-//    каждый случай описан отдельно: важно сохранить расположение, а не способ.
+// 6. grid -> a layout IE can do. There are no exact equivalents, so every case
+//    is described separately: what matters is the arrangement, not the method.
 const gridFallbacks = {
   '.rs-kv': [
     { prop: 'display', value: 'block' },
@@ -205,7 +209,7 @@ css.walkRules((rule) => {
   if (!display || !display.value.includes('grid')) return
   const fallback = gridFallbacks[rule.selector.trim()]
   if (!fallback) {
-    console.warn(`  ! grid без описанного фоллбэка: ${rule.selector}`)
+    console.warn(`  ! grid with no described fallback: ${rule.selector}`)
     return
   }
   rule.nodes
@@ -216,15 +220,16 @@ css.walkRules((rule) => {
   notes.grid++
 })
 
-// 7. Комментарии основного файла, объясняющие oklch, @supports и токены,
-//    к этой сборке не относятся и только сбивают с толку: здесь их нет.
+// 7. Comments from the main file that explain oklch, @supports and tokens do
+//    not apply to this build and would only mislead: none of that is here.
 css.walkComments((comment) => {
-  if (/oklch|@supports|var\(--|СГЕНЕРИРОВАНО/.test(comment.text)) comment.remove()
+  if (/oklch|@supports|var\(--|GENERATED/.test(comment.text)) comment.remove()
 })
 
-// Ширина колонок KeyValue и календаря задаётся на детях — grid их больше не разложит.
+// Column widths for KeyValue and the calendar move onto the children — grid no
+// longer arranges them.
 css.append(`
-/* Раскладки, которым в IE нужен явный размер: grid их больше не расставляет. */
+/* Layouts that need an explicit size in IE, now that grid no longer places them. */
 .rs-kv dt { float: left; clear: left; width: 150px; padding-bottom: 10px; }
 .rs-kv dd { margin-left: 166px; padding-bottom: 10px; }
 .rs-cal__grid > * { display: inline-block; width: 14.28%; vertical-align: top; }
@@ -242,25 +247,25 @@ const result = await postcss([
 ]).process(css.toString(), { from: undefined })
 
 const header = `/* ============================================================
-   rostra.legacy.css — сборка для браузеров без кастомных свойств.
-   Тема: ${theme}. Плотность: ${density}. СГЕНЕРИРОВАНО, не править руками.
-   Пересборка: node scripts/build-legacy.mjs --theme=${theme} --density=${density}
+   rostra.legacy.css — the build for browsers without custom properties.
+   Theme: ${theme}. Density: ${density}. GENERATED, do not edit by hand.
+   Rebuild with: node scripts/build-legacy.mjs --theme=${theme} --density=${density}
 
-   Отличия от rostra.css:
-   — значения токенов подставлены, поэтому тема и плотность здесь
-     фиксированы: переключение на лету требует подмены файла;
-   — gap заменён отступами соседних элементов;
-   — grid заменён flex и float;
-   — oklch, color-mix, dvh, :has() и :focus-visible убраны вместе с
-     правилами, которые старый браузер всё равно не применил бы.
+   Differences from rostra.css:
+   — token values are inlined, so theme and density are fixed here:
+     switching at runtime means swapping the file;
+   — gap is replaced with margins on adjacent elements;
+   — grid is replaced with flex and float;
+   — oklch, color-mix, dvh, :has() and :focus-visible are removed along with
+     the rules an old browser would not have applied anyway.
 
-   Подключать вместо rostra.css и только старым браузерам — см. README.
+   Load instead of rostra.css, and only for old browsers — see the README.
    ============================================================ */
 `
 
 writeFileSync(join(root, outName), header + result.css)
-console.log(`${outName}: ${(header + result.css).length} байт`)
+console.log(`${outName}: ${(header + result.css).length} bytes`)
 console.log(
-  `  переменных развёрнуто: ${notes.vars}, gap→margin: ${notes.gap}, отступов псевдоэлементов: ${notes.pseudo},` +
-    ` grid→flex/float: ${notes.grid}, удалено правил и объявлений: ${notes.dropped}, блоков @supports: ${notes.supports}`
+  `  custom properties resolved: ${notes.vars}, gap->margin: ${notes.gap}, pseudo-element spacing: ${notes.pseudo},` +
+    ` grid->flex/float: ${notes.grid}, rules and declarations removed: ${notes.dropped}, @supports blocks: ${notes.supports}`
 )

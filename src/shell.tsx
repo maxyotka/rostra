@@ -4,8 +4,8 @@ import * as RTabs from '@radix-ui/react-tabs'
 import { cx } from './cx'
 
 /**
- * Каркас приложения: высота равна окну, страница целиком не листается.
- * Скроллится только Pane — это правило системы, а не стилевая деталь.
+ * Application shell: height equals the window, the page never scrolls as a
+ * whole. Only Pane scrolls — a rule of the system, not a styling detail.
  */
 export function AppShell({ className, ...rest }: ComponentPropsWithoutRef<'div'>) {
   return <div className={cx('rs-app', className)} {...rest} />
@@ -15,17 +15,17 @@ export function AppMain({ className, ...rest }: ComponentPropsWithoutRef<'div'>)
   return <div className={cx('rs-app__main', className)} {...rest} />
 }
 
-/** Приклеенная полоса: шапка, фильтры, пагинация. */
+/** A pinned bar: header, filters, pagination. */
 export function AppBar({ className, ...rest }: ComponentPropsWithoutRef<'div'>) {
   return <div className={cx('rs-app__bar', className)} {...rest} />
 }
 
 export interface PaneProps extends ComponentPropsWithoutRef<'div'> {
-  /** Не скроллится сам, а отдаёт прокрутку вложенной области. */
+  /** Does not scroll itself; hands scrolling to a nested area. */
   fixed?: boolean
 }
 
-/** Единственная прокручиваемая область экрана. */
+/** The only scrollable area on the screen. */
 export function Pane({ fixed, className, ...rest }: PaneProps) {
   return <div className={cx(fixed ? 'rs-pane--fixed' : 'rs-pane', className)} {...rest} />
 }
@@ -64,7 +64,7 @@ export const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(function NavI
   )
 })
 
-/** Рельс: сайдбар в 60 px для планшета и узких панелей. */
+/** Rail: a 60px sidebar for tablets and narrow panels. */
 export function Rail({ className, ...rest }: ComponentPropsWithoutRef<'nav'>) {
   return <nav className={cx('rs-rail', className)} {...rest} />
 }
@@ -90,11 +90,13 @@ export const RailItem = forwardRef<HTMLButtonElement, RailItemProps>(function Ra
 
 export interface BreadcrumbsProps extends Omit<ComponentPropsWithoutRef<'nav'>, 'children'> {
   items: Array<{ label: ReactNode; href?: string }>
+  /** Navigation name for screen readers. Translate it for a localised interface. */
+  'aria-label'?: string
 }
 
-export function Breadcrumbs({ items, className, ...rest }: BreadcrumbsProps) {
+export function Breadcrumbs({ items, className, 'aria-label': label = 'Breadcrumb', ...rest }: BreadcrumbsProps) {
   return (
-    <nav className={cx('rs-crumbs', className)} aria-label="Хлебные крошки" {...rest}>
+    <nav className={cx('rs-crumbs', className)} aria-label={label} {...rest}>
       {items.map((item, i) => {
         const last = i === items.length - 1
         return (
@@ -116,7 +118,7 @@ export interface TabsProps {
   className?: string
 }
 
-/** Вкладки: стрелки переключают, содержимое связано с вкладкой через ARIA. */
+/** Tabs: arrow keys switch, content is tied to its tab through ARIA. */
 export function Tabs({ items, value, defaultValue, onValueChange, className }: TabsProps) {
   return (
     <RTabs.Root
@@ -147,12 +149,12 @@ export interface SegmentedProps<T extends string> {
   options: Array<{ value: T; label: ReactNode }>
   value: T
   onChange: (value: T) => void
-  /** Чем управляет переключатель — читает диктор. */
+  /** What the control governs — read out by screen readers. */
   label: string
   className?: string
 }
 
-/** Переключатель вида: плотность, масштаб, режим списка. */
+/** View switch: density, zoom, list mode. */
 export function Segmented<T extends string>({ options, value, onChange, label, className }: SegmentedProps<T>) {
   return (
     <div className={cx('rs-seg', className)} role="group" aria-label={label}>
@@ -172,14 +174,14 @@ export function Segmented<T extends string>({ options, value, onChange, label, c
 }
 
 export interface SystemStateProps extends Omit<ComponentPropsWithoutRef<'div'>, 'title'> {
-  /** Код или надзаголовок: 403, 404, обслуживание. */
+  /** Code or eyebrow: 403, 404, maintenance. */
   code?: ReactNode
   tone?: 'warn' | 'bad' | 'info'
   title: ReactNode
   text?: ReactNode
-  /** Два выхода из тупика: основной и запасной. */
+  /** Two ways out of the dead end: primary and fallback. */
   actions?: ReactNode
-  /** Техническая строка внизу: id запроса, время, узел. */
+  /** Technical line at the bottom: request id, time, node. */
   tech?: ReactNode
 }
 

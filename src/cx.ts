@@ -1,4 +1,4 @@
-/** Склейка классов: строки и ключи объектов с истинным значением. */
+/** Joins class names: plain strings and object keys with a truthy value. */
 export function cx(...parts: Array<string | false | null | undefined | Record<string, boolean | undefined>>): string {
   const out: string[] = []
   for (const part of parts) {

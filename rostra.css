@@ -1,23 +1,23 @@
 /* ============================================================
    rostra.css — v0.1.0
-   Ядро дизайн-системы Rostra: токены, темы, плотность, компоненты.
-   Фреймворк-независимо: подключите файл и используйте классы rs-*.
-   Тема: data-theme="light|dark|warm|contrast" на любом контейнере.
-   Плотность: data-density="compact|medium|roomy|mobile".
+   Core of the Rostra design system: tokens, themes, density, components.
+   Framework-independent: link the file and use the rs-* classes.
+   Theme: data-theme="light|dark|warm|contrast" on any container.
+   Density: data-density="compact|medium|roomy|mobile".
 
-   Шрифт не подключается отсюда: rostra.css не делает сетевых запросов.
-   Подключите fonts.css или свою локальную копию Golos Text — см. README.
+   No font is loaded from here: rostra.css makes no network requests.
+   Link fonts.css or your own local copy of Golos Text — see the README.
    ============================================================ */
 
-/* --- 1. Токены ------------------------------------------------
-   СГЕНЕРИРОВАНО из rostra.tokens.json — не править руками.
-   Пересборка: npm run build:css
+/* --- 1. Tokens ------------------------------------------------
+   GENERATED from rostra.tokens.json — do not edit by hand.
+   Rebuild with: npm run build:css
 
-   Цвета объявлены дважды: сначала sRGB, затем oklch внутри @supports.
-   Дублировать объявление прямо в блоке нельзя: значение кастомного
-   свойства браузер не проверяет, поэтому старый примет oklch как валидный
-   токен, и невалидным станет уже свойство, которое его использует —
-   вместо фоллбэка получится пустое место.
+   Colours are declared twice: sRGB first, then oklch inside @supports.
+   Duplicating the declaration within one block does not work: a browser does
+   not validate a custom property's value, so an old one accepts oklch as a
+   valid token and the property consuming it becomes invalid instead —
+   leaving nothing at all instead of a fallback.
    -------------------------------------------------------------- */
 
 :root,
@@ -177,7 +177,7 @@
   --rs-shadow-2: 0 0 0 1px #52555b;
 }
 
-/* Плотность */
+/* Density */
 
 [data-density='compact'] { --rs-control-h: 28px; --rs-control-h-sm: 24px; --rs-row-pad: 7px; --rs-pad-card: 14px; --rs-fs-ui: 12px; }
 
@@ -187,7 +187,7 @@
 
 [data-density='mobile'] { --rs-control-h: 44px; --rs-control-h-sm: 38px; --rs-row-pad: 14px; --rs-pad-card: 16px; --rs-fs-ui: 13.5px; --rs-fs-label: 12px; --rs-fs-body: 15px; --rs-radius: 16px; --rs-radius-sm: 12px; --rs-radius-lg: 20px; }
 
-/* Цвет в oklch — там, где браузер его понимает. */
+/* Colour in oklch, where the browser understands it. */
 @supports (color: oklch(0 0 0)) {
   :root,
   [data-theme='light'] {
@@ -291,31 +291,32 @@
   }
 }
 
-/* --- 2. База ------------------------------------------------- */
+/* --- 2. Base ------------------------------------------------- */
 .rs { font-family: var(--rs-font); color: var(--rs-text); background: var(--rs-bg); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
 .rs *, .rs *::before, .rs *::after { box-sizing: border-box; }
 .rs a { color: var(--rs-accent-500); text-decoration: none; }
 .rs a:hover { color: var(--rs-accent-600); text-decoration: underline; text-underline-offset: 2px; }
-/* Надзаголовок секции: капс + волосяная линия до конца блока.
-   Линия структурирует страницу; черта-«тире» слева убрана как декорация. */
+/* Section eyebrow: uppercase plus a hairline running to the end of the block.
+   The line gives the page its rhythm; a leading dash would be pure decoration. */
 .rs-eyebrow { display: flex; align-items: center; gap: 10px; font: 500 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
 .rs-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--rs-hairline); }
 .rs-eyebrow--sentence { text-transform: none; letter-spacing: 0; }
 .rs-eyebrow--bare::after { display: none; }
-/* Официальных вариантов три, у каждого своё место:
-   .rs-eyebrow        — секции страниц и библиотеки: линия задаёт ритм страницы;
-   .rs-eyebrow--tick  — внутри карточек и панелей, где линия спорила бы с границей;
-   .rs-eyebrow--tag   — над группой карточек: ярлык весомее, читается как раздел.
-   Четвёртого не вводим: больше вариантов — меньше системы. */
+/* Three official variants, each with its place:
+   .rs-eyebrow        — page and library sections: the line sets the page rhythm;
+   .rs-eyebrow--tick  — inside cards and panels, where a line fights the border;
+   .rs-eyebrow--tag   — above a group of cards: the label reads as a section.
+   There is no fourth: more variants mean less system. */
 .rs-eyebrow--tick { gap: 7px; }
 .rs-eyebrow--tick::before { content: ''; width: 10px; height: 2px; border-radius: 1px; background: var(--rs-accent-500); flex: none; }
 .rs-eyebrow--tick::after { display: none; }
 .rs-eyebrow--tag > span:first-child { background: var(--rs-surface-3); border-radius: var(--rs-radius-sm); padding: 5px 8px; flex: none; white-space: nowrap; }
-/* Капс разрешён ровно в двух местах: надзаголовок секции и код/аббревиатура.
-   Никогда — в кнопках, заголовках, предложениях и статусах длиннее слова. */
+/* Uppercase is allowed in exactly two places: the section eyebrow and a code
+   or abbreviation. Never in buttons, headings, sentences, or statuses longer
+   than a single word. */
 .rs-caps { text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; font-size: var(--rs-fs-label); }
 .rs-code { text-transform: uppercase; letter-spacing: 0.02em; color: var(--rs-text-faint); }
-/* Имя класса или свойства — как в коде, без капса */
+/* A class or property name reads as code, so no uppercase */
 .rs-api { text-transform: none; letter-spacing: 0; color: var(--rs-text-muted); background: var(--rs-surface-2); border: 1px solid var(--rs-hairline); border-radius: 3px; padding: 1px 5px; font-size: var(--rs-fs-label); }
 .rs-title { font: 600 var(--rs-fs-title) / 1.25 var(--rs-font); color: var(--rs-text); margin: 0; }
 .rs-section-title { font: 600 var(--rs-fs-section) / 1.4 var(--rs-font); margin: 0; }
@@ -323,7 +324,7 @@
 .rs-muted { color: var(--rs-text-muted); }
 .rs-faint { color: var(--rs-text-faint); }
 
-/* --- 3. Кнопки ----------------------------------------------- */
+/* --- 3. Buttons -------------------------------------------- */
 .rs-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   height: var(--rs-control-h); padding: 0 12px; border: 1px solid var(--rs-border);
@@ -333,11 +334,12 @@
 }
 .rs-btn:hover { background: var(--rs-surface-2); border-color: var(--rs-border-strong); }
 .rs-btn:active { background: var(--rs-surface-3); }
-/* Кольцо фокуса в три шага ради браузеров без :focus-visible.
-   Первое правило — фоллбэк: кольцо на любом фокусе, включая клик мышью.
-   Второе гасит его там, где :focus-visible понимают (в старых браузерах
-   селектор невалиден и правило целиком игнорируется — фоллбэк уцелеет).
-   Третье возвращает кольцо клавиатуре. Порядок менять нельзя. */
+/* The focus ring takes three rules for the sake of browsers without
+   :focus-visible. The first is the fallback: a ring on any focus, mouse
+   included. The second removes it where :focus-visible is understood — in
+   older browsers that selector is invalid, so the whole rule is skipped and
+   the fallback survives. The third gives the ring back to the keyboard.
+   The order must not change. */
 .rs-btn:focus { outline: none; box-shadow: var(--rs-ring); }
 .rs-btn:focus:not(:focus-visible) { box-shadow: none; }
 .rs-btn:focus-visible { outline: none; box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
@@ -352,8 +354,9 @@
 .rs-btn--sm { height: var(--rs-control-h-sm); padding: 0 10px; font-size: var(--rs-fs-label); }
 .rs-btn--icon { width: var(--rs-control-h); padding: 0; }
 .rs-btn.is-loading { color: transparent; position: relative; }
-/* Цвет спиннера идёт от фона кнопки, а не от её текста: текст в загрузке
-   прозрачный. На светлой кнопке белый спиннер был бы не виден вовсе. */
+/* The spinner colour follows the button surface, not its text: text is
+   transparent while loading. A white spinner on a light button would be
+   invisible. */
 .rs-btn.is-loading::after {
   content: ''; position: absolute; width: 13px; height: 13px; border-radius: 50%;
   border: 2px solid currentColor; border-top-color: transparent; color: var(--rs-text);
@@ -362,15 +365,15 @@
 .rs-btn--primary.is-loading::after { color: var(--rs-text-invert); }
 @keyframes rs-spin { to { transform: rotate(360deg); } }
 
-/* --- 4. Поля ------------------------------------------------- */
+/* --- 4. Fields --------------------------------------------- */
 .rs-field { display: flex; flex-direction: column; gap: 6px; }
 .rs-label { font: 400 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-muted); }
 .rs-hint { font: 400 var(--rs-fs-label) / 1.45 var(--rs-font); color: var(--rs-text-faint); }
 .rs-error { font: 400 var(--rs-fs-label) / 1.45 var(--rs-font); color: var(--rs-bad-fg); }
-/* Граница контрола — не декоративная линия, а единственный признак того,
-   что перед пользователем поле. WCAG 1.4.11 требует для неё 3:1, чего
-   --rs-border (волосяная линия карточек) не даёт. Вернуть прежний тихий
-   вид можно одной строкой: --rs-control-border: var(--rs-border). */
+/* A control border is not decoration — it is the only sign that there is a
+   field here at all. WCAG 1.4.11 asks for 3:1, which --rs-border (the card
+   hairline) does not provide. The quieter original look is one line away:
+   --rs-control-border: var(--rs-border). */
 .rs-input, .rs-select, .rs-textarea {
   height: var(--rs-control-h); padding: 0 11px; border: 1px solid var(--rs-control-border);
   border-radius: var(--rs-radius); background: var(--rs-surface); color: var(--rs-text);
@@ -392,20 +395,20 @@
 .rs-check.is-on, .rs-radio.is-on { background: var(--rs-accent-500); border-color: var(--rs-accent-500); color: var(--rs-text-invert); }
 .rs-radio.is-on { background: var(--rs-surface); border-color: var(--rs-accent-500); }
 .rs-radio.is-on::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--rs-accent-500); }
-/* Выключенный переключатель на белой карточке отличался от фона только
-   подложкой surface-3 — это ~1.1:1. Граница делает его видимым. */
+/* An unchecked switch on a white card differed from the background only by
+   its surface-3 fill — about 1.1:1. The border makes it visible. */
 .rs-switch { width: 32px; height: 18px; border-radius: var(--rs-radius-pill); background: var(--rs-surface-3); border: 1px solid var(--rs-control-border); display: inline-flex; align-items: center; padding: 1px; flex: none; transition: background var(--rs-dur) var(--rs-ease), border-color var(--rs-dur) var(--rs-ease); }
 .rs-switch::after { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--rs-surface); box-shadow: var(--rs-shadow-1); transition: transform var(--rs-dur) var(--rs-ease); }
 .rs-switch.is-on { background: var(--rs-accent-500); border-color: var(--rs-accent-500); }
 .rs-switch.is-on::after { transform: translateX(14px); }
 
-/* Нативные контролы под визуалом системы.
-   Разметка: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
-   <span class="rs-check"></span><span>подпись</span></label>
-   Состояние держит сам input, поэтому доступность, формы и клавиатура
-   работают без единой строки js — .is-on нужен только там, где визуал
-   рисуется без input (например, ячейка таблицы).
-   Галочка рисуется рамкой, чтобы базовый чекбокс не тянул иконочный шрифт. */
+/* Native controls wearing the system's visuals.
+   Markup: <label class="rs-choice"><input type="checkbox" class="rs-choice__input">
+   <span class="rs-check"></span><span>label</span></label>
+   The input owns the state, so accessibility, forms and keyboard work without
+   a line of JavaScript — .is-on is only needed where the visual is drawn
+   without an input, a table cell for example.
+   The checkmark is drawn with borders so a basic checkbox pulls in no icon font. */
 .rs-choice { display: inline-flex; align-items: center; gap: 9px; position: relative; font: 400 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); cursor: pointer; }
 .rs-choice__input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; pointer-events: none; }
 .rs-choice__input:disabled ~ * { opacity: 0.5; cursor: not-allowed; }
@@ -430,12 +433,12 @@
 .rs-choice__input:focus-visible + .rs-radio,
 .rs-choice__input:focus-visible + .rs-switch { box-shadow: var(--rs-ring); border-color: var(--rs-accent-400); }
 
-/* --- 5. Поверхности ------------------------------------------ */
+/* --- 5. Surfaces ------------------------------------------- */
 .rs-card { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); }
 .rs-card__body { padding: var(--rs-pad-card); }
 .rs-divider { height: 1px; background: var(--rs-hairline); border: 0; margin: var(--rs-space-4) 0; }
 
-/* --- 6. Статусы --------------------------------------------- */
+/* --- 6. Status --------------------------------------------- */
 .rs-badge { display: inline-flex; align-items: center; gap: 6px; height: 22px; white-space: nowrap; padding: 0 8px; border-radius: var(--rs-radius-sm); font: 500 var(--rs-fs-label) / 1 var(--rs-font); background: var(--rs-surface-3); color: var(--rs-text-muted); }
 .rs-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex: none; }
 .rs-badge--plain::before { display: none; }
@@ -447,7 +450,7 @@
 .rs-chip.is-on { border-color: var(--rs-accent-200); background: var(--rs-accent-50); color: var(--rs-info-fg); font-weight: 500; }
 .rs-chip--add { border-style: dashed; color: var(--rs-text-muted); }
 
-/* --- 7. Таблица --------------------------------------------- */
+/* --- 7. Table ---------------------------------------------- */
 .rs-table { width: 100%; border-collapse: collapse; font-family: var(--rs-font); }
 .rs-table th { text-align: left; font: 500 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; background: var(--rs-surface-2); border-bottom: 1px solid var(--rs-border); white-space: nowrap; }
 .rs-table td { font: 400 var(--rs-fs-ui) / var(--rs-lh-ui) var(--rs-font); color: var(--rs-text); padding: var(--rs-row-pad) 14px; border-bottom: 1px solid var(--rs-hairline); }
@@ -458,14 +461,15 @@
 .rs-table__group td { background: var(--rs-surface-2); font-weight: 500; color: var(--rs-text); }
 .rs-table-wrap { border: 1px solid var(--rs-border); border-radius: var(--rs-radius); overflow: hidden; background: var(--rs-surface); }
 
-/* --- 8. Навигация ------------------------------------------- */
+/* --- 8. Navigation ----------------------------------------- */
 .rs-tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--rs-border); }
-/* Вкладка может быть и div, и button — у кнопки браузер рисует свой фон,
-   рамку и шрифт, поэтому сброс обязателен, иначе вкладки выглядят кнопками. */
+/* A tab may be a div or a button. For a button the browser paints its own
+   background, border and font, so the reset is mandatory — otherwise tabs
+   look like buttons. */
 .rs-tab { appearance: none; -webkit-appearance: none; background: none; border: 0; padding: 0 0 10px; font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text-muted); cursor: pointer; }
-/* Состояние приходит с двух сторон: .is-on ставит разметка вручную,
-   data-state — библиотека поведения в React-слое. Оба варианта равноправны,
-   иначе ядро оказалось бы привязано к одному способу применения. */
+/* State arrives from two directions: .is-on is set by hand-written markup,
+   data-state by the behaviour library in the React layer. Both are equal
+   citizens — otherwise the core would be tied to one way of using it. */
 .rs-tab.is-on,
 .rs-tab[data-state='active'] { color: var(--rs-text); font-weight: 500; box-shadow: inset 0 -2px 0 var(--rs-accent-500); }
 .rs-nav-item { display: flex; align-items: center; gap: 10px; height: var(--rs-control-h); padding: 0 10px; border-radius: var(--rs-radius); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text-muted); cursor: pointer; }
@@ -476,9 +480,10 @@
 .rs-seg__btn { height: var(--rs-control-h-sm); padding: 0 11px; border: 0; border-radius: calc(var(--rs-radius) - 2px); background: transparent; color: var(--rs-text-muted); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); cursor: pointer; }
 .rs-seg__btn.is-on { background: var(--rs-surface); color: var(--rs-text); font-weight: 500; box-shadow: var(--rs-shadow-1); }
 
-/* --- 9. Обратная связь -------------------------------------- */
-/* Геометрия всплывающих слоёв. Вид описан ниже, здесь только то, где слой
-   висит: без этого каждый потребитель раскладывал бы диалог инлайн-стилями. */
+/* --- 9. Feedback ------------------------------------------- */
+/* Geometry of floating layers. Their appearance is defined below; this is
+   only where they hang — without it every consumer would position dialogs
+   with inline styles. */
 .rs-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 40; background: rgba(20, 22, 35, 0.4); background: color-mix(in oklab, var(--rs-text) 40%, transparent); }
 .rs-layer { position: fixed; z-index: 41; }
 .rs-layer--center { top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: calc(100vw - 2 * var(--rs-space-5)); max-height: calc(100vh - 2 * var(--rs-space-5)); max-height: calc(100dvh - 2 * var(--rs-space-5)); display: flex; }
@@ -501,7 +506,7 @@
 .rs-skeleton::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rs-surface) 70%, transparent), transparent); animation: rs-shimmer 1.3s infinite; }
 @keyframes rs-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
-/* --- 10. Данные --------------------------------------------- */
+/* --- 10. Data ---------------------------------------------- */
 .rs-metric { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); padding: 13px 15px; }
 .rs-metric__label { font: 400 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-muted); }
 .rs-metric__value { font: 600 21px / 1 var(--rs-font); color: var(--rs-text); }
@@ -516,7 +521,7 @@
 .rs-step__line { flex: 1; height: 1px; background: var(--rs-border); margin: 0 12px; }
 .rs-step__line.is-done { background: var(--rs-accent-500); }
 
-/* --- 11. Каркас --------------------------------------------- */
+/* --- 11. Shell --------------------------------------------- */
 .rs-shell { display: flex; min-height: 100%; background: var(--rs-bg); }
 .rs-shell__side { flex: none; width: 236px; background: var(--rs-surface); border-right: 1px solid var(--rs-hairline); display: flex; flex-direction: column; }
 .rs-shell__side[data-collapsed='true'] { width: 64px; }
@@ -524,7 +529,7 @@
 .rs-shell__topbar { height: 52px; background: var(--rs-surface); border-bottom: 1px solid var(--rs-hairline); display: flex; align-items: center; gap: 14px; padding: 0 var(--rs-space-5); }
 .rs-shell__content { padding: var(--rs-space-5); }
 
-/* --- 12. Markdown ------------------------------------------- */
+/* --- 12. Markdown ------------------------------------------ */
 .rs-md { font: 400 var(--rs-fs-body) / var(--rs-lh-body) var(--rs-font); color: var(--rs-text); }
 .rs-md h1 { font: 600 21px / 1.3 var(--rs-font); margin: 0 0 8px; }
 .rs-md h2 { font: 600 var(--rs-fs-section) / 1.4 var(--rs-font); margin: 22px 0 10px; }
@@ -539,7 +544,7 @@
 .rs-md pre { background: var(--rs-surface-2); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); padding: 13px 15px; font: 400 var(--rs-fs-ui) / 1.7 var(--rs-font); overflow-x: auto; }
 .rs-md hr { border: 0; height: 1px; background: var(--rs-hairline); margin: 22px 0; }
 
-/* --- 13. Утилиты и доступность ------------------------------ */
+/* --- 13. Utilities and accessibility ----------------------- */
 .rs-focusable:focus { outline: none; box-shadow: var(--rs-ring); }
 .rs-focusable:focus:not(:focus-visible) { box-shadow: none; }
 .rs-focusable:focus-visible { outline: none; box-shadow: var(--rs-ring); }
@@ -551,7 +556,7 @@
   }
 }
 
-/* --- 14. Календарь и период ---------------------------------- */
+/* --- 14. Calendar and date range --------------------------- */
 .rs-cal { width: 246px; }
 .rs-cal__head { display: flex; align-items: center; gap: 8px; padding: 0 2px 10px; }
 .rs-cal__month { font: 500 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text); }
@@ -566,7 +571,7 @@
 .rs-cal__day.is-sel:first-of-type { border-radius: var(--rs-radius-sm); }
 .rs-cal__day.is-off { color: var(--rs-text-faint); opacity: 0.45; cursor: not-allowed; }
 
-/* --- 15. Мультиселект и комбобокс ---------------------------- */
+/* --- 15. Multiselect and combobox -------------------------- */
 .rs-combo { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: var(--rs-control-h); padding: 4px 8px; border: 1px solid var(--rs-control-border); border-radius: var(--rs-radius); background: var(--rs-surface); }
 .rs-combo:focus-within { border-color: var(--rs-accent-400); box-shadow: var(--rs-ring); }
 .rs-token { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 4px 0 8px; border-radius: var(--rs-radius-sm); background: var(--rs-surface-3); font: 400 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text); white-space: nowrap; }
@@ -574,15 +579,15 @@
 .rs-token__x:hover { color: var(--rs-text); }
 .rs-menu { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); box-shadow: var(--rs-shadow-2); padding: 4px; min-width: 200px; }
 .rs-menu__item { display: flex; align-items: center; gap: 9px; height: var(--rs-control-h); padding: 0 9px; border-radius: var(--rs-radius-sm); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text); cursor: pointer; }
-/* is-focus — ручная разметка, data-highlighted — пункт, на который увели
-   клавишами: без него навигация стрелками не видна на экране. */
+/* is-focus for hand-written markup, data-highlighted for the item the
+   keyboard moved to — without it arrow navigation is invisible on screen. */
 .rs-menu__item:hover, .rs-menu__item.is-focus, .rs-menu__item[data-highlighted] { background: var(--rs-surface-2); outline: none; }
 .rs-menu__item.is-on, .rs-menu__item[data-state='checked'] { color: var(--rs-info-fg); font-weight: 500; }
 .rs-menu__item.is-disabled, .rs-menu__item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
 .rs-menu__sep { height: 1px; background: var(--rs-hairline); margin: 4px 0; }
 .rs-menu__hint { margin-left: auto; color: var(--rs-text-faint); font-size: var(--rs-fs-label); }
 
-/* --- 16. Инлайн-редактирование ------------------------------- */
+/* --- 16. Inline editing ------------------------------------ */
 .rs-cell-edit { display: inline-flex; align-items: center; gap: 6px; min-height: 24px; margin: -3px -7px; padding: 3px 7px; border: 1px solid transparent; border-radius: var(--rs-radius-sm); cursor: text; }
 .rs-cell-edit:hover { border-color: var(--rs-border); background: var(--rs-surface); }
 .rs-cell-edit.is-editing { border-color: var(--rs-accent-400); box-shadow: var(--rs-ring); background: var(--rs-surface); }
@@ -590,14 +595,14 @@
 .rs-cell-edit__pen { opacity: 0; color: var(--rs-text-faint); font-size: 13px; }
 .rs-cell-edit:hover .rs-cell-edit__pen { opacity: 1; }
 
-/* --- 17. Дерево ---------------------------------------------- */
+/* --- 17. Tree ---------------------------------------------- */
 .rs-tree__row { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--rs-radius-sm); font: 400 var(--rs-fs-ui) / 1.4 var(--rs-font); cursor: pointer; }
 .rs-tree__row:hover { background: var(--rs-surface-2); }
 .rs-tree__row.is-on { background: var(--rs-accent-50); color: var(--rs-info-fg); }
 .rs-tree__toggle { width: 16px; color: var(--rs-text-faint); flex: none; text-align: center; }
 .rs-tree__kids { margin-left: 17px; padding-left: 13px; border-left: 1px solid var(--rs-hairline); }
 
-/* --- 18. Файлы ------------------------------------------------ */
+/* --- 18. Files --------------------------------------------- */
 .rs-drop { border: 1px dashed var(--rs-control-border); border-radius: var(--rs-radius); background: var(--rs-surface-2); padding: var(--rs-space-6); display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center; }
 .rs-drop.is-over { border-color: var(--rs-accent-500); background: var(--rs-accent-50); }
 .rs-file { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border: 1px solid var(--rs-border); border-radius: var(--rs-radius); background: var(--rs-surface); }
@@ -605,7 +610,7 @@
 .rs-file__name { font: 400 var(--rs-fs-ui) / 1.35 var(--rs-font); color: var(--rs-text); }
 .rs-file__meta { font: 400 var(--rs-fs-label) / 1.35 var(--rs-font); color: var(--rs-text-muted); }
 
-/* --- 19. Канбан ----------------------------------------------- */
+/* --- 19. Board --------------------------------------------- */
 .rs-board { display: flex; gap: 12px; align-items: flex-start; }
 .rs-board__col { flex: 1; min-width: 0; background: var(--rs-surface-2); border: 1px solid var(--rs-hairline); border-radius: var(--rs-radius); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .rs-board__head { display: flex; align-items: center; gap: 8px; padding: 2px 2px 4px; font: 500 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
@@ -614,7 +619,7 @@
 .rs-board__card:hover { border-color: var(--rs-border-strong); }
 .rs-board__ghost { border: 1px dashed var(--rs-accent-400); background: var(--rs-accent-50); border-radius: var(--rs-radius); height: 62px; }
 
-/* --- 20. Лента событий ---------------------------------------- */
+/* --- 20. Timeline ------------------------------------------ */
 .rs-timeline { display: flex; flex-direction: column; }
 .rs-timeline__item { display: grid; grid-template-columns: 132px 16px 1fr; column-gap: 12px; padding: 0 0 16px; }
 .rs-timeline__when { font: 400 var(--rs-fs-label) / 1.5 var(--rs-font); color: var(--rs-text-muted); text-align: right; padding-top: 2px; }
@@ -624,10 +629,10 @@
 .rs-timeline__line { flex: 1; width: 1px; background: var(--rs-hairline); margin: 4px 0 -14px; }
 .rs-timeline__body { font: 400 var(--rs-fs-ui) / 1.5 var(--rs-font); color: var(--rs-text); padding-bottom: 2px; }
 
-/* --- 21. Подсказка клавиши ------------------------------------ */
+/* --- 21. Keyboard hint ------------------------------------- */
 .rs-kbd { display: inline-flex; align-items: center; height: 19px; padding: 0 5px; border: 1px solid var(--rs-border); border-bottom-width: 2px; border-radius: 4px; background: var(--rs-surface-2); font: 500 10.5px / 1 var(--rs-font); color: var(--rs-text-muted); }
 
-/* --- 22. Баннеры ---------------------------------------------- */
+/* --- 22. Alerts -------------------------------------------- */
 .rs-alert { display: flex; gap: 11px; padding: 12px 14px; border: 1px solid var(--rs-border); border-radius: var(--rs-radius); background: var(--rs-surface-2); }
 .rs-alert__mark { width: 3px; border-radius: 2px; background: var(--rs-text-faint); flex: none; }
 .rs-alert__title { font: 500 var(--rs-fs-ui) / 1.4 var(--rs-font); color: var(--rs-text); }
@@ -641,7 +646,7 @@
 .rs-alert--info { background: var(--rs-info-bg); border-color: var(--rs-border); border-color: color-mix(in oklab, var(--rs-info) 25%, transparent); }
 .rs-alert--info .rs-alert__mark { background: var(--rs-info); }
 
-/* --- 23. Прочее ----------------------------------------------- */
+/* --- 23. Misc ---------------------------------------------- */
 .rs-avatar { width: 28px; height: 28px; border-radius: var(--rs-radius); background: var(--rs-surface-3); display: inline-flex; align-items: center; justify-content: center; font: 600 10.5px / 1 var(--rs-font); color: var(--rs-text-muted); flex: none; }
 .rs-avatar--round { border-radius: 50%; }
 .rs-stack { display: flex; }
@@ -651,9 +656,9 @@
 .rs-kv dt { color: var(--rs-text-muted); margin: 0; }
 .rs-kv dd { color: var(--rs-text); margin: 0; }
 
-/* --- 24. Мобильный контур ------------------------------------- */
-/* Включается на контейнере: data-density="mobile". Те же токены,
-   другие значения: крупнее текст, радиусы 16, зоны нажатия 44. */
+/* --- 24. Mobile shell -------------------------------------- */
+/* Enabled on the container: data-density="mobile". Same tokens, different
+   values: larger text, 16px radii, 44px touch targets. */
 [data-density='mobile'] { --rs-control-h: 44px; --rs-control-h-sm: 38px; --rs-row-pad: 14px; --rs-pad-card: 16px; --rs-fs-ui: 13.5px; --rs-fs-label: 12px; --rs-fs-body: 15px; --rs-radius: 16px; --rs-radius-sm: 12px; --rs-radius-lg: 20px; }
 .rs-m-card { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: 16px; padding: 15px 16px; }
 .rs-m-card__foot { display: flex; align-items: center; gap: 16px; margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--rs-hairline); }
@@ -668,11 +673,12 @@
 .rs-m-chip.is-on { background: var(--rs-accent-500); border-color: transparent; color: var(--rs-text-invert); font-weight: 500; }
 .rs-m-action { height: 52px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--rs-accent-500); color: var(--rs-text-invert); font: 500 15px / 1 var(--rs-font); border: 0; width: 100%; }
 
-/* --- 25. Системные состояния страниц --------------------------- */
-/* 403/404/500, обслуживание, первый запуск. Одна разметка, разный тон. */
+/* --- 25. System state pages -------------------------------- */
+/* 403/404/500, maintenance, first run. One markup, different tone. */
 .rs-state { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px; max-width: 420px; margin: 0 auto; padding: var(--rs-space-8) var(--rs-space-5); }
-/* Значок не в рамке: иконка живёт в строке кода, а не отдельным блоком —
-   пустая страница и без того привлекает внимание, подложка её только утяжеляет. */
+/* The mark has no frame: the icon lives inside the code line rather than in a
+   block of its own — an empty page already draws attention, and a backdrop
+   would only weigh it down. */
 .rs-state__code { display: flex; align-items: center; gap: 7px; font: 500 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text-faint); text-transform: uppercase; letter-spacing: 0.07em; }
 .rs-state__mark { font-size: 15px; color: var(--rs-text-faint); }
 .rs-state__mark--warn { color: var(--rs-warn); }
@@ -683,10 +689,11 @@
 .rs-state__actions { display: flex; gap: 8px; margin-top: 6px; }
 .rs-state__tech { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rs-hairline); width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; font: 400 var(--rs-fs-label) / 1.5 var(--rs-font); color: var(--rs-text-faint); }
 
-/* --- 26. Планшет 768–1024 -------------------------------------- */
-/* Сайдбар становится рельсом, таблица скроллится с залипающей первой колонкой,
-   фильтры собираются под одну кнопку. Атрибут ставит приложение, а не медиазапрос,
-   чтобы то же работало в узкой панели на большом экране. */
+/* --- 26. Tablet 768–1024 ----------------------------------- */
+/* The sidebar becomes a rail, the table scrolls with a pinned first column,
+   filters collapse behind one button. The application sets the attribute
+   rather than a media query, so the same layout works inside a narrow panel
+   on a large screen. */
 .rs-shell[data-viewport='tablet'] .rs-shell__side { width: 60px; }
 .rs-shell[data-viewport='tablet'] .rs-shell__content { padding: var(--rs-space-4); }
 .rs-rail { width: 60px; flex: none; background: var(--rs-surface); border-right: 1px solid var(--rs-hairline); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px; }
@@ -708,19 +715,20 @@
   .rs-hide-mobile { display: none !important; }
 }
 
-/* --- 27. Правило одного экрана --------------------------------- */
-/* Админка — приложение, а не страница: высота равна окну, скроллится
-   только рабочая область, шапка и подвал приклеены. Страница целиком
-   не листается никогда. */
+/* --- 27. One-screen rule ----------------------------------- */
+/* An admin panel is an application, not a page: its height equals the window,
+   only the working area scrolls, header and footer are pinned. The page as a
+   whole never scrolls. */
 .rs-app { height: 100vh; height: 100dvh; display: flex; overflow: hidden; }
 .rs-app__main { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 .rs-app__bar { flex: none; }
 .rs-pane { flex: 1; min-height: 0; overflow: auto; }
 .rs-pane--fixed { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
-/* --- 28. Свои полосы прокрутки таблицы ------------------------- */
-/* Широкая таблица получает две полосы: над шапкой и под последней строкой.
-   Верхняя нужна, чтобы не уезжать в конец списка ради прокрутки вправо. */
+/* --- 28. Custom table scrollbars --------------------------- */
+/* A wide table gets two scrollbars: above the header and below the last row.
+   The top one exists so that scrolling right does not require travelling to
+   the end of the list first. */
 .rs-xscroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
 .rs-xscroll::-webkit-scrollbar { display: none; }
 .rs-xbar { display: flex; align-items: center; gap: 10px; padding: 7px 14px; background: var(--rs-surface); }
@@ -734,10 +742,10 @@
 
 
 /* ============================================================
-   24. Движение
-   Одна идея: всё входящее долго тормозит в конце (easeOutQuint),
-   всё уходящее — коротко разгоняется. Поэтому появление читается
-   как «положили на стол», а не как «дёрнули».
+   24. Motion
+   One idea: everything entering decelerates for a long time at the end
+   (easeOutQuint), everything leaving accelerates briefly. That is why an
+   entrance reads as "placed on the table" rather than "yanked into view".
    ============================================================ */
 
 @keyframes rs-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -759,9 +767,9 @@
 }
 @keyframes rs-panel-in { from { transform: translate3d(101%, 0, 0); } to { transform: none; } }
 
-/* Уход: та же геометрия вдвое короче и по разгоняющейся кривой.
-   Возвращаться элемент должен быстрее, чем приходил, иначе закрытие
-   ощущается как задержка интерфейса. */
+/* Exit: the same geometry at half the length, on an accelerating curve.
+   An element must leave faster than it arrived, otherwise closing feels
+   like interface lag. */
 @keyframes rs-fade-out { to { opacity: 0; } }
 @keyframes rs-rise-out { to { opacity: 0; transform: translate3d(0, 6px, 0) scale(0.99); } }
 @keyframes rs-drop-out { to { opacity: 0; transform: translate3d(0, -5px, 0) scale(0.98); } }
@@ -776,7 +784,7 @@
   68% { transform: translateX(-2px); } 100% { transform: none; }
 }
 
-/* Утилиты входа */
+/* Entrance utilities */
 .rs-in { animation: rs-rise var(--rs-dur) var(--rs-ease-out) both; }
 .rs-in--fade { animation-name: rs-fade; }
 .rs-in--drop { animation-name: rs-drop; transform-origin: top center; }
@@ -784,7 +792,7 @@
 .rs-in--right { animation-name: rs-slide-right; }
 .rs-in--slow { animation-duration: var(--rs-dur-slow); }
 
-/* Утилиты выхода. Вешаются за --rs-dur-out до размонтирования. */
+/* Exit utilities. Applied --rs-dur-out before unmounting. */
 .rs-out { animation: rs-rise-out var(--rs-dur-out) var(--rs-ease-in) both; }
 .rs-out--fade { animation-name: rs-fade-out; }
 .rs-out--drop { animation-name: rs-drop-out; }
@@ -792,7 +800,7 @@
 .rs-out--right { animation-name: rs-slide-right-out; }
 .rs-out--panel { animation-name: rs-panel-out; animation-duration: var(--rs-dur-out-panel); }
 
-/* Лесенка: шаг 45 мс, потолок на девятом элементе */
+/* Stagger: 45ms step, capped at the ninth child */
 .rs-stagger > * { animation: rs-rise var(--rs-dur) var(--rs-ease-out) both; }
 .rs-stagger > *:nth-child(2) { animation-delay: 45ms; }
 .rs-stagger > *:nth-child(3) { animation-delay: 90ms; }
@@ -803,8 +811,8 @@
 .rs-stagger > *:nth-child(8) { animation-delay: 315ms; }
 .rs-stagger > *:nth-child(n + 9) { animation-delay: 360ms; }
 
-/* Слои появляются сами. Подложка идёт первой, содержимое — на 40 мс позже:
-   глаз успевает понять, что фон ушёл на второй план. */
+/* Layers animate themselves. The backdrop goes first, the content 40ms later:
+   the eye has time to register that the background stepped back. */
 .rs-backdrop { animation: rs-fade var(--rs-dur-fast) linear both; }
 .rs-toast { animation: rs-slide-right var(--rs-dur) var(--rs-ease-out) both; }
 .rs-dialog { animation: rs-pop var(--rs-dur) var(--rs-ease-out) 40ms both; }
@@ -812,14 +820,14 @@
 .rs-popover, .rs-menu { animation: rs-drop var(--rs-dur-fast) var(--rs-ease-out) both; transform-origin: top center; }
 .rs-tooltip { animation: rs-drop var(--rs-dur-instant) var(--rs-ease-out) both; }
 
-/* Закрытие: класс is-out перебивает анимацию появления */
+/* Closing: the is-out class overrides the entrance animation */
 .rs-backdrop.is-out { animation: rs-fade-out var(--rs-dur-out) linear both; }
 .rs-toast.is-out { animation: rs-slide-right-out var(--rs-dur-out) var(--rs-ease-in) both; }
 .rs-dialog.is-out { animation: rs-pop-out var(--rs-dur-out) var(--rs-ease-in) both; }
 .rs-drawer.is-out { animation: rs-panel-out var(--rs-dur-out-panel) var(--rs-ease-in) both; }
 .rs-popover.is-out, .rs-menu.is-out { animation: rs-drop-out var(--rs-dur-instant) var(--rs-ease-in) both; }
 
-/* Состояния. Вход в состояние быстрее выхода — курсор ощущается «липким». */
+/* States. Entering a state is faster than leaving it, which makes the cursor feel sticky. */
 .rs-nav-item, .rs-menu__item, .rs-tab, .rs-chip, .rs-cal__day, .rs-tree__row,
 .rs-cell-edit, .rs-seg__btn, .rs-file, .rs-board__card, .rs-table tbody tr td {
   transition: background-color var(--rs-dur-fast) var(--rs-ease),
@@ -841,19 +849,19 @@
 .rs-switch::after { transition: transform var(--rs-dur-fast) var(--rs-ease-out); }
 .rs-badge { transition: background-color var(--rs-dur) var(--rs-ease), color var(--rs-dur) var(--rs-ease); }
 
-/* Бесконечное — только для живых данных */
+/* Infinite animation is only for live data */
 .rs-live { animation: rs-pulse 2.4s var(--rs-ease) infinite; }
 .rs-progress { height: 2px; background: var(--rs-surface-3); overflow: hidden; border-radius: 1px; }
 .rs-progress__bar { height: 2px; width: 32%; border-radius: 1px; background: var(--rs-accent-500); animation: rs-track 1.4s var(--rs-ease) infinite; }
 .rs-skeleton::after { animation-duration: 1.6s; }
 
-/* Ошибка формы: затухающий толчок, один раз при отправке */
+/* Form error: a decaying nudge, once per submit */
 .rs-shake { animation: rs-nudge var(--rs-dur-slow) var(--rs-ease) both; }
 
-/* Столбцы графика вырастают снизу */
+/* Chart bars grow from the bottom */
 .rs-grow { transform-origin: bottom; animation: rs-bar var(--rs-dur-slow) var(--rs-ease-out) both; }
 
-/* Демонстрация: проигрывается при наведении на карточку целиком */
+/* Demo: plays when the whole card is hovered */
 .rs-demo__stage { position: relative; overflow: hidden; }
 .rs-demo:hover .rs-demo__obj { animation: var(--rs-demo-anim, rs-rise) var(--rs-demo-dur, var(--rs-dur)) var(--rs-ease-out) both; }
 .rs-demo-stagger-card:hover .rs-demo-stagger > * { animation: rs-rise var(--rs-dur) var(--rs-ease-out) both; }

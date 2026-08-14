@@ -22,64 +22,64 @@ import {
 } from '../src'
 
 describe('cx', () => {
-  it('склеивает строки и ключи объектов, пропуская пустое', () => {
+  it('joins strings and truthy object keys, skipping the empty ones', () => {
     expect(cx('a', false, undefined, { b: true, c: false }, 'd')).toBe('a b d')
   })
 })
 
 describe('Button', () => {
-  it('в состоянии загрузки не вызывает onClick и помечен aria-busy', async () => {
+  it('does not fire onClick while loading and is marked aria-busy', async () => {
     const onClick = vi.fn()
     render(
       <Button loading onClick={onClick}>
-        Сохранить
+        Save
       </Button>
     )
-    const button = screen.getByRole('button', { name: 'Сохранить' })
+    const button = screen.getByRole('button', { name: 'Save' })
     expect(button).toHaveAttribute('aria-busy', 'true')
     await userEvent.click(button)
     expect(onClick).not.toHaveBeenCalled()
   })
 
-  it('обычная кнопка кликается и не отправляет форму по умолчанию', async () => {
+  it('is clickable and does not submit the form by default', async () => {
     const onClick = vi.fn()
     const onSubmit = vi.fn((e: FormEvent) => e.preventDefault())
     render(
       <form onSubmit={onSubmit}>
-        <Button onClick={onClick}>Ок</Button>
+        <Button onClick={onClick}>OK</Button>
       </form>
     )
-    await userEvent.click(screen.getByRole('button', { name: 'Ок' }))
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     expect(onClick).toHaveBeenCalledOnce()
     expect(onSubmit).not.toHaveBeenCalled()
   })
 })
 
 describe('Field', () => {
-  it('связывает подпись, подсказку и ошибку с полем', () => {
+  it('ties the label, hint and error to the input', () => {
     render(
-      <Field label="Название" hint="Как в договоре" error="Обязательное поле" required>
+      <Field label="Name" hint="As in the contract" error="This field is required" required>
         {(props) => <Input {...props} />}
       </Field>
     )
-    const input = screen.getByLabelText(/Название/)
+    const input = screen.getByLabelText(/Name/)
     expect(input).toHaveAttribute('aria-invalid', 'true')
     expect(input).toBeRequired()
-    expect(input).toHaveAccessibleDescription('Как в договоре Обязательное поле')
-    expect(screen.getByRole('alert')).toHaveTextContent('Обязательное поле')
+    expect(input).toHaveAccessibleDescription('As in the contract This field is required')
+    expect(screen.getByRole('alert')).toHaveTextContent('This field is required')
   })
 })
 
-describe('Checkbox и Switch', () => {
-  it('переключаются мышью и пробелом, оставаясь нативными полями формы', async () => {
+describe('Checkbox and Switch', () => {
+  it('toggle by mouse and space bar, staying native form controls', async () => {
     render(
       <>
-        <Checkbox name="agree">Согласен</Checkbox>
-        <Switch name="live">Живые данные</Switch>
+        <Checkbox name="agree">I agree</Checkbox>
+        <Switch name="live">Live data</Switch>
       </>
     )
-    const checkbox = screen.getByRole('checkbox', { name: 'Согласен' })
-    const toggle = screen.getByRole('switch', { name: 'Живые данные' })
+    const checkbox = screen.getByRole('checkbox', { name: 'I agree' })
+    const toggle = screen.getByRole('switch', { name: 'Live data' })
 
     await userEvent.click(checkbox)
     expect(checkbox).toBeChecked()
@@ -91,27 +91,27 @@ describe('Checkbox и Switch', () => {
 })
 
 describe('Meter', () => {
-  it('подрезает значение вне диапазона, чтобы полоса не выехала', () => {
-    const { rerender } = render(<Meter value={140} label="Загрузка" />)
+  it('clamps out-of-range values so the bar cannot overflow', () => {
+    const { rerender } = render(<Meter value={140} label="Usage" />)
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100')
-    rerender(<Meter value={-20} label="Загрузка" />)
+    rerender(<Meter value={-20} label="Usage" />)
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0')
   })
 })
 
 describe('Avatar', () => {
-  it('собирает инициалы и оставляет полное имя диктору', () => {
-    render(<Avatar name="Пётр Иванов" />)
-    expect(screen.getByText('ПИ')).toBeInTheDocument()
-    expect(screen.getByText('Пётр Иванов')).toHaveClass('rs-sr')
+  it('derives initials and leaves the full name to screen readers', () => {
+    render(<Avatar name="Peter Ivanov" />)
+    expect(screen.getByText('PI')).toBeInTheDocument()
+    expect(screen.getByText('Peter Ivanov')).toHaveClass('rs-sr')
   })
 })
 
 describe('Alert', () => {
-  it('ошибка перебивает чтение, остальное ждёт паузы', () => {
-    const { rerender } = render(<Alert status="bad" title="Отчёт не собрался" />)
+  it('interrupts for an error and waits for a pause otherwise', () => {
+    const { rerender } = render(<Alert status="bad" title="The report timed out" />)
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    rerender(<Alert status="info" title="Скоро обслуживание" />)
+    rerender(<Alert status="info" title="Maintenance is coming" />)
     expect(screen.getByRole('status')).toBeInTheDocument()
   })
 })
@@ -123,38 +123,38 @@ function DialogHarness() {
       <Dialog
         open={open}
         onOpenChange={setOpen}
-        trigger={<Button>Открыть</Button>}
-        title="Удалить клиента"
-        description="Действие нельзя отменить."
+        trigger={<Button>Open</Button>}
+        title="Delete client"
+        description="This cannot be undone."
         footer={
           <DialogClose>
-            <Button>Отмена</Button>
+            <Button>Cancel</Button>
           </DialogClose>
         }
       >
-        <Input aria-label="Причина" />
+        <Input aria-label="Reason" />
       </Dialog>
     </Rostra>
   )
 }
 
 describe('Dialog', () => {
-  it('открывается, уводит фокус внутрь и закрывается по Esc', async () => {
+  it('opens, moves focus inside and closes on Escape', async () => {
     render(<DialogHarness />)
-    await userEvent.click(screen.getByRole('button', { name: 'Открыть' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Open' }))
 
     const dialog = screen.getByRole('dialog')
-    expect(within(dialog).getByText('Удалить клиента')).toBeInTheDocument()
+    expect(within(dialog).getByText('Delete client')).toBeInTheDocument()
     expect(dialog).toContainElement(document.activeElement as HTMLElement | null)
 
     await userEvent.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
-  it('содержимое портала получает тему корня', async () => {
+  it('portal content inherits the theme of the root', async () => {
     render(
       <Rostra theme="dark" density="compact">
-        <Dialog open title="Смена этапа" />
+        <Dialog open title="Change stage" />
       </Rostra>
     )
     const scope = screen.getByRole('dialog').closest<HTMLElement>('[data-theme]')
@@ -164,62 +164,62 @@ describe('Dialog', () => {
 })
 
 describe('Tabs', () => {
-  it('переключается стрелками и связывает панель с вкладкой', async () => {
+  it('switches with arrow keys and ties the panel to its tab', async () => {
     render(
       <Tabs
         items={[
-          { value: 'a', label: 'Заявки', content: 'Список заявок' },
-          { value: 'b', label: 'История', content: 'Лента событий' },
+          { value: 'a', label: 'Requests', content: 'List of requests' },
+          { value: 'b', label: 'History', content: 'Event timeline' },
         ]}
       />
     )
-    await userEvent.click(screen.getByRole('tab', { name: 'Заявки' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Requests' }))
     await userEvent.keyboard('{ArrowRight}')
-    expect(screen.getByRole('tab', { name: 'История' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tabpanel')).toHaveTextContent('Лента событий')
+    expect(screen.getByRole('tab', { name: 'History' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('Event timeline')
   })
 })
 
 describe('Menu', () => {
-  it('открывается с клавиатуры и вызывает выбранный пункт', async () => {
+  it('opens from the keyboard and calls the selected item', async () => {
     const onSelect = vi.fn()
     render(
       <Rostra>
         <Menu
-          trigger={<Button>Действия</Button>}
+          trigger={<Button>Actions</Button>}
           items={[
-            { label: 'Выставить счёт', onSelect },
-            { label: 'Архивировать', separated: true },
+            { label: 'Issue invoice', onSelect },
+            { label: 'Archive', separated: true },
           ]}
         />
       </Rostra>
     )
-    screen.getByRole('button', { name: 'Действия' }).focus()
+    screen.getByRole('button', { name: 'Actions' }).focus()
     await userEvent.keyboard('{Enter}')
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'Выставить счёт' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Issue invoice' }))
     expect(onSelect).toHaveBeenCalledOnce()
   })
 })
 
 describe('Segmented', () => {
-  it('сообщает выбранный вариант и переключается', async () => {
+  it('reports the selected option and switches', async () => {
     function Harness() {
       const [value, setValue] = useState<'compact' | 'roomy'>('compact')
       return (
         <Segmented
-          label="Плотность"
+          label="Density"
           value={value}
           onChange={setValue}
           options={[
-            { value: 'compact', label: 'Плотно' },
-            { value: 'roomy', label: 'Просторно' },
+            { value: 'compact', label: 'Compact' },
+            { value: 'roomy', label: 'Roomy' },
           ]}
         />
       )
     }
     render(<Harness />)
-    expect(screen.getByRole('button', { name: 'Плотно' })).toHaveAttribute('aria-pressed', 'true')
-    await userEvent.click(screen.getByRole('button', { name: 'Просторно' }))
-    expect(screen.getByRole('button', { name: 'Просторно' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Compact' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Roomy' }))
+    expect(screen.getByRole('button', { name: 'Roomy' })).toHaveAttribute('aria-pressed', 'true')
   })
 })

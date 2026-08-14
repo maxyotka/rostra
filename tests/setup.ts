@@ -4,7 +4,7 @@ import { afterEach } from 'vitest'
 
 afterEach(cleanup)
 
-// jsdom не умеет ни того, ни другого, а Radix спрашивает при открытии слоёв.
+// jsdom implements none of these, and Radix asks for them when opening layers.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
     ({

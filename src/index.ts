@@ -1,9 +1,9 @@
 /**
- * Rostra — система компонентов для админок и корпоративного контура.
+ * Rostra — a component system for admin panels and internal corporate tools.
  *
- * Стили подключаются отдельно, одним файлом:
+ * Styles are loaded separately, as a single file:
  *   import 'rostra-ui/rostra.css'
- * Шрифт — по желанию: import 'rostra-ui/fonts.css' или своя локальная копия.
+ * The font is optional: import 'rostra-ui/fonts.css', or use a local copy.
  */
 export { cx } from './cx'
 export { Rostra, LayerScope, useRostraTheme } from './theme'
