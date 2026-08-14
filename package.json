@@ -1,7 +1,7 @@
 {
   "name": "rostra-ui",
   "version": "0.1.0",
-  "description": "Rostra — система компонентов для админок и корпоративного контура: токены, 4 темы, 4 плотности, CSS-ядро и React-слой",
+  "description": "Rostra — система компонентов для админок и корпоративного контура: 4 темы, 4 плотности, css-ядро без зависимостей, React-слой, WCAG 2.1 AA и отдельная сборка для браузеров вплоть до IE10",
   "license": "MIT",
   "author": "maxyotka",
   "repository": {
@@ -45,6 +45,7 @@
     "rostra.tokens.json",
     "README.md",
     "CHANGELOG.md",
+    "SECURITY.md",
     "LICENSE"
   ],
   "scripts": {

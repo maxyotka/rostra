@@ -1,9 +1,36 @@
-# Rostra — система компонентов для админок и корпоративного контура
+<p align="center">
+  <img src="https://img.shields.io/badge/CSS-ядро%20без%20зависимостей-663399?style=for-the-badge&logo=css3&logoColor=white" alt="CSS"/>
+  <img src="https://img.shields.io/badge/React-18%20·%2019-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/>
+  <img src="https://img.shields.io/badge/WCAG-2.1%20AA-brightgreen?style=for-the-badge" alt="WCAG 2.1 AA"/>
+  <img src="https://img.shields.io/badge/IE-11%20·%2010-0078D6?style=for-the-badge&logo=internetexplorer&logoColor=white" alt="IE 11"/>
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="License MIT"/>
+</p>
 
-Версия 0.1.0. Строчный характер, холодный графит, один акцент, плотность как токен.
+<p align="center">
+  <a href="https://github.com/maxyotka/rostra/actions/workflows/ci.yml"><img src="https://github.com/maxyotka/rostra/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+  <a href="https://www.npmjs.com/package/rostra-ui"><img src="https://img.shields.io/npm/v/rostra-ui?color=cb3837&logo=npm" alt="npm"/></a>
+  <a href="https://github.com/maxyotka/rostra/releases/latest"><img src="https://img.shields.io/github/v/release/maxyotka/rostra?sort=semver" alt="Release"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/maxyotka/rostra" alt="License"/></a>
+</p>
+
+# rostra
+
+Система компонентов для админок и корпоративного контура.
+Строчный характер, холодный графит, один акцент, плотность как токен.
 
 Ядро — один css-файл без зависимостей и без сетевых запросов. React-слой
 необязателен: система работает на чистом html, во Vue и в шаблонах на сервере.
+Отдельная сборка держит браузеры вплоть до IE10.
+
+## Что внутри
+
+| Слой | Файл | Содержание |
+| --- | --- | --- |
+| Токены | `rostra.tokens.json` | Единственный источник правды: 4 темы, 4 плотности, шкалы |
+| Ядро | `rostra.css` | Классы `rs-*`, темы и плотность на атрибутах контейнера |
+| Старые браузеры | `rostra.legacy.css` | Значения подставлены, `-ms-flexbox`, IE10+ |
+| React | `dist/index.js` | Типы, состояния, доступность; слои на примитивах Radix |
+| Шрифт | `fonts.css` | Необязательный слой: Golos Text |
 
 ## Установка
 
@@ -306,18 +333,56 @@ npm run check:contrast   # проверить, что тема не провал
 Тема клиента — это блок переопределений в `themes`. Достаточно перечислить
 то, что отличается от светлой: остальное каскадируется.
 
+## Структура проекта
+
+```
+rostra/
+├── rostra.tokens.json      # источник правды по токенам
+├── rostra.css              # ядро, собирается из токенов
+├── rostra.legacy.css       # сборка для IE10+ и старых браузеров
+├── fonts.css               # необязательный слой со шрифтом
+├── src/
+│   ├── components.css      # классы rs-* — правятся руками
+│   ├── theme.tsx           # корень системы и контекст для порталов
+│   ├── forms.tsx           # кнопки, поля, нативные чекбоксы
+│   ├── data.tsx            # таблицы, метрики, статусы, лента
+│   ├── layers.tsx          # диалог, панель, поповер, меню, тосты
+│   └── shell.tsx           # каркас приложения и навигация
+├── scripts/
+│   ├── build-css.mjs       # токены → css
+│   ├── build-legacy.mjs    # css → сборка для старых браузеров
+│   ├── check-contrast.mjs  # WCAG по всем темам, oklch и sRGB
+│   └── check-support.mjs   # минимальные версии браузеров по caniuse
+├── tests/                  # контраст, доступность, поведение, фоллбэки
+└── *.html               #  библиотека и прототипы
+```
+
 ## Разработка
 
 ```bash
 npm ci
-npm run verify   # токены, контраст, типы, тесты
-npm run build
+npm run verify          # токены, контраст, типы, тесты
+npm run build           # css, legacy-сборка, js, типы
+npm run check:support   # с какого браузера всё работает
 ```
 
-Подробности — в [CONTRIBUTING.md](CONTRIBUTING.md), история — в [CHANGELOG.md](CHANGELOG.md).
+Подробности — в [CONTRIBUTING.md](CONTRIBUTING.md), история — в
+[CHANGELOG.md](CHANGELOG.md), уязвимости — в [SECURITY.md](SECURITY.md).
 
 ## Дальше
 
 - React-обёртки над Calendar, Combobox, Tree, Board и мобильным контуром.
 - Визуальные регресс-тесты библиотеки: сейчас `.html` проверяются глазами.
 - Проверка `prefers-contrast` и связка темы `contrast` с системной настройкой.
+- Стили печати: сейчас их нет совсем.
+- Проверка на живом IE11 — симуляция в Chrome не ловит баги движка.
+
+## Лицензия
+
+[MIT](LICENSE) — используйте свободно, в том числе в закрытом коммерческом ПО.
+
+```
+Copyright (c) 2026 maxyotka
+
+SPDX-License-Identifier: MIT
+```
