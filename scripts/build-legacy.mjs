@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path'
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import { toSrgb } from './build-css.mjs'
+import { browserslistQuery } from './legacy-targets.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const tokens = JSON.parse(readFileSync(join(root, 'rostra.tokens.json'), 'utf8'))
@@ -235,7 +236,7 @@ css.append(`
 
 const result = await postcss([
   autoprefixer({
-    overrideBrowserslist: ['ie 11', 'ie 10', 'chrome >= 21', 'firefox >= 28', 'safari >= 6.1', 'edge >= 12'],
+    overrideBrowserslist: browserslistQuery,
     grid: false,
   }),
 ]).process(css.toString(), { from: undefined })
