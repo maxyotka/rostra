@@ -1,11 +1,60 @@
-import { useCallback, useRef, useState } from 'react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import * as RDialog from '@radix-ui/react-dialog'
-import * as RPopover from '@radix-ui/react-popover'
-import * as RTooltip from '@radix-ui/react-tooltip'
-import * as RMenu from '@radix-ui/react-dropdown-menu'
+import {
+  cloneElement,
+  createContext,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react'
+import type { ComponentPropsWithoutRef, KeyboardEvent, ReactElement, ReactNode } from 'react'
 import { cx } from './cx'
 import { LayerScope } from './theme'
+import {
+  Portal,
+  focusable,
+  useAnchoredPosition,
+  useDismiss,
+  useFocusTrap,
+  useModalIsolation,
+} from './primitives'
+import type { Align, Side } from './primitives'
+
+/** Adds behaviour to whatever element the caller passed as a trigger. */
+function withTrigger(
+  trigger: ReactNode,
+  props: Record<string, unknown>
+): ReactNode {
+  if (!isValidElement(trigger)) return trigger
+  const own = trigger.props as Record<string, unknown>
+  const merged: Record<string, unknown> = { ...props }
+  for (const key of ['onClick', 'onKeyDown', 'onPointerEnter', 'onPointerLeave', 'onFocus', 'onBlur']) {
+    const theirs = own[key]
+    const ours = props[key]
+    if (typeof theirs === 'function' && typeof ours === 'function') {
+      merged[key] = (event: unknown) => {
+        ;(theirs as (e: unknown) => void)(event)
+        ;(ours as (e: unknown) => void)(event)
+      }
+    }
+  }
+  return cloneElement(trigger as ReactElement<Record<string, unknown>>, merged)
+}
+
+function useControlledOpen(open: boolean | undefined, onOpenChange: ((open: boolean) => void) | undefined) {
+  const [own, setOwn] = useState(false)
+  const value = open ?? own
+  const set = useCallback(
+    (next: boolean) => {
+      if (open === undefined) setOwn(next)
+      onOpenChange?.(next)
+    },
+    [open, onOpenChange]
+  )
+  return [value, set] as const
+}
 
 interface OverlayProps {
   open?: boolean
@@ -20,9 +69,11 @@ interface OverlayProps {
   className?: string
 }
 
-/** Modal window: focus is trapped, Escape closes, the background is inert. */
-export function Dialog({
-  open,
+const CloseContext = createContext<(() => void) | null>(null)
+
+function Overlay({
+  variant,
+  open: openProp,
   onOpenChange,
   trigger,
   title,
@@ -30,77 +81,73 @@ export function Dialog({
   footer,
   children,
   className,
-}: OverlayProps) {
+}: OverlayProps & { variant: 'dialog' | 'drawer' }) {
+  const [open, setOpen] = useControlledOpen(openProp, onOpenChange)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const id = useId()
+  const titleId = `${id}-title`
+  const descriptionId = `${id}-description`
+  const close = useCallback(() => setOpen(false), [setOpen])
+
+  useFocusTrap(contentRef, open)
+  useModalIsolation(contentRef, open)
+  useDismiss({ within: [contentRef], active: open, onDismiss: close })
+
   return (
-    <RDialog.Root open={open} onOpenChange={onOpenChange}>
-      {trigger && <RDialog.Trigger asChild>{trigger}</RDialog.Trigger>}
-      <RDialog.Portal>
-        <LayerScope>
-          <RDialog.Overlay className="rs-backdrop" />
-          <div className="rs-layer rs-layer--center">
-            <RDialog.Content className={cx('rs-dialog', className)}>
-              <div className="rs-dialog__head">
-                <RDialog.Title className="rs-section-title">{title}</RDialog.Title>
+    <>
+      {withTrigger(trigger, { onClick: () => setOpen(true) })}
+      {open && (
+        <Portal>
+          <LayerScope>
+            <div className="rs-backdrop" />
+            <div className={cx('rs-layer', variant === 'drawer' ? 'rs-layer--right' : 'rs-layer--center')}>
+              <div
+                ref={contentRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                aria-describedby={description ? descriptionId : undefined}
+                className={cx(variant === 'drawer' ? 'rs-drawer' : 'rs-dialog', className)}
+              >
+                <CloseContext.Provider value={close}>
+                  <div className={`rs-${variant}__head`}>
+                    <div className="rs-section-title" id={titleId}>
+                      {title}
+                    </div>
+                  </div>
+                  <div className={`rs-${variant}__body`}>
+                    {description && (
+                      <div className="rs-text rs-muted" id={descriptionId}>
+                        {description}
+                      </div>
+                    )}
+                    {children}
+                  </div>
+                  {footer && <div className={`rs-${variant}__foot`}>{footer}</div>}
+                </CloseContext.Provider>
               </div>
-              <div className="rs-dialog__body">
-                {description ? (
-                  <RDialog.Description className="rs-text rs-muted">{description}</RDialog.Description>
-                ) : (
-                  <RDialog.Description className="rs-sr">{title}</RDialog.Description>
-                )}
-                {children}
-              </div>
-              {footer && <div className="rs-dialog__foot">{footer}</div>}
-            </RDialog.Content>
-          </div>
-        </LayerScope>
-      </RDialog.Portal>
-    </RDialog.Root>
+            </div>
+          </LayerScope>
+        </Portal>
+      )}
+    </>
   )
 }
 
-/** Right-hand panel. Same primitive as the dialog: focus trapped, Escape closes. */
-export function Drawer({
-  open,
-  onOpenChange,
-  trigger,
-  title,
-  description,
-  footer,
-  children,
-  className,
-}: OverlayProps) {
-  return (
-    <RDialog.Root open={open} onOpenChange={onOpenChange}>
-      {trigger && <RDialog.Trigger asChild>{trigger}</RDialog.Trigger>}
-      <RDialog.Portal>
-        <LayerScope>
-          <RDialog.Overlay className="rs-backdrop" />
-          <div className="rs-layer rs-layer--right">
-            <RDialog.Content className={cx('rs-drawer', className)}>
-              <div className="rs-drawer__head">
-                <RDialog.Title className="rs-section-title">{title}</RDialog.Title>
-              </div>
-              <div className="rs-drawer__body">
-                {description ? (
-                  <RDialog.Description className="rs-text rs-muted">{description}</RDialog.Description>
-                ) : (
-                  <RDialog.Description className="rs-sr">{title}</RDialog.Description>
-                )}
-                {children}
-              </div>
-              {footer && <div className="rs-drawer__foot">{footer}</div>}
-            </RDialog.Content>
-          </div>
-        </LayerScope>
-      </RDialog.Portal>
-    </RDialog.Root>
-  )
+/** Modal window: focus is trapped, Escape closes, the background is hidden. */
+export function Dialog(props: OverlayProps) {
+  return <Overlay variant="dialog" {...props} />
+}
+
+/** Right-hand panel. Same behaviour as the dialog, different geometry. */
+export function Drawer(props: OverlayProps) {
+  return <Overlay variant="drawer" {...props} />
 }
 
 /** Closes the layer: works inside both Dialog and Drawer. */
 export function DialogClose({ children }: { children: ReactNode }) {
-  return <RDialog.Close asChild>{children}</RDialog.Close>
+  const close = useContext(CloseContext)
+  return <>{withTrigger(children, { onClick: () => close?.() })}</>
 }
 
 export interface PopoverProps {
@@ -108,52 +155,112 @@ export interface PopoverProps {
   children: ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  side?: 'top' | 'right' | 'bottom' | 'left'
-  align?: 'start' | 'center' | 'end'
+  side?: Side
+  align?: Align
+  /** Accessible name. Without it the popover is a plain container, not a dialog. */
+  label?: string
   className?: string
 }
 
-export function Popover({ trigger, children, open, onOpenChange, side = 'bottom', align = 'start', className }: PopoverProps) {
+/**
+ * Non-modal layer: focus moves in, Escape and a click outside close it, and
+ * focus returns to the trigger. The page behind stays live, which is the
+ * difference from Dialog.
+ */
+export function Popover({ trigger, children, open: openProp, onOpenChange, side = 'bottom', align = 'start', label, className }: PopoverProps) {
+  const [open, setOpen] = useControlledOpen(openProp, onOpenChange)
+  const anchorRef = useRef<HTMLElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const position = useAnchoredPosition({ anchorRef, floatingRef: contentRef, open, side, align })
+
+  useFocusTrap(contentRef, open)
+  useDismiss({ within: [contentRef, anchorRef], active: open, onDismiss: () => setOpen(false) })
+
   return (
-    <RPopover.Root open={open} onOpenChange={onOpenChange}>
-      <RPopover.Trigger asChild>{trigger}</RPopover.Trigger>
-      <RPopover.Portal>
-        <LayerScope>
-          <RPopover.Content className={cx('rs-popover', className)} side={side} align={align} sideOffset={6}>
-            {children}
-          </RPopover.Content>
-        </LayerScope>
-      </RPopover.Portal>
-    </RPopover.Root>
+    <>
+      {withTrigger(trigger, {
+        ref: anchorRef,
+        'aria-expanded': open,
+        'aria-haspopup': 'dialog',
+        onClick: () => setOpen(!open),
+      })}
+      {open && (
+        <Portal>
+          <LayerScope>
+            <div
+              ref={contentRef}
+              className={cx('rs-popover', className)}
+              style={position.style}
+              data-side={position.side}
+              role={label ? 'dialog' : undefined}
+              aria-label={label}
+            >
+              {children}
+            </div>
+          </LayerScope>
+        </Portal>
+      )}
+    </>
   )
 }
 
 export interface TooltipProps {
   children: ReactNode
   label: ReactNode
-  side?: 'top' | 'right' | 'bottom' | 'left'
+  side?: Side
   /** Delay before showing; 0 means immediately. */
   delay?: number
 }
 
 /**
- * Tooltip. Radix also shows it on keyboard focus, but a tooltip is not a
- * label: an icon-only button still needs its own aria-label.
+ * Tooltip on hover and on keyboard focus. It describes the trigger rather than
+ * naming it: an icon-only button still needs its own aria-label.
  */
 export function Tooltip({ children, label, side = 'top', delay = 300 }: TooltipProps) {
+  const [open, setOpen] = useState(false)
+  const anchorRef = useRef<HTMLElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const id = useId()
+  const position = useAnchoredPosition({ anchorRef, floatingRef: contentRef, open, side, align: 'center' })
+
+  const show = useCallback(
+    (immediate: boolean) => {
+      clearTimeout(timer.current)
+      if (immediate || delay === 0) setOpen(true)
+      else timer.current = setTimeout(() => setOpen(true), delay)
+    },
+    [delay]
+  )
+  const hide = useCallback(() => {
+    clearTimeout(timer.current)
+    setOpen(false)
+  }, [])
+
+  useEffect(() => () => clearTimeout(timer.current), [])
+  // Escape hides a tooltip that covers what the user is trying to read.
+  useDismiss({ within: [], active: open, onDismiss: hide, outside: false })
+
   return (
-    <RTooltip.Provider delayDuration={delay}>
-      <RTooltip.Root>
-        <RTooltip.Trigger asChild>{children}</RTooltip.Trigger>
-        <RTooltip.Portal>
+    <>
+      {withTrigger(children, {
+        ref: anchorRef,
+        'aria-describedby': open ? id : undefined,
+        onPointerEnter: () => show(false),
+        onPointerLeave: hide,
+        onFocus: () => show(true),
+        onBlur: hide,
+      })}
+      {open && (
+        <Portal>
           <LayerScope>
-            <RTooltip.Content className="rs-tooltip" side={side} sideOffset={6}>
+            <div ref={contentRef} id={id} role="tooltip" className="rs-tooltip" style={position.style} data-side={position.side}>
               {label}
-            </RTooltip.Content>
+            </div>
           </LayerScope>
-        </RTooltip.Portal>
-      </RTooltip.Root>
-    </RTooltip.Provider>
+        </Portal>
+      )}
+    </>
   )
 }
 
@@ -170,33 +277,156 @@ export interface MenuItem {
 export interface MenuProps {
   trigger: ReactNode
   items: MenuItem[]
-  align?: 'start' | 'center' | 'end'
+  align?: Align
+  /** Accessible name of the menu. */
+  label?: string
 }
 
-export function Menu({ trigger, items, align = 'start' }: MenuProps) {
+/** Dropdown menu on the APG pattern: arrows, Home/End, type-ahead, Escape. */
+export function Menu({ trigger, items, align = 'start', label = 'Menu' }: MenuProps) {
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const anchorRef = useRef<HTMLElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const typed = useRef({ query: '', at: 0 })
+  const id = useId()
+  const position = useAnchoredPosition({ anchorRef, floatingRef: contentRef, open, side: 'bottom', align })
+
+  const enabled = items.map((item, index) => ({ item, index })).filter(({ item }) => !item.disabled)
+
+  const close = useCallback((restoreFocus = true) => {
+    setOpen(false)
+    if (restoreFocus) anchorRef.current?.focus()
+  }, [])
+
+  // Escape hands focus back to the trigger; a click outside leaves focus where
+  // the pointer put it.
+  useDismiss({ within: [contentRef, anchorRef], active: open, onDismiss: (reason) => close(reason === 'escape') })
+
+  // The item under the cursor owns focus, so the browser announces it and the
+  // ring lands where the user is looking.
+  useEffect(() => {
+    if (!open) return
+    const node = contentRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)
+    node?.focus()
+  }, [open, active])
+
+  function openAt(index: number) {
+    setActive(index)
+    setOpen(true)
+  }
+
+  function step(from: number, direction: 1 | -1) {
+    if (!enabled.length) return from
+    const positions = enabled.map((entry) => entry.index)
+    const current = positions.indexOf(from)
+    const next = current === -1 ? 0 : (current + direction + positions.length) % positions.length
+    return positions[next]!
+  }
+
+  function select(index: number) {
+    const item = items[index]
+    if (!item || item.disabled) return
+    close()
+    item.onSelect?.()
+  }
+
+  function onTriggerKeyDown(event: KeyboardEvent) {
+    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      openAt(enabled[0]?.index ?? 0)
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      openAt(enabled[enabled.length - 1]?.index ?? 0)
+    }
+  }
+
+  function onMenuKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault()
+        setActive((current) => step(current, 1))
+        break
+      case 'ArrowUp':
+        event.preventDefault()
+        setActive((current) => step(current, -1))
+        break
+      case 'Home':
+        event.preventDefault()
+        setActive(enabled[0]?.index ?? 0)
+        break
+      case 'End':
+        event.preventDefault()
+        setActive(enabled[enabled.length - 1]?.index ?? 0)
+        break
+      case 'Enter':
+      case ' ':
+        event.preventDefault()
+        select(active)
+        break
+      case 'Tab':
+        // Tab leaves the menu rather than cycling inside it.
+        close(false)
+        break
+      default: {
+        if (event.key.length !== 1 || event.metaKey || event.ctrlKey) return
+        const now = Date.now()
+        typed.current.query = now - typed.current.at > 700 ? event.key : typed.current.query + event.key
+        typed.current.at = now
+        const query = typed.current.query.toLowerCase()
+        const match = enabled.find(({ item }) => String(item.label).toLowerCase().startsWith(query))
+        if (match) setActive(match.index)
+      }
+    }
+  }
+
   return (
-    <RMenu.Root>
-      <RMenu.Trigger asChild>{trigger}</RMenu.Trigger>
-      <RMenu.Portal>
-        <LayerScope>
-          <RMenu.Content className="rs-menu" align={align} sideOffset={6}>
-            {items.map((item, i) => (
-              <div key={i}>
-                {item.separated && <RMenu.Separator className="rs-menu__sep" />}
-                <RMenu.Item
-                  className="rs-menu__item"
-                  disabled={item.disabled}
-                  onSelect={item.onSelect}
-                >
-                  {item.label}
-                  {item.hint && <span className="rs-menu__hint">{item.hint}</span>}
-                </RMenu.Item>
-              </div>
-            ))}
-          </RMenu.Content>
-        </LayerScope>
-      </RMenu.Portal>
-    </RMenu.Root>
+    <>
+      {withTrigger(trigger, {
+        ref: anchorRef,
+        'aria-haspopup': 'menu',
+        'aria-expanded': open,
+        'aria-controls': open ? id : undefined,
+        onClick: () => (open ? close() : openAt(enabled[0]?.index ?? 0)),
+        onKeyDown: onTriggerKeyDown,
+      })}
+      {open && (
+        <Portal>
+          <LayerScope>
+            <div
+              ref={contentRef}
+              id={id}
+              role="menu"
+              aria-label={label}
+              aria-orientation="vertical"
+              className="rs-menu"
+              style={position.style}
+              onKeyDown={onMenuKeyDown}
+            >
+              {items.map((item, index) => (
+                <div key={index}>
+                  {item.separated && <div className="rs-menu__sep" role="separator" />}
+                  <div
+                    role="menuitem"
+                    tabIndex={-1}
+                    data-index={index}
+                    data-highlighted={index === active && !item.disabled ? '' : undefined}
+                    data-disabled={item.disabled ? '' : undefined}
+                    aria-disabled={item.disabled || undefined}
+                    className="rs-menu__item"
+                    onMouseEnter={() => !item.disabled && setActive(index)}
+                    onClick={() => select(index)}
+                  >
+                    {item.label}
+                    {item.hint && <span className="rs-menu__hint">{item.hint}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </LayerScope>
+        </Portal>
+      )}
+    </>
   )
 }
 
@@ -280,3 +510,5 @@ export function ToastViewport({
     </div>
   )
 }
+
+export { focusable }

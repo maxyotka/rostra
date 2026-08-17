@@ -4,3 +4,6 @@ coverage/
 *.tsbuildinfo
 .DS_Store
 
+
+# local react stand for checking the layers in a browser
+.stand/

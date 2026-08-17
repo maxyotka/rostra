@@ -1,6 +1,5 @@
-import { forwardRef } from 'react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-import * as RTabs from '@radix-ui/react-tabs'
+import { forwardRef, useId, useRef, useState } from 'react'
+import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react'
 import { cx } from './cx'
 
 /**
@@ -118,30 +117,76 @@ export interface TabsProps {
   className?: string
 }
 
-/** Tabs: arrow keys switch, content is tied to its tab through ARIA. */
+/**
+ * Tabs on the APG pattern: one tab stop for the whole list, arrows move and
+ * activate, Home and End jump to the ends. The panel is tied to its tab
+ * through aria-controls and aria-labelledby.
+ */
 export function Tabs({ items, value, defaultValue, onValueChange, className }: TabsProps) {
+  const id = useId()
+  const listRef = useRef<HTMLDivElement>(null)
+  const [own, setOwn] = useState(defaultValue ?? items[0]?.value)
+  const current = value ?? own
+  const activeItem = items.find((item) => item.value === current) ?? items[0]
+
+  function activate(next: string) {
+    if (value === undefined) setOwn(next)
+    onValueChange?.(next)
+    listRef.current?.querySelector<HTMLElement>(`[data-value="${next}"]`)?.focus()
+  }
+
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const index = items.findIndex((item) => item.value === current)
+    const moves: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1 }
+    const move = moves[event.key]
+    if (move) {
+      event.preventDefault()
+      const next = items[(index + move + items.length) % items.length]
+      if (next) activate(next.value)
+      return
+    }
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault()
+      const next = event.key === 'Home' ? items[0] : items[items.length - 1]
+      if (next) activate(next.value)
+    }
+  }
+
   return (
-    <RTabs.Root
-      value={value}
-      defaultValue={defaultValue ?? items[0]?.value}
-      onValueChange={onValueChange}
-      className={className}
-    >
-      <RTabs.List className="rs-tabs">
-        {items.map((item) => (
-          <RTabs.Trigger key={item.value} value={item.value} className="rs-tab">
-            {item.label}
-          </RTabs.Trigger>
-        ))}
-      </RTabs.List>
-      {items.map((item) =>
-        item.content == null ? null : (
-          <RTabs.Content key={item.value} value={item.value}>
-            {item.content}
-          </RTabs.Content>
-        )
+    <div className={className}>
+      <div className="rs-tabs" role="tablist" ref={listRef} onKeyDown={onKeyDown}>
+        {items.map((item) => {
+          const selected = item.value === current
+          return (
+            <button
+              key={item.value}
+              type="button"
+              role="tab"
+              id={`${id}-tab-${item.value}`}
+              data-value={item.value}
+              data-state={selected ? 'active' : 'inactive'}
+              aria-selected={selected}
+              aria-controls={item.content == null ? undefined : `${id}-panel-${item.value}`}
+              tabIndex={selected ? 0 : -1}
+              className="rs-tab"
+              onClick={() => activate(item.value)}
+            >
+              {item.label}
+            </button>
+          )
+        })}
+      </div>
+      {activeItem?.content != null && (
+        <div
+          role="tabpanel"
+          id={`${id}-panel-${activeItem.value}`}
+          aria-labelledby={`${id}-tab-${activeItem.value}`}
+          tabIndex={0}
+        >
+          {activeItem.content}
+        </div>
       )}
-    </RTabs.Root>
+    </div>
   )
 }
 

@@ -51,14 +51,22 @@ not pull in an icon font.
 
 ## Layers and keyboard patterns
 
-Dialog, drawer, popover, tooltip, menu and tabs are built on Radix primitives,
-which supply focus trapping, focus restoration, Escape, `aria-modal` and
-arrow-key navigation.
+Every layer is implemented in `src/primitives.tsx` and `src/layers.tsx` against
+the APG patterns. What that means concretely:
 
-Calendar, combobox, tree and board have no Radix equivalent and are implemented
-here against the APG patterns: a roving tab stop in the calendar grid and the
-tree, `aria-activedescendant` in the combobox so focus stays in the input, and
-buttons rather than dragging on the board.
+| Behaviour | Where it applies |
+| --- | --- |
+| Tab cycles inside, focus returns to the trigger on close | dialog, drawer, popover |
+| Escape closes and hands focus back; a click outside closes and leaves focus alone | every layer |
+| `aria-hidden` on every other child of `body`, scroll locked | dialog, drawer |
+| Anchoring that flips side when the room runs out and clamps to the viewport | popover, tooltip, menu |
+| Roving tab stop, arrows, Home/End, type-ahead | menu, tree, calendar grid |
+| `aria-activedescendant`, so focus never leaves the input | combobox |
+| Arrows move and activate, one tab stop per list | tabs |
+
+`tests/layers.test.tsx` holds 22 tests over exactly these guarantees, and the
+same set is exercised in a real browser — jsdom reports every rectangle as
+zero, so anchoring cannot be verified there at all.
 
 The React layer also carries theme into portals: a dialog renders at the end of
 `body`, outside the container that holds `data-theme`, so `LayerScope` sets it

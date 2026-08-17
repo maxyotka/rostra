@@ -33,15 +33,17 @@ catches it in CI.
 
 - Classes in `src/components.css` first, the React wrapper second. The core
   must work without JavaScript — not every consumer uses React.
-- Do not hand-roll behaviour. Focus traps, positioning and ARIA are better
-  implemented in Radix than they will be here.
+- Behaviour goes through `src/primitives.tsx`. Focus trapping, dismissal and
+  anchoring are written once; a component that re-implements any of them will
+  drift from the rest the first time a bug is fixed.
 - For form controls use the native element. `input` and `select` give keyboard
   support, autofill, form submission and mobile OS pickers for free.
 - Every class the React layer names as a string must exist in the CSS —
   `tests/classes.test.ts` checks this. A typo breaks no behaviour test; it only
   breaks the way things look.
-- State that Radix sets through attributes (`data-state`, `data-highlighted`,
-  `data-disabled`) needs a CSS rule next to the manual `.is-on`.
+- State the React layer sets through attributes (`data-state`, `data-highlighted`,
+  `data-disabled`) needs a CSS rule next to the manual `.is-on`, so hand-written
+  markup and the wrappers look the same.
 - A component with state leaves behind a test for behaviour, not for markup:
   "loading does not fire onClick", not "has class is-loading".
 

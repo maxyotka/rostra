@@ -3,6 +3,31 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [0.2.0] — 2026-08-17
+
+### Removed
+
+- Every runtime dependency. The five Radix packages are gone, `dependencies` is
+  empty, and React stays a peer. Installing the package no longer pulls a tree
+  of 40-odd modules for consumers who only wanted the CSS.
+
+### Changed
+
+- Dialog, drawer, popover, tooltip, menu and tabs are implemented in
+  `src/primitives.tsx` and `src/layers.tsx`. The public API did not move: same
+  props, same class names, same `data-state` and `data-highlighted` attributes
+  the CSS already keyed on.
+- What the primitives provide, and what `tests/layers.test.tsx` pins down in 22
+  tests: Tab cycling inside a layer, focus returning to the trigger, Escape
+  versus outside-click telling apart who gets focus afterwards, `aria-hidden`
+  over the rest of the page while a modal is open, anchoring that flips when
+  the chosen side has no room and clamps to the viewport.
+- Bundle size, measured with esbuild over the published build: a button went
+  from 1.1 kB to 1.3 kB gzipped, a dialog and a menu together from 31.8 kB to
+  4.4 kB, and the entire package from 40 kB to 9.8 kB.
+- Tabs render a real `tabpanel` tied to its tab, with one tab stop for the list
+  and arrows that move and activate.
+
 ## [Unreleased]
 
 ### Added
