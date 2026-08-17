@@ -54,6 +54,8 @@ versioning follows [SemVer](https://semver.org/).
 - Repository documentation: `SECURITY.md`, issue and pull request templates,
   and `docs/` covering principles, theming, accessibility, browser support and
   recipes.
+- `examples/` — an index over the component library and the two prototypes,
+  served as static files from the repository root.
 
 ### Changed
 
@@ -90,6 +92,10 @@ versioning follows [SemVer](https://semver.org/).
   the light theme.
 - `.rs-alert--ok` was missing from the CSS even though the "healthy" status is
   declared alongside the others: the banner silently stayed neutral.
+- A non-working day in the calendar carried `opacity: 0.45` over faint text,
+  which lands at 1.9:1 against the surface. The token check never saw it — it
+  compares token pairs, and the opacity was applied on top of them. The day now
+  takes its colour from the token alone, at 4.6:1.
 
 ## [0.1.0] — 2026-08-11
 

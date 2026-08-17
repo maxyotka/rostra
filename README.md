@@ -7,6 +7,11 @@ four densities, a CSS core with no dependencies, and an optional React layer.
 [![CI](https://github.com/maxyotka/rostra/actions/workflows/ci.yml/badge.svg)](https://github.com/maxyotka/rostra/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/maxyotka/rostra)](LICENSE)
 
+![The component library in the light theme](screenshots/library-light.jpg)
+
+<sub>A client registry built on the same tokens, dark theme:
+[screenshots/prototype-clients-dark.jpg](screenshots/prototype-clients-dark.jpg)</sub>
+
 ---
 
 ## Installation
@@ -37,6 +42,11 @@ a class name:
 Theme and density are attributes on any container, so a light workspace and a
 dark monitoring panel can live in the same application.
 
+"No dependencies" applies to the CSS core, which is one file and nothing else.
+The React layer sits on five Radix primitives (dialog, dropdown menu, popover,
+tabs, tooltip), so installing it brings their tree with it — around 45 packages.
+Take `rostra.css` alone and you install nothing.
+
 ## What it does differently
 
 - **Density is a token, not a variant.** `data-density` changes control height,
@@ -63,8 +73,22 @@ dark monitoring panel can live in the same application.
 | [Browser support](docs/browser-support.md) | Support floor per browser, the legacy build, how to serve both |
 | [Recipes](docs/recipes.md) | Common screens: layout, forms, confirmation dialogs, notifications |
 
-The live component library and two clickable prototypes are the `.html`
-files in the repository root — open them directly in a browser.
+## Examples
+
+The live component library and two clickable prototypes are `.html` files in
+the repository root. They render from a static server — no build step:
+
+```bash
+python -m http.server 5501   # from the repository root
+```
+
+- [`examples/`](examples/index.html) — index of the three pages
+- `rostra-library.html` — every component, with theme and density switches
+- `prototype-clients.html` — a registry screen: filters, drawer, dialog, toasts
+- `prototype-dispatch.html` — a request board with SLA timers and a live feed
+
+Each page is checked with axe-core against WCAG 2.1 A/AA and reports no
+violations.
 
 ## Browser support
 

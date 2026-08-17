@@ -569,7 +569,9 @@
 .rs-cal__day.is-range { background: var(--rs-accent-50); border-radius: 0; color: var(--rs-info-fg); }
 .rs-cal__day.is-sel { background: var(--rs-accent-500); color: var(--rs-text-invert); font-weight: 500; }
 .rs-cal__day.is-sel:first-of-type { border-radius: var(--rs-radius-sm); }
-.rs-cal__day.is-off { color: var(--rs-text-faint); opacity: 0.45; cursor: not-allowed; }
+/* No opacity here: faint text at 0.45 alpha lands at 1.9:1 against the surface,
+   and a non-working day is still readable content, not an inactive control. */
+.rs-cal__day.is-off { color: var(--rs-text-faint); cursor: not-allowed; }
 
 /* --- 15. Multiselect and combobox -------------------------- */
 .rs-combo { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: var(--rs-control-h); padding: 4px 8px; border: 1px solid var(--rs-control-border); border-radius: var(--rs-radius); background: var(--rs-surface); }
