@@ -18,8 +18,16 @@
     "react",
     "css",
     "admin",
+    "dashboard",
+    "components",
     "tokens",
-    "a11y"
+    "a11y",
+    "accessibility",
+    "wcag",
+    "dark-mode",
+    "zero-dependencies",
+    "headless",
+    "internal-tools"
   ],
   "type": "module",
   "sideEffects": [

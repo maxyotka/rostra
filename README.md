@@ -71,6 +71,24 @@ and board.
 **Size.** A button costs 1.3 kB gzipped, a table screen 1.8 kB, the entire
 package 9.8 kB. Tree-shaking works because nothing imports a shared runtime.
 
+## What it costs
+
+Measured with esbuild over the published builds — minified, gzipped, React
+external. The script is four lines and the numbers reproduce:
+
+| Import | Rostra | Mantine |
+| --- | --- | --- |
+| A button | **1.3 kB** | 12.2 kB |
+| A screen: shell, filters, fields, table, badges | **1.8 kB** | — |
+| Button, table, badge, modal, text input | **4.4 kB** | 32.2 kB |
+| Every component in the package | **9.8 kB** | — |
+| Stylesheet | **12.5 kB** | 39 kB |
+| Packages installed | **0** | 22 |
+
+Mantine ships far more components, and its base runtime arrives with the first
+import — that is the difference the first row shows. Radix Themes was measured
+too: its stylesheet alone is 88 kB gzipped.
+
 ## Documentation
 
 | Document | Contents |

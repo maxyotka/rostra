@@ -400,7 +400,7 @@ function App() {
   const [theme, setTheme] = useState('light')
   const [density, setDensity] = useState('medium')
   return (
-    <Rostra theme={theme} density={density}>
+    <Rostra theme={theme} density={density} style={{ minHeight: '100vh', background: 'var(--rs-canvas)' }}>
       <header style={{ borderBottom: '1px solid var(--rs-border)', background: 'var(--rs-surface)' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto', padding: '20px 24px', display: 'flex', gap: 24, alignItems: 'flex-end', flexWrap: 'wrap' }}>
           <div>
