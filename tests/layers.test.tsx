@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import axe from 'axe-core'
-import { Button, Dialog, DialogClose, Drawer, Input, Menu, Popover, Rostra, Tabs, Tooltip } from '../src'
+import { Button, Dialog, DialogClose, Drawer, Input, Menu, Pane, Popover, Rostra, Tabs, Tooltip } from '../src'
 import { place } from '../src/primitives'
 
 async function violations(container: HTMLElement) {
@@ -287,6 +287,26 @@ describe('Tabs', () => {
     render(<Tabs items={items} defaultValue="b" />)
     expect(screen.getByRole('tab', { name: 'History' })).toHaveAttribute('data-state', 'active')
     expect(screen.getByRole('tab', { name: 'Requests' })).toHaveAttribute('data-state', 'inactive')
+  })
+})
+
+describe('Pane', () => {
+  it('is reachable from the keyboard, because it is the part that scrolls', () => {
+    render(
+      <Rostra>
+        <Pane aria-label="Clients">rows</Pane>
+      </Rostra>
+    )
+    expect(screen.getByLabelText('Clients')).toHaveAttribute('tabindex', '0')
+  })
+
+  it('steps aside when the caller takes over', () => {
+    render(
+      <Rostra>
+        <Pane aria-label="Clients" tabIndex={-1}>rows</Pane>
+      </Rostra>
+    )
+    expect(screen.getByLabelText('Clients')).toHaveAttribute('tabindex', '-1')
   })
 })
 

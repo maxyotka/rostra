@@ -80,10 +80,13 @@ package 9.8 kB. Tree-shaking works because nothing imports a shared runtime.
 | [Accessibility](docs/accessibility.md) | Contrast policy, control borders, what the system does not do for you |
 | [Browser support](docs/browser-support.md) | Support floor per browser, the legacy build, how to serve both |
 | [Recipes](docs/recipes.md) | Common screens: layout, forms, confirmation dialogs, notifications |
+| [API reference](docs/api.md) | Every prop of every component, generated from the shipped types |
 
 ## Examples
 
-**[Open the live pages →](https://maxyotka.github.io/rostra/examples/)**
+**[Open the playground →](https://maxyotka.github.io/rostra/examples/playground.html)** — the React
+components themselves, with the code beside each one. Open a dialog, walk a
+menu with the arrow keys, switch theme and density and watch it repaint.
 
 The component library and two clickable prototypes are `.html` files in the
 repository root. They render from a static server — no build step:

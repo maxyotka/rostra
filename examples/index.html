@@ -11,23 +11,35 @@
 <body class="rs" data-theme="light" data-density="medium">
 <div style="max-width:900px;margin:0 auto;padding:40px 24px">
   <h1 class="rs-title">Rostra</h1>
-  <p class="rs-hint">Live pages built on <span class="rs-api">rostra.css</span>. They render from any static host —
-  locally, serve the repository root with <span class="rs-api">python -m http.server</span>. React loads from a CDN, so they need a network.</p>
+  <p class="rs-hint">A component system for admin panels and internal tools. No dependencies, 9.8 kB gzipped,
+  four themes, three densities, contrast verified in CI.</p>
 
   <div style="display:grid;gap:12px;margin-top:24px">
+    <a class="rs-card" href="playground.html"><div class="rs-card__body">
+      <div class="rs-eyebrow">Playground</div>
+      <div class="rs-hint" style="margin-top:6px">The React components themselves, with the code beside each one.
+      Open a dialog, walk a menu with arrows, switch theme and density.</div>
+    </div></a>
     <a class="rs-card" href="../rostra-library.html"><div class="rs-card__body">
-      <div class="rs-eyebrow">Library</div>
-      <div class="rs-hint" style="margin-top:6px">Every component: buttons, fields, tables, dialogs, calendar, board, tree, motion. Theme and density switches at the top.</div>
+      <div class="rs-eyebrow">CSS library</div>
+      <div class="rs-hint" style="margin-top:6px">The same system as plain markup on <span class="rs-api">rs-*</span> classes —
+      what you get without React at all.</div>
     </div></a>
     <a class="rs-card" href="../prototype-clients.html"><div class="rs-card__body">
       <div class="rs-eyebrow">Prototype — Clients</div>
-      <div class="rs-hint" style="margin-top:6px">A working registry screen: filters, sorting, drawer, dialog, toasts, all four themes.</div>
+      <div class="rs-hint" style="margin-top:6px">A working registry screen: filters, sorting, drawer, dialog, toasts.</div>
     </div></a>
     <a class="rs-card" href="../prototype-dispatch.html"><div class="rs-card__body">
       <div class="rs-eyebrow">Prototype — Dispatch</div>
       <div class="rs-hint" style="margin-top:6px">A request board with SLA timers, a shift feed and live metrics.</div>
     </div></a>
   </div>
+
+  <p class="rs-hint" style="margin-top:24px">
+    <a href="https://github.com/maxyotka/rostra">Source</a> ·
+    <a href="https://www.npmjs.com/package/rostra-ui">npm</a> ·
+    <a href="https://github.com/maxyotka/rostra/blob/main/docs/api.md">API reference</a>
+  </p>
 </div>
 </body>
 </html>

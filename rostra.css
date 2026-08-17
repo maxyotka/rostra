@@ -316,6 +316,10 @@
    than a single word. */
 .rs-caps { text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; font-size: var(--rs-fs-label); }
 .rs-code { text-transform: uppercase; letter-spacing: 0.02em; color: var(--rs-text-faint); }
+/* A block of code — a config, a payload, a snippet. Monospace here rather than
+   the interface face: alignment is the point, and it is the one place in the
+   system where the text is not prose. */
+.rs-pre { margin: 0; padding: 12px 14px; background: var(--rs-surface-2); border: 1px solid var(--rs-hairline); border-radius: var(--rs-radius); font: 400 var(--rs-fs-label) / 1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--rs-text); overflow-x: auto; white-space: pre; }
 /* A class or property name reads as code, so no uppercase */
 .rs-api { text-transform: none; letter-spacing: 0; color: var(--rs-text-muted); background: var(--rs-surface-2); border: 1px solid var(--rs-hairline); border-radius: 3px; padding: 1px 5px; font-size: var(--rs-fs-label); }
 .rs-title { font: 600 var(--rs-fs-title) / 1.25 var(--rs-font); color: var(--rs-text); margin: 0; }

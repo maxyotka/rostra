@@ -21,6 +21,10 @@ jobs:
       - run: npm run check:tokens
       - run: npm run check:contrast
       - run: npm run check:support
+      # The reference is generated from the types; a stale file means someone
+      # changed a prop and left the documentation describing the old one.
+      - run: npm run build:types
+      - run: npm run check:api
       - run: npm run build:legacy
       - run: npm run typecheck
       - run: npm test

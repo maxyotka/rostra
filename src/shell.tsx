@@ -24,9 +24,19 @@ export interface PaneProps extends ComponentPropsWithoutRef<'div'> {
   fixed?: boolean
 }
 
-/** The only scrollable area on the screen. */
-export function Pane({ fixed, className, ...rest }: PaneProps) {
-  return <div className={cx(fixed ? 'rs-pane--fixed' : 'rs-pane', className)} {...rest} />
+/**
+ * The only scrollable area on the screen — and therefore a tab stop by
+ * default. A scrollable region no keyboard can reach is content no keyboard
+ * can read; pass tabIndex={-1} to opt out.
+ */
+export function Pane({ fixed, className, tabIndex, ...rest }: PaneProps) {
+  return (
+    <div
+      className={cx(fixed ? 'rs-pane--fixed' : 'rs-pane', className)}
+      tabIndex={fixed ? tabIndex : (tabIndex ?? 0)}
+      {...rest}
+    />
+  )
 }
 
 export interface SidebarProps extends ComponentPropsWithoutRef<'nav'> {

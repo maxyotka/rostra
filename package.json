@@ -57,14 +57,17 @@
     "build:legacy": "node scripts/build-legacy.mjs",
     "build:js": "node scripts/build-js.mjs",
     "build:types": "tsc -p tsconfig.build.json",
-    "build": "npm run build:css && npm run build:legacy && npm run build:js && npm run build:types",
+    "build": "npm run build:css && npm run build:legacy && npm run build:js && npm run build:types && npm run build:api && npm run build:playground",
     "check:tokens": "node scripts/build-css.mjs --check",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:support": "node scripts/check-support.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run check:tokens && npm run check:contrast && npm run typecheck && npm run test"
+    "verify": "npm run check:tokens && npm run check:contrast && npm run typecheck && npm test",
+    "build:api": "node scripts/build-api-docs.mjs",
+    "build:playground": "node scripts/build-playground.mjs",
+    "check:api": "node scripts/build-api-docs.mjs --check"
   },
   "peerDependencies": {
     "react": ">=18",
