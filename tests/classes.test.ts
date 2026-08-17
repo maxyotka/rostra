@@ -84,3 +84,19 @@ describe('state set by the behaviour library', () => {
     expect(rule).toContain('color: var(--rs-text)')
   })
 })
+
+/**
+ * A component that renders as an <a> competes with '.rs a', which carries one
+ * more point of specificity than a single class. The doubled selector is how
+ * those components keep their own colour.
+ */
+describe('components that can be links', () => {
+  const linkable = ['rs-nav-item', 'rs-menu__item', 'rs-rail__item']
+  it.each(linkable)('%s is declared with a doubled class', (name) => {
+    expect(css).toContain(`.${name}.${name}`)
+  })
+
+  it('the base link rule that makes this necessary is still there', () => {
+    expect(css).toContain('.rs a { color: var(--rs-accent-500)')
+  })
+})

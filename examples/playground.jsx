@@ -13,12 +13,24 @@ import {
  * real React component, and the code beside it is what produces it.
  */
 
-function Demo({ title, note, code, children }) {
+/**
+ * Two columns for a control that fits beside its code, one column for anything
+ * that needs the width — a table squeezed into half a screen tells you nothing
+ * about how the system handles tables.
+ */
+function Demo({ title, note, code, wide, children }) {
   return (
-    <section style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', alignItems: 'start' }}>
+    <section
+      style={{
+        display: 'grid',
+        gap: wide ? 14 : 12,
+        gridTemplateColumns: wide ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1fr)',
+        alignItems: 'start',
+      }}
+    >
       <div>
         <Eyebrow>{title}</Eyebrow>
-        {note && <div className="rs-hint" style={{ marginTop: 8 }}>{note}</div>}
+        {note && <div className="rs-hint" style={{ marginTop: 8, maxWidth: 720 }}>{note}</div>}
         <div style={{ marginTop: 14, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start' }}>{children}</div>
       </div>
       <pre className="rs-pre" style={{ fontSize: 12 }}>
@@ -92,6 +104,7 @@ function Tables() {
   return (
     <Demo
       title="Table"
+      wide
       note="Num puts the cell in tabular figures and aligns it right, so the column stops jumping when data refreshes."
       code={`<TableWrap>
   <Table zebra>
@@ -186,6 +199,7 @@ function Navigation() {
   return (
     <Demo
       title="Navigation"
+      wide
       note="Tabs keep one tab stop for the list; arrows move and activate, and the panel is tied to its tab."
       code={`<Tabs items={[
   { value: 'overview', label: 'Overview', content: <Overview /> },
@@ -283,6 +297,7 @@ function BoardDemo() {
   return (
     <Demo
       title="Board"
+      wide
       note="Cards move with buttons, not dragging: a pointer-only board cannot be operated from a keyboard or a screen reader."
       code={`<Board columns={columns} onCardMove={({ card, from, to }) => move(card, from, to)} />`}
     >
@@ -295,6 +310,7 @@ function Status() {
   return (
     <Demo
       title="Status and data"
+      wide
       note="Statuses carry the same four tones everywhere: ok, warn, bad, info."
       code={`<Metric label="Active clients" value="203" foot="+6 this week" />
 <Meter value={73} label="Seats in use" />
@@ -330,6 +346,7 @@ function Shell() {
   return (
     <Demo
       title="Application shell"
+      wide
       note="Height equals the window and only Pane scrolls: navigation, header and pagination stay pinned."
       code={`<AppShell>
   <Sidebar aria-label="Sections">
@@ -341,20 +358,60 @@ function Shell() {
   </AppMain>
 </AppShell>`}
     >
-      <div style={{ width: '100%', height: 260, border: '1px solid var(--rs-border)', borderRadius: 'var(--rs-radius)', overflow: 'hidden' }}>
+      <div style={{ width: '100%', height: 320, border: '1px solid var(--rs-border)', borderRadius: 'var(--rs-radius)', overflow: 'hidden' }}>
         <AppShell style={{ height: '100%' }}>
-          <Sidebar aria-label="Sections" style={{ width: 180 }}>
-            <div className="rs-eyebrow rs-eyebrow--bare">Work</div>
-            <NavItem href="#organizations" active>Organizations</NavItem>
-            <NavItem href="#requests">Requests</NavItem>
+          <Sidebar aria-label="Sections" style={{ width: 190, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div className="rs-eyebrow rs-eyebrow--bare" style={{ marginBottom: 4 }}>Work</div>
+            <NavItem href="#organizations" active>
+              Organizations
+              <span className="rs-badge rs-badge--plain" style={{ marginLeft: 'auto' }}>248</span>
+            </NavItem>
+            <NavItem href="#requests">
+              Requests
+              <span className="rs-badge rs-badge--plain" style={{ marginLeft: 'auto' }}>12</span>
+            </NavItem>
+            <div className="rs-eyebrow rs-eyebrow--bare" style={{ margin: '12px 0 4px' }}>System</div>
+            <NavItem href="#settings">Settings</NavItem>
           </Sidebar>
           <AppMain>
-            <AppBar><div style={{ padding: '10px 14px', display: 'flex', gap: 8 }}><Chip>All</Chip><Chip>Active</Chip></div></AppBar>
-            <Pane>
-              {ROWS.concat(ROWS).map((row, i) => (
-                <div key={i} style={{ padding: '10px 14px', borderBottom: '1px solid var(--rs-hairline)' }}>{row.name}</div>
-              ))}
+            <AppBar>
+              <div style={{ padding: '10px 14px', display: 'flex', gap: 8, alignItems: 'center' }}>
+                <Chip selected>All</Chip>
+                <Chip>Active</Chip>
+                <Chip>Paused</Chip>
+                <Button size="sm" variant="primary" style={{ marginLeft: 'auto' }}>Add</Button>
+              </div>
+            </AppBar>
+            <Pane aria-label="Organizations" style={{ padding: 0 }}>
+              <Table sticky>
+                <caption className="rs-sr">Organizations</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Organization</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" className="rs-num">Seats</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...ROWS, ...ROWS].map((row, i) => (
+                    <tr key={i}>
+                      <td>
+                        <div>{row.name}</div>
+                        <div className="rs-hint">{row.id}</div>
+                      </td>
+                      <td><Badge status={row.status}>{row.label}</Badge></td>
+                      <Num>{row.seats}</Num>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </Pane>
+            <AppBar>
+              <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center' }}>
+                <span className="rs-label">Showing 8 of 248</span>
+                <span className="rs-label" style={{ marginLeft: 'auto' }}>1 / 31</span>
+              </div>
+            </AppBar>
           </AppMain>
         </AppShell>
       </div>
