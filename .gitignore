@@ -7,3 +7,6 @@ coverage/
 
 # local react stand for checking the layers in a browser
 .stand/
+
+# built by npm run build:playground, deployed from CI
+examples/playground.js
