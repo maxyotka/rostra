@@ -1,16 +1,15 @@
 # Rostra
 
 A component system for admin panels and internal corporate tools. Four themes,
-four densities, a CSS core with no dependencies, and an optional React layer.
+four densities, no dependencies, and a CSS core that works without React at all.
 
 [![npm](https://img.shields.io/npm/v/rostra-ui)](https://www.npmjs.com/package/rostra-ui)
 [![CI](https://github.com/maxyotka/rostra/actions/workflows/ci.yml/badge.svg)](https://github.com/maxyotka/rostra/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/maxyotka/rostra)](LICENSE)
 
-![The component library in the light theme](screenshots/library-light.jpg)
+[![The playground, dark theme](screenshots/playground-dark.jpg)](https://maxyotka.github.io/rostra/examples/playground.html)
 
-<sub>A client registry built on the same tokens, dark theme:
-[screenshots/prototype-clients-dark.jpg](screenshots/prototype-clients-dark.jpg)</sub>
+<sub>The screenshot is a link to the playground, where the same components are live.</sub>
 
 ---
 
@@ -71,6 +70,11 @@ and board.
 **Size.** A button costs 1.3 kB gzipped, a table screen 1.8 kB, the entire
 package 9.8 kB. Tree-shaking works because nothing imports a shared runtime.
 
+**Server rendering.** Every component renders without a DOM; closed layers emit
+nothing and their triggers arrive complete, so the page works before hydration.
+`tests/ssr.test.tsx` runs the whole system through `renderToString` in a node
+environment.
+
 ## What it costs
 
 Measured with esbuild over the published builds — minified, gzipped, React
@@ -113,7 +117,7 @@ repository root. They render from a static server — no build step:
 python -m http.server 5501   # from the repository root
 ```
 
-- [`examples/`](examples/index.html) — index of the three pages
+- [`examples/`](examples/index.html) — index of the four pages
 - `rostra-library.html` — every component, with theme and density switches
 - `prototype-clients.html` — a registry screen: filters, drawer, dialog, toasts
 - `prototype-dispatch.html` — a request board with SLA timers and a live feed
@@ -137,7 +141,7 @@ names the feature that sets each limit. Details and the TLS caveat are in
 ```bash
 npm ci
 npm run verify   # tokens, contrast, types, tests
-npm run build    # css, legacy build, js, types
+npm run build    # css, legacy build, js, types, api reference, playground
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, [CHANGELOG.md](CHANGELOG.md)
@@ -145,14 +149,16 @@ for history, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 
 ## Status
 
-Version 0.1.0. The API may still change in minor releases.
+Version 0.2.1, and the API may still change in minor releases — 0.x means what
+semver says it means.
 
 Every component in the library has a React counterpart. Dragging on the board
-is not implemented — the move controls are buttons, which is what a keyboard
-and a screen reader can use.
+is not implemented: the move controls are buttons, which is what a keyboard and
+a screen reader can use.
 
-Not covered yet: print styles, visual regression tests, and verification on a
-real IE11 rather than a simulated one.
+Not covered yet: print styles, visual regression tests, verification on a real
+IE11 rather than a simulated one, and a screen reader pass — axe checks
+structure, it does not tell you how NVDA reads a screen.
 
 ## License
 

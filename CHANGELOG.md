@@ -3,6 +3,29 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [0.2.1] — 2026-08-17
+
+### Added
+
+- `docs/api.md` — every prop of every component, generated from the shipped
+  `.d.ts` by `npm run build:api`. CI fails when it drifts from the types.
+- A playground at `examples/playground.html`: the React components themselves
+  with the code beside each one, built from `examples/playground.jsx` and
+  deployed from a workflow rather than committed.
+- `tests/ssr.test.tsx` — the whole system through `renderToString` in a node
+  environment, where there is no window to lean on. Closed layers emit nothing;
+  their triggers arrive complete.
+- `.rs-pre` for blocks of code. `.rs-code` uppercases its text — it was built
+  for `ORG-4182`, not for a snippet.
+
+### Fixed
+
+- `Pane` is a tab stop by default. It is the only scrollable area on the
+  screen, and a scrollable region no keyboard can reach is content no keyboard
+  can read. Pass `tabIndex={-1}` to opt out.
+- The test setup no longer assumes a DOM, and the polyfills it carried for the
+  behaviour library went with it.
+
 ## [0.2.0] — 2026-08-17
 
 ### Removed

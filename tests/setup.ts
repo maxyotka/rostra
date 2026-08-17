@@ -1,34 +1,9 @@
-import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
 import { afterEach } from 'vitest'
 
-afterEach(cleanup)
-
-// jsdom implements none of these, and Radix asks for them when opening layers.
-if (!window.matchMedia) {
-  window.matchMedia = (query: string) =>
-    ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    }) as MediaQueryList
-}
-
-if (!Element.prototype.hasPointerCapture) {
-  Element.prototype.hasPointerCapture = () => false
-  Element.prototype.setPointerCapture = () => {}
-  Element.prototype.releasePointerCapture = () => {}
-}
-
-if (!window.ResizeObserver) {
-  window.ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  }
+// The SSR suite runs in the node environment, where none of this exists — and
+// the point of that suite is to catch code that assumes otherwise.
+if (typeof window !== 'undefined') {
+  await import('@testing-library/jest-dom/vitest')
+  const { cleanup } = await import('@testing-library/react')
+  afterEach(cleanup)
 }
