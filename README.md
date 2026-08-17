@@ -75,8 +75,10 @@ Take `rostra.css` alone and you install nothing.
 
 ## Examples
 
-The live component library and two clickable prototypes are `.html` files in
-the repository root. They render from a static server — no build step:
+**[Open the live pages →](https://maxyotka.github.io/rostra/examples/)**
+
+The component library and two clickable prototypes are `.html` files in the
+repository root. They render from a static server — no build step:
 
 ```bash
 python -m http.server 5501   # from the repository root
