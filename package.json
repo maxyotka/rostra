@@ -8,6 +8,10 @@
     "type": "git",
     "url": "git+https://github.com/maxyotka/rostra.git"
   },
+  "homepage": "https://maxyotka.github.io/rostra/examples/",
+  "bugs": {
+    "url": "https://github.com/maxyotka/rostra/issues"
+  },
   "keywords": [
     "design-system",
     "ui",
