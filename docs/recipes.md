@@ -102,7 +102,7 @@ column.
 <Menu
   trigger={<Button>Actions</Button>}
   items={[
-    { label: 'Issue invoice', hint: <Kbd>⌘I</Kbd>, onSelect: issue },
+    { label: 'Issue invoice', hint: <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>, onSelect: issue },
     { label: 'Export CSV', onSelect: exportCsv },
     { label: 'Archive', separated: true, disabled: true },
   ]}

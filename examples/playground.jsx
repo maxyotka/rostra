@@ -145,7 +145,7 @@ function Layers() {
            <Button variant="danger">Block</Button></>} />
 
 <Menu trigger={<Button>Actions</Button>} items={[
-  { label: 'Issue invoice', hint: <Kbd>⌘I</Kbd>, onSelect: issue },
+  { label: 'Issue invoice', hint: <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>, onSelect: issue },
   { label: 'Archive', separated: true, disabled: true },
 ]} />`}
     >
@@ -169,7 +169,7 @@ function Layers() {
       <Menu
         trigger={<Button>Menu</Button>}
         items={[
-          { label: 'Issue invoice', hint: <Kbd>⌘I</Kbd>, onSelect: () => push({ title: 'Invoice issued', text: 'INV-2026-114 for 12,400' }) },
+          { label: 'Issue invoice', hint: <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>, onSelect: () => push({ title: 'Invoice issued', text: 'INV-2026-114 for 12,400' }) },
           { label: 'Export CSV', onSelect: () => push({ title: 'Export ready', text: 'clients-08-17.csv sent by email' }) },
           { label: 'Archive', separated: true, disabled: true },
         ]}
