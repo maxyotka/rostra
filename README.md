@@ -47,21 +47,26 @@ The React layer sits on five Radix primitives (dialog, dropdown menu, popover,
 tabs, tooltip), so installing it brings their tree with it — around 45 packages.
 Take `rostra.css` alone and you install nothing.
 
-## What it does differently
+## How it works
 
-- **Density is a token, not a variant.** `data-density` changes control height,
-  card padding and table row padding. Components do not know which mode they
-  render in.
-- **The core runs without JavaScript.** Checkbox, radio and switch are real
-  `input` elements styled through `.rs-choice`, so forms, keyboard and mobile
-  OS behaviour come for free.
-- **Contrast is verified, not claimed.** 23 foreground/background pairs across
-  4 themes, checked in CI against WCAG 2.1 AA — in both the oklch and the sRGB
-  fallback values.
-- **Old browsers get their own build.** `rostra.legacy.css` supports IE10 and
-  browsers from 2012 without changing anything in the modern build.
-- **Behaviour is not hand-rolled.** Dialogs, popovers, menus and tabs sit on
-  Radix primitives; focus traps, positioning and ARIA are not reimplemented.
+**Density.** `data-density` sets control height, card padding and table row
+padding. A component reads those values and has no size variants of its own.
+
+**Form controls.** Checkbox, radio and switch are native `input` elements under
+`.rs-choice`, so form submission, keyboard support and the mobile OS pickers
+work with JavaScript switched off.
+
+**Contrast.** `npm run check:contrast` measures 23 foreground/background pairs
+in each of the four themes, against the oklch values and against their sRGB
+fallbacks. CI fails below WCAG 2.1 AA.
+
+**Old browsers.** `rostra.legacy.css` is generated from the same source for
+IE10 and browsers back to 2012. The modern build carries nothing on its behalf.
+
+**Layers.** Dialog, drawer, popover, tooltip, menu and tabs are Radix
+primitives wearing Rostra classes — focus trapping, positioning and ARIA come
+from there. Calendar, combobox, tree and board are implemented here, on the APG
+keyboard patterns.
 
 ## Documentation
 
@@ -99,9 +104,9 @@ violations.
 | `rostra.css` | Chrome 84+, Firefox 63+, Safari 14.1+, Edge 84+ |
 | `rostra.legacy.css` | IE10+, Chrome 21+, Firefox 28+, Safari 6.1+, Opera 15+ |
 
-Both floors are derived from caniuse data, not guessed: `npm run check:support`
-prints the table and names the feature that sets each limit. Details and the
-TLS caveat are in [docs/browser-support.md](docs/browser-support.md).
+Both floors come from caniuse data. `npm run check:support` prints the table and
+names the feature that sets each limit. Details and the TLS caveat are in
+[docs/browser-support.md](docs/browser-support.md).
 
 ## Development
 
@@ -118,9 +123,12 @@ for history, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 
 Version 0.1.0. The API may still change in minor releases.
 
-Not covered yet: React wrappers for Calendar, Combobox, Tree and Board; print
-styles; visual regression tests; verification on a real IE11 rather than a
-simulated one.
+Every component in the library has a React counterpart. Dragging on the board
+is not implemented — the move controls are buttons, which is what a keyboard
+and a screen reader can use.
+
+Not covered yet: print styles, visual regression tests, and verification on a
+real IE11 rather than a simulated one.
 
 ## License
 

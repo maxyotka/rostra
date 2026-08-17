@@ -2,7 +2,7 @@
 
 ## How tokens work
 
-`rostra.tokens.json` is the single source of truth. The token block inside
+Every token value is written in `rostra.tokens.json`. The token block inside
 `rostra.css` is generated from it:
 
 ```bash
@@ -60,8 +60,8 @@ npm run build:legacy      # if you also ship the legacy build
 ```
 
 If a new token takes part in contrast, add it to `contrastPairs` with a
-threshold: 4.5 for text, 3 for borders and other non-text indicators. A pair
-that is not listed is a pair nobody checks.
+threshold: 4.5 for text, 3 for borders and other non-text indicators. Nothing
+outside that list is measured.
 
 ## Colour format
 

@@ -283,9 +283,16 @@
 /* --- 15. Multiselect and combobox -------------------------- */
 .rs-combo { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: var(--rs-control-h); padding: 4px 8px; border: 1px solid var(--rs-control-border); border-radius: var(--rs-radius); background: var(--rs-surface); }
 .rs-combo:focus-within { border-color: var(--rs-accent-400); box-shadow: var(--rs-ring); }
+/* The wrapper owns the positioning context; the list hangs off the field
+   rather than off the page, so a combobox inside a dialog travels with it. */
+.rs-combo-wrap { position: relative; }
+.rs-combo__input { flex: 1 1 60px; min-width: 60px; height: 22px; border: 0; padding: 0; background: transparent; color: var(--rs-text); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); }
+.rs-combo__input:focus { outline: none; }
+.rs-combo__list { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0; max-height: 260px; overflow-y: auto; }
 .rs-token { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 4px 0 8px; border-radius: var(--rs-radius-sm); background: var(--rs-surface-3); font: 400 var(--rs-fs-label) / 1 var(--rs-font); color: var(--rs-text); white-space: nowrap; }
-.rs-token__x { color: var(--rs-text-faint); cursor: pointer; padding: 0 3px; }
+.rs-token__x { color: var(--rs-text-faint); cursor: pointer; padding: 0 3px; border: 0; background: none; font: inherit; line-height: 1; }
 .rs-token__x:hover { color: var(--rs-text); }
+.rs-token__x:focus-visible { outline: none; box-shadow: var(--rs-ring); border-radius: var(--rs-radius-sm); color: var(--rs-text); }
 .rs-menu { background: var(--rs-surface); border: 1px solid var(--rs-border); border-radius: var(--rs-radius); box-shadow: var(--rs-shadow-2); padding: 4px; min-width: 200px; }
 .rs-menu__item { display: flex; align-items: center; gap: 9px; height: var(--rs-control-h); padding: 0 9px; border-radius: var(--rs-radius-sm); font: 400 var(--rs-fs-ui) / 1 var(--rs-font); color: var(--rs-text); cursor: pointer; }
 /* is-focus for hand-written markup, data-highlighted for the item the

@@ -11,7 +11,7 @@ npm run check:support   # which browsers the result supports
 
 | File | Edited by hand? |
 | --- | --- |
-| `rostra.tokens.json` | yes — the single source of truth for tokens |
+| `rostra.tokens.json` | yes — every token value lives here |
 | `src/components.css` | yes — every class except the token block |
 | `src/*.tsx` | yes — the React layer |
 | `rostra.css` | no — generated from the two above |

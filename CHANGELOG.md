@@ -56,6 +56,16 @@ versioning follows [SemVer](https://semver.org/).
   recipes.
 - `examples/` — an index over the component library and the two prototypes,
   served as static files from the repository root.
+- `Calendar`, `Combobox`, `Tree` and `Board` — the four components that existed
+  as classes only. They have no Radix equivalent, so the keyboard behaviour is
+  written here against the APG patterns: a roving tab stop in the calendar grid
+  and the tree, `aria-activedescendant` in the combobox so focus stays in the
+  input while arrows move through the list. The calendar takes its month name,
+  weekday names and day labels from `Intl`, which leaves `locale` as the only
+  thing to translate.
+- Board card movement as buttons rather than dragging. A pointer-only board
+  cannot be operated by keyboard, and `onCardMove` is what turns the controls
+  on; without it the board renders read-only.
 
 ### Changed
 

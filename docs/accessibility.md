@@ -1,6 +1,7 @@
 # Accessibility
 
-Not a declaration — checked on every push.
+What is checked automatically, what the split between border tokens buys, and
+what the system leaves to the application.
 
 ## Contrast
 
@@ -17,27 +18,24 @@ sRGB fallback that older browsers receive. Clamping a colour into the sRGB
 gamut moves it, so a palette that passes in oklch can still fail in sRGB.
 
 The pairs live in `rostra.tokens.json` under `contrastPairs`, each with a
-threshold and a note explaining where the pair appears on screen. A pair that
-is not listed is a pair nobody checks — add one when you add a colour token.
+threshold and a note explaining where the pair appears on screen. Nothing
+outside that list is measured, so a new colour token needs a new pair.
 
 ## Two kinds of border
-
-This distinction is the reason the system passes non-text contrast at all.
 
 | Token | Role | Requirement |
 | --- | --- | --- |
 | `--rs-border` | Hairlines of cards and dividers — decorative | none |
 | `--rs-control-border` | Border of an input, checkbox, switch, dropzone, scrollbar thumb | 3:1 |
 
-The border of a control is the only thing that shows the user a control is
-there, which is exactly what WCAG 1.4.11 covers. The hairline around a card is
-not: the card is already separated by its background.
+A control's border is what tells the user the control is there, which is what
+WCAG 1.4.11 covers. A card hairline carries no such duty: the card is already
+separated by its background.
 
-Before this split the control border measured 1.5:1 and an unchecked switch on
-a white card measured about 1.1:1 — effectively invisible.
+Before the split, the control border measured 1.5:1, and an unchecked switch on
+a white card about 1.1:1.
 
-If you need the quieter original look back, it is one line, and it is an
-informed decision to fail AA rather than a matter of taste:
+The quieter original look is one line away. It fails AA, so make it knowingly:
 
 ```css
 .rs { --rs-control-border: var(--rs-border); }
@@ -51,11 +49,16 @@ support, autofill, form submission and the mobile OS pickers work without any
 JavaScript. The checkmark is drawn with CSS borders, so a basic checkbox does
 not pull in an icon font.
 
-## Layers
+## Layers and keyboard patterns
 
-Dialog, drawer, popover, tooltip, menu and tabs are built on Radix primitives.
-Focus trapping, focus restoration, Escape, `aria-modal`, arrow-key navigation —
-none of it is hand-written here.
+Dialog, drawer, popover, tooltip, menu and tabs are built on Radix primitives,
+which supply focus trapping, focus restoration, Escape, `aria-modal` and
+arrow-key navigation.
+
+Calendar, combobox, tree and board have no Radix equivalent and are implemented
+here against the APG patterns: a roving tab stop in the calendar grid and the
+tree, `aria-activedescendant` in the combobox so focus stays in the input, and
+buttons rather than dragging on the board.
 
 The React layer also carries theme into portals: a dialog renders at the end of
 `body`, outside the container that holds `data-theme`, so `LayerScope` sets it
@@ -63,9 +66,9 @@ again.
 
 ## Focus
 
-`:focus-visible` produces the `--rs-ring` ring; removing it is not allowed.
-Browsers without `:focus-visible` fall back to showing the ring on any focus,
-including mouse clicks — the safe direction to fail in.
+`:focus-visible` produces the `--rs-ring` ring, and no component may remove it.
+Browsers without `:focus-visible` fall back to showing the ring on every focus,
+including mouse clicks.
 
 ## Motion
 
@@ -74,12 +77,16 @@ including mouse clicks — the safe direction to fail in.
 ## Automated checks
 
 `tests/a11y.test.tsx` runs axe-core over a composite screen, an open dialog, a
-system state page and switched tabs. Colour contrast is disabled in that run —
-jsdom has no computed colours — because `check-contrast.mjs` covers it against
-the real token values instead.
+system state page and switched tabs; `tests/interactive.test.tsx` does the same
+for the calendar, combobox, tree and board, and drives each of them from the
+keyboard. Colour contrast is disabled in those runs, since jsdom has no
+computed colours; `check-contrast.mjs` covers it against the real token values.
 
-One test deliberately renders broken markup and asserts that axe reports it. A
-green axe run proves nothing if the check silently did not execute.
+One test renders deliberately broken markup and asserts that axe reports it —
+a green run means nothing until the check is known to execute.
+
+The three demo pages are also scanned in a real browser, where contrast does
+resolve. That run is what caught the calendar's `opacity: 0.45` at 1.9:1.
 
 ## What the system does not do for you
 

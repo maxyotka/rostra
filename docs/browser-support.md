@@ -18,7 +18,7 @@ The report names the feature that sets each limit. For the modern build it is
 `gap` in flexbox; the oldest point covered by the legacy build is September
 2012.
 
-## Going lower is pointless: TLS, not CSS
+## What actually sets the floor is TLS
 
 A browser without TLS 1.2 will not establish a connection to a modern server
 and never reaches the stylesheet at all. TLS 1.2 arrived in Chrome 29,
@@ -29,12 +29,12 @@ and the legacy build covers that range with room to spare. Chrome 21 and IE10
 are supported in CSS but will not open the site over HTTPS anyway. The margin
 only matters on an internal network over plain HTTP.
 
-## Below IE10 the requirement contradicts itself
+## Why the legacy build stops at IE10
 
 IE9 and IE8 have no flexbox at all. Supporting them means rewriting every
-layout on floats and tables, at which point "the layout looks roughly the same"
-stops being true — that would be a different system, not another build of this
-one. IE10 is the last point where `-ms-flexbox` still produces the same layout.
+layout on floats and tables, and the result no longer matches the modern build
+closely enough to call it the same system. IE10 is the last point where
+`-ms-flexbox` still produces the same layout.
 
 The same boundary applies to Chrome and Firefox: before Chrome 21 and
 Firefox 28, flexbox existed only in the 2009 syntax (`display: box`) with no

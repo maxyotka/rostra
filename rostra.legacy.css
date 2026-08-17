@@ -329,9 +329,15 @@
 .rs-combo { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-flex-wrap: wrap; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-align-items: center; -ms-flex-align: center; align-items: center; min-height: 32px; padding: 4px 8px; border: 1px solid #83868e; border-radius: 6px; background: #ffffff; }
 .rs-combo > * + * { margin-left: 5px; }
 .rs-combo:focus-within { border-color: #7fa4ea; box-shadow: 0 0 0 3px #dae9ff; }
+/* The wrapper owns the positioning context; the list hangs off the field
+   rather than off the page, so a combobox inside a dialog travels with it. */
+.rs-combo-wrap { position: relative; }
+.rs-combo__input { -webkit-flex: 1 1 60px; -ms-flex: 1 1 60px; flex: 1 1 60px; min-width: 60px; height: 22px; border: 0; padding: 0; background: transparent; color: #1c1f25; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+.rs-combo__input:focus { outline: none; }
+.rs-combo__list { position: absolute; z-index: 30; top: -webkit-calc(100% + 4px); top: calc(100% + 4px); left: 0; right: 0; max-height: 260px; overflow-y: auto; }
 .rs-token { display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 22px; padding: 0 4px 0 8px; border-radius: 4px; background: #eef0f4; font: 400 11.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; white-space: nowrap; }
 .rs-token > * + * { margin-left: 6px; }
-.rs-token__x { color: #686c74; cursor: pointer; padding: 0 3px; }
+.rs-token__x { color: #686c74; cursor: pointer; padding: 0 3px; border: 0; background: none; font: inherit; line-height: 1; }
 .rs-token__x:hover { color: #1c1f25; }
 .rs-menu { background: #ffffff; border: 1px solid #dfe1e7; border-radius: 6px; box-shadow: 0 8px 24px -10px rgba(20, 22, 35, 0.22); padding: 4px; min-width: 200px; }
 .rs-menu__item { display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-align-items: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 0 9px; border-radius: 4px; font: 400 12.5px / 1 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #1c1f25; cursor: pointer; }

@@ -1,27 +1,25 @@
 # Principles
 
-Eight rules. A change that breaks any of them requires updating this document
-in the same commit — otherwise the document stops describing the system, which
-costs more than it looks.
+Eight rules. A change that breaks any of them updates this document in the same
+commit, or the document stops describing the system.
 
-## 1. Density is a token, not a rework
+## 1. Density lives on the container
 
-`data-density` changes control height, card padding and table row padding.
-Components do not know which mode they render in. There is no compact variant
-of a component — there is a compact container.
+`data-density` changes control height, card padding and table row padding. A
+component reads those values; it has no compact or roomy variant of its own.
 
 ## 2. One accent
 
 Blue at hue 262 works in the primary button, the active navigation item, links
-and charts. Status colours never take part in navigation: green is "healthy",
-not "clickable".
+and charts. Status colours stay out of navigation: green marks a healthy state
+and never means "clickable".
 
 ## 3. Borders instead of shadows
 
 A shadow belongs only to floating layers: toast, dialog, popover, command
 palette. Everything on the page plane is separated by hairlines.
 
-## 4. Three registers, each with its own job
+## 4. Two type registers
 
 Sentence case for headings, field labels, buttons and statuses.
 
@@ -45,13 +43,13 @@ uppercase, when the label is longer than two words).
 
 ## 5. One screen
 
-An admin panel behaves like an application, not a page: its height equals the
-window and the page never scrolls as a whole. Only the working area scrolls
-(`.rs-pane`); navigation, header, filters and pagination are pinned.
+The application is exactly as tall as the window and never scrolls as a whole.
+Only the working area scrolls (`.rs-pane`); navigation, header, filters and
+pagination stay pinned.
 
-If the content does not fit, that is a reason to remove something or collapse
-it into a disclosure — not to hand the user a vertical scrollbar. One
-exception: long documents and regulations (`.rs-md`).
+Content that does not fit is a reason to cut it or collapse it into a
+disclosure. The exception is long documents and regulations (`.rs-md`), which
+scroll normally.
 
 ## 6. A wide table gets two scrollbars
 
@@ -65,9 +63,9 @@ Always in tabular figures, so columns do not jump when data refreshes.
 
 ## 8. Focus is always visible
 
-`:focus-visible` produces the `--rs-ring` ring. Removing it is not allowed. In
-browsers without `:focus-visible` support a fallback shows the ring on any
-focus, which is the safe direction to fail in.
+`:focus-visible` produces the `--rs-ring` ring, and no component may remove it.
+Browsers without `:focus-visible` fall back to showing the ring on every focus,
+including mouse clicks: an extra ring costs less than a missing one.
 
 ---
 
@@ -88,9 +86,9 @@ Russian. The rules themselves are not language-specific.
 
 # Motion
 
-One idea: everything entering decelerates for a long time at the end
-(easeOutQuint), everything leaving accelerates briefly. An element should come
-back faster than it arrived, otherwise closing feels like lag.
+Everything entering decelerates for a long time at the end (easeOutQuint);
+everything leaving accelerates briefly. An element leaves faster than it
+arrived, or closing feels like lag.
 
 - Entry: 10px from below and scale 0.985.
 - Exit: same geometry at 0.6 of the duration, easeIn.

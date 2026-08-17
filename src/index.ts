@@ -50,6 +50,19 @@ export type {
   TimelineItem,
 } from './data'
 
+export { Calendar, Combobox, Tree, Board } from './interactive'
+export type {
+  CalendarProps,
+  DateRange,
+  ComboboxProps,
+  ComboboxOption,
+  TreeProps,
+  TreeNode,
+  BoardProps,
+  BoardColumn,
+  BoardCard,
+} from './interactive'
+
 export { Dialog, Drawer, DialogClose, Popover, Tooltip, Menu, Toast, ToastViewport, useToasts } from './layers'
 export type { PopoverProps, TooltipProps, MenuItem, MenuProps, ToastProps, ToastRecord } from './layers'
 

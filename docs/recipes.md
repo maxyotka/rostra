@@ -111,9 +111,8 @@ column.
 
 ## System state pages
 
-403, 404, 500, maintenance and first run share one component and differ only in
-tone. Two ways out of the dead end, and a technical line at the bottom for
-support.
+403, 404, 500, maintenance and first run share one component and differ in tone
+only. Give the page two actions and a technical line for support to quote.
 
 ```tsx
 <SystemState
@@ -131,9 +130,84 @@ support.
 />
 ```
 
-## Components without a React wrapper
+## Picking a period
 
-Calendar, combobox with tokens, inline cell editing, tree, dropzone, kanban
-board and the mobile shell exist as CSS classes only. The markup and the
-classes are documented in the live library (`Rostra Library.html`); the
-behaviour is up to the application. Wrappers are on the roadmap.
+`Calendar` keeps the month itself unless you pass one. In range mode the first
+click opens the period and the second closes it, in either direction.
+
+```tsx
+const [period, setPeriod] = useState<DateRange | null>(null)
+
+<Calendar
+  mode="range"
+  value={period}
+  onValueChange={(value) => setPeriod(value as DateRange)}
+  isDisabled={(day) => day.getDay() === 0 || day.getDay() === 6}
+/>
+```
+
+Arrows walk the grid and pull the month along at its edges; PageUp and PageDown
+jump a month; Enter picks. Weekday names, the month title and the label a
+screen reader reads for a day all come from `Intl`, so `locale` is the only
+translation needed.
+
+## Multiselect
+
+```tsx
+const [plans, setPlans] = useState<string[]>([])
+
+<Combobox
+  label="Plans"
+  placeholder="Add a plan…"
+  options={[
+    { value: 'ent', label: 'Enterprise' },
+    { value: 'biz', label: 'Business' },
+  ]}
+  value={plans}
+  onValueChange={setPlans}
+/>
+```
+
+Focus never leaves the input: arrows move `aria-activedescendant` instead, so
+typing continues to work while the list is open. Backspace on an empty query
+removes the last token.
+
+## Access tree
+
+```tsx
+<Tree
+  label="Access"
+  items={[
+    { id: 'prod', label: 'Manufacturing', meta: 'Full', children: [
+      { id: 'wh2', label: 'Warehouse 2', meta: 'Inherits' },
+    ]},
+    { id: 'fin', label: 'Finance', meta: 'Closed' },
+  ]}
+  defaultExpanded={['prod']}
+  selected={selected}
+  onSelect={setSelected}
+/>
+```
+
+One tab stop for the whole tree. Up and down walk the visible rows, right opens
+a branch and then steps into it, left folds it and then climbs to the parent.
+
+## Board
+
+```tsx
+<Board
+  columns={columns}
+  onCardMove={({ card, from, to }) => move(card, from, to)}
+/>
+```
+
+Dragging is not implemented. `onCardMove` renders a pair of buttons on each
+card, which is the part a keyboard and a screen reader can reach; without the
+prop the board is read-only. Every card needs a `label` — the buttons borrow it
+for their accessible names.
+
+## Still CSS-only
+
+Inline cell editing, the dropzone, and the mobile shell (`.rs-m-card`,
+`.rs-m-nav`, `.rs-sheet`) exist as classes without a React wrapper. The markup
+is in the live library page.
