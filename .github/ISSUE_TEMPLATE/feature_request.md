@@ -26,4 +26,4 @@ The system is deliberately narrow: variants are added rarely and with a reason.
 - [ ] this is not a fourth variant of something that already has three;
 - [ ] it does not require a second accent colour;
 - [ ] density stays a token rather than a separate version of the component;
-- [ ] the behaviour can be built on a native element or a Radix primitive.
+- [ ] the behaviour can be built on a native element or an existing layer.

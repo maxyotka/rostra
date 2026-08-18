@@ -3,12 +3,8 @@
 ## Supported versions
 
 The project is at `0.x`: the public API may still change in minor releases.
-Fixes are shipped for the current minor branch.
-
-| Version | Supported |
-|---------|-----------|
-| `0.1.x` | ✅        |
-| `< 0.1` | ❌        |
+Fixes are shipped for the current minor branch — `0.2.x` today — and nothing
+older is patched.
 
 ## Reporting a vulnerability
 
@@ -41,8 +37,8 @@ surface is narrow. In scope:
 Out of scope:
 
 - Markup the application itself passes to `dangerouslySetInnerHTML`.
-- Vulnerabilities in React, Radix or other consumer dependencies — report those
-  upstream.
+- Vulnerabilities in React itself, or in anything else the application
+  installs — report those upstream. The package has no dependencies of its own.
 - Issues reproducible only in browsers below the documented support floor.
 
 ## Caveats

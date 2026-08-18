@@ -7,9 +7,8 @@ import { dirname, join } from 'node:path'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 
-// Everything declared as a dependency stays external: bundling React or the
-// Radix primitives into the package is a reliable way to end up with two
-// copies in the application and a broken context.
+// Peers stay external: bundling React into the package is a reliable way to
+// end up with two copies in the application and a broken context.
 const external = [...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.peerDependencies ?? {}), 'react/jsx-runtime']
 
 const common = {
