@@ -1,6 +1,7 @@
-import { forwardRef, Fragment } from 'react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import { forwardRef, Fragment, useState } from 'react'
+import type { ComponentPropsWithoutRef, ReactNode, RefObject } from 'react'
 import { cx } from './cx'
+import { useBrowserLayoutEffect } from './primitives'
 
 type Status = 'ok' | 'warn' | 'bad' | 'info'
 
@@ -144,8 +145,64 @@ export const Table = /* @__PURE__ */ forwardRef<HTMLTableElement, TableProps>(fu
   )
 })
 
-export function TableWrap({ className, ...rest }: ComponentPropsWithoutRef<'div'>) {
-  return <div className={cx('rs-table-wrap', className)} {...rest} />
+export const TableWrap = /* @__PURE__ */ forwardRef<HTMLDivElement, ComponentPropsWithoutRef<'div'>>(
+  function TableWrap({ className, ...rest }, ref) {
+    return <div ref={ref} className={cx('rs-table-wrap', className)} {...rest} />
+  }
+)
+
+export interface VirtualRowsOptions {
+  /** How many rows the data has, not how many are on screen. */
+  count: number
+  /**
+   * Row height in pixels. It comes from the density — a row is taller in
+   * roomy than in compact — so it is a prop, not a constant: measure one row
+   * in the density you ship and pass that number.
+   */
+  rowHeight: number
+  /** The element that scrolls: the table wrapper, with a height and overflow. */
+  scrollRef: RefObject<HTMLElement | null>
+  /** Rows kept above and below the viewport, so a fast scroll shows no gap. */
+  overscan?: number
+}
+
+/**
+ * Renders only the rows in view. Twenty thousand rows in the DOM is what makes
+ * an admin table crawl; the rest of the height is held by two spacer rows.
+ *
+ * A virtualised table has to state its real size for a screen reader, because
+ * the DOM no longer does: aria-rowcount on the table, aria-rowindex on each
+ * row. docs/recipes.md has the whole screen written out.
+ */
+export function useVirtualRows({ count, rowHeight, scrollRef, overscan = 6 }: VirtualRowsOptions) {
+  const [view, setView] = useState({ top: 0, height: 0 })
+
+  useBrowserLayoutEffect(() => {
+    const node = scrollRef.current
+    if (!node) return
+    const read = () => setView({ top: node.scrollTop, height: node.clientHeight })
+    read()
+    node.addEventListener('scroll', read, { passive: true })
+    window.addEventListener('resize', read)
+    return () => {
+      node.removeEventListener('scroll', read)
+      window.removeEventListener('resize', read)
+    }
+  }, [scrollRef])
+
+  // Before the first measurement the height is 0: render the overscan rather
+  // than nothing, so server output and the first client frame agree.
+  const rows = view.height ? Math.ceil(view.height / rowHeight) + overscan * 2 : overscan * 2
+  const start = Math.max(0, Math.floor(view.top / rowHeight) - overscan)
+  const end = Math.min(count, start + rows)
+  return {
+    start,
+    end,
+    /** Height of the spacer row above the visible ones, in pixels. */
+    padTop: start * rowHeight,
+    /** Height of the spacer row below them. */
+    padBottom: Math.max(0, (count - end) * rowHeight),
+  }
 }
 
 /** Numeric cell: right-aligned tabular figures, so the column does not jump. */

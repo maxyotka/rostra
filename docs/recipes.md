@@ -96,6 +96,47 @@ screen reader to finish its current sentence instead of interrupting.
 not jump when data refreshes. For a wide table add `sticky` to pin the first
 column.
 
+## Twenty thousand rows
+
+Past a few thousand rows the browser, not the network, is what makes the screen
+crawl. `useVirtualRows` renders only the rows in view and holds the rest of the
+height with two spacer rows:
+
+```tsx
+const scroller = useRef<HTMLDivElement>(null)
+const window = useVirtualRows({ count: rows.length, rowHeight: 33, scrollRef: scroller })
+
+<TableWrap ref={scroller} style={{ overflowY: 'auto', maxHeight: '100%' }}>
+  <Table zebra aria-rowcount={rows.length}>
+    <thead>…</thead>
+    <tbody>
+      {window.padTop > 0 && <tr aria-hidden="true" style={{ height: window.padTop }} />}
+      {rows.slice(window.start, window.end).map((row, i) => (
+        <tr key={row.id} aria-rowindex={window.start + i + 1}>
+          <td>{row.org}</td>
+          <Num>{row.seats}</Num>
+        </tr>
+      ))}
+      {window.padBottom > 0 && <tr aria-hidden="true" style={{ height: window.padBottom }} />}
+    </tbody>
+  </Table>
+</TableWrap>
+```
+
+Two things the hook cannot do for you:
+
+**`rowHeight` is a measurement, not a guess.** Row height follows the density —
+a compact row is shorter than a roomy one — so measure one rendered row in the
+density you ship and pass that number. Wrong by a pixel and the scrollbar
+drifts by a pixel per row.
+
+**`aria-rowcount` and `aria-rowindex` are not optional here.** The DOM no longer
+holds all the rows, so without them a screen reader announces "row 3 of 40"
+over a table of twenty thousand.
+
+The rows themselves must be one line tall — a cell that wraps breaks the
+arithmetic. Where content varies, keep the table unvirtualised and paginate.
+
 ## Menu
 
 ```tsx

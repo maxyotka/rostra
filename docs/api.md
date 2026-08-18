@@ -76,6 +76,15 @@ Every component also accepts the props of the element it renders, so
 | `sticky` | `boolean` | — | The first column pins during horizontal scrolling. |
 | `sentenceHead` | `boolean` | — | Sentence-case header instead of uppercase: for headings longer than two words. |
 
+### VirtualRowsOptions
+
+| Prop | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `count` | `number` | yes | How many rows the data has, not how many are on screen. |
+| `rowHeight` | `number` | yes | Row height in pixels. It comes from the density — a row is taller in * roomy than in compact — so it is a prop, not a constant: measure one row * in the density you ship and pass that number. |
+| `scrollRef` | `RefObject<HTMLElement \| null>` | yes | The element that scrolls: the table wrapper, with a height and overflow. |
+| `overscan` | `number` | — | Rows kept above and below the viewport, so a fast scroll shows no gap. |
+
 ### EmptyState
 
 | Prop | Type | Required | Notes |

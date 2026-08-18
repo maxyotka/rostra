@@ -25,7 +25,7 @@ export function focusable(root: HTMLElement): HTMLElement[] {
 
 // useLayoutEffect warns during SSR; the layers only ever mount in a browser,
 // but the warning would still reach anyone rendering on a server.
-const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
+export const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 /**
  * Renders into body inside a marked wrapper. React owns the wrapper, so the

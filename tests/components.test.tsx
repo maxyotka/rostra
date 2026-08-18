@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { describe, expect, it, onTestFinished, vi } from 'vitest'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import {
   Alert,
@@ -17,8 +17,11 @@ import {
   Rostra,
   Segmented,
   Switch,
+  Table,
+  TableWrap,
   Tabs,
   cx,
+  useVirtualRows,
 } from '../src'
 
 describe('cx', () => {
@@ -247,5 +250,50 @@ describe('Segmented', () => {
     expect(screen.getByRole('button', { name: 'Compact' })).toHaveAttribute('aria-pressed', 'true')
     await userEvent.click(screen.getByRole('button', { name: 'Roomy' }))
     expect(screen.getByRole('button', { name: 'Roomy' })).toHaveAttribute('aria-pressed', 'true')
+  })
+})
+
+describe('useVirtualRows', () => {
+  function BigTable({ rows = 1000 }: { rows?: number }) {
+    const wrap = useRef<HTMLDivElement>(null)
+    const window = useVirtualRows({ count: rows, rowHeight: 20, scrollRef: wrap, overscan: 2 })
+    return (
+      <TableWrap ref={wrap} style={{ height: 100, overflowY: 'auto' }}>
+        <Table aria-rowcount={rows}>
+          <tbody>
+            {window.padTop > 0 && <tr aria-hidden="true" style={{ height: window.padTop }} />}
+            {Array.from({ length: window.end - window.start }, (_, i) => (
+              <tr key={window.start + i} aria-rowindex={window.start + i + 1}>
+                <td>Row {window.start + i}</td>
+              </tr>
+            ))}
+            {window.padBottom > 0 && <tr aria-hidden="true" style={{ height: window.padBottom }} />}
+          </tbody>
+        </Table>
+      </TableWrap>
+    )
+  }
+
+  it('renders a window of rows, not the whole list, and moves it on scroll', () => {
+    // jsdom lays nothing out, so the scroller reports its own size.
+    const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientHeight')
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 100 })
+    onTestFinished(() => {
+      if (original) Object.defineProperty(HTMLElement.prototype, 'clientHeight', original)
+    })
+    const { container } = render(<BigTable />)
+    const rowsOnScreen = () => container.querySelectorAll('tr[aria-rowindex]').length
+
+    expect(rowsOnScreen()).toBe(9) // 100/20 visible + 2 overscan on each side
+    expect(screen.getByText('Row 0')).toBeInTheDocument()
+    expect(screen.queryByText('Row 500')).not.toBeInTheDocument()
+
+    const scroller = container.querySelector('.rs-table-wrap') as HTMLElement
+    scroller.scrollTop = 10_000
+    fireEvent.scroll(scroller)
+
+    expect(screen.getByText('Row 498')).toBeInTheDocument()
+    expect(screen.queryByText('Row 0')).not.toBeInTheDocument()
+    expect(rowsOnScreen()).toBe(9)
   })
 })
