@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState } 
 import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react'
 import { cx } from './cx'
 import { LayerScope } from './theme'
-import { Portal, mergeRefs, useAnchoredPosition, useControlled } from './primitives'
+import { Portal, mergeRefs, readingKey, useAnchoredPosition, useControlled } from './primitives'
 
 /* --- Dates ---------------------------------------------------
    Small local helpers instead of a date library: the calendar needs six
@@ -170,7 +170,7 @@ export const Calendar = /* @__PURE__ */ forwardRef<HTMLDivElement, CalendarProps
       PageUp: () => addMonths(focused, -1),
       PageDown: () => addMonths(focused, 1),
     }
-    const step = jump[event.key]
+    const step = jump[readingKey(event.key, gridRef.current)]
     if (step) {
       event.preventDefault()
       moveTo(step())
@@ -196,8 +196,7 @@ export const Calendar = /* @__PURE__ */ forwardRef<HTMLDivElement, CalendarProps
         <span className="rs-cal__month">{monthLabel}</span>
         <button
           type="button"
-          className="rs-btn rs-btn--sm rs-btn--icon rs-btn--ghost"
-          style={{ marginLeft: 'auto' }}
+          className="rs-btn rs-btn--sm rs-btn--icon rs-btn--ghost rs-push"
           aria-label={labels?.nextMonth ?? 'Next month'}
           onClick={() => setMonth(addMonths(month, 1))}
         >
@@ -547,7 +546,7 @@ export const Tree = /* @__PURE__ */ forwardRef<HTMLDivElement, TreeProps>(functi
     const hasChildren = !!row.node.children?.length
     const isOpen = open.has(row.node.id)
 
-    switch (event.key) {
+    switch (readingKey(event.key, rootRef.current)) {
       case 'ArrowDown':
         event.preventDefault()
         moveTo(visible[index + 1]?.node.id)
@@ -609,7 +608,7 @@ export const Tree = /* @__PURE__ */ forwardRef<HTMLDivElement, TreeProps>(functi
             </span>
             <span>{node.label}</span>
             {node.meta != null && (
-              <span className="rs-muted" style={{ marginLeft: 'auto' }}>
+              <span className="rs-muted rs-push">
                 {node.meta}
               </span>
             )}

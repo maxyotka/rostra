@@ -1,6 +1,7 @@
 import { forwardRef, useId, useRef, useState } from 'react'
 import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react'
 import { cx } from './cx'
+import { readingKey } from './primitives'
 
 /**
  * Application shell: height equals the window, the page never scrolls as a
@@ -148,7 +149,7 @@ export function Tabs({ items, value, defaultValue, onValueChange, className }: T
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const index = items.findIndex((item) => item.value === current)
     const moves: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1 }
-    const move = moves[event.key]
+    const move = moves[readingKey(event.key, listRef.current)]
     if (move) {
       event.preventDefault()
       const next = items[(index + move + items.length) % items.length]

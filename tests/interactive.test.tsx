@@ -248,3 +248,33 @@ describe('Board', () => {
     expect(await violations(container)).toEqual([])
   })
 })
+
+describe('Right to left', () => {
+  it('reads the arrow keys the other way round in the calendar', async () => {
+    render(
+      <div dir="rtl">
+        <Calendar defaultMonth={AUGUST} defaultValue={new Date(2026, 7, 12)} locale="en-GB" />
+      </div>
+    )
+    const cell = screen.getByRole('gridcell', { name: '12 August 2026' })
+    cell.focus()
+    // Left is forward under RTL: the cursor lands on the 13th, not the 11th.
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(document.activeElement).toHaveAttribute('data-day', String(+new Date(2026, 7, 13)))
+  })
+
+  it('walks the tree with the arrows mirrored', async () => {
+    render(
+      <div dir="rtl">
+        <Tree
+          label="Access"
+          items={[{ id: 'org', label: 'Org', children: [{ id: 'team', label: 'Team' }] }]}
+        />
+      </div>
+    )
+    const row = screen.getByRole('treeitem', { name: /Org/ })
+    row.focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(screen.getByRole('treeitem', { name: /Org/ })).toHaveAttribute('aria-expanded', 'true')
+  })
+})

@@ -57,9 +57,10 @@ One above the header and one below the last row (`.rs-xbar`), because with
 twenty rows on screen, scrolling right should not require going to the end of
 the list first. The native scrollbar is hidden.
 
-## 7. Numbers align right
+## 7. Numbers align to the end of the line
 
-Always in tabular figures, so columns do not jump when data refreshes.
+Right in a left-to-right interface, left in a right-to-left one — always in
+tabular figures, so columns do not jump when data refreshes.
 
 ## 8. Focus is always visible
 

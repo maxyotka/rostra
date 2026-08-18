@@ -98,3 +98,35 @@ switches the table to `.rs-table--sticky` with a pinned first column and
 collapses filters behind a single button with a counter. It is an attribute
 rather than a media query, so the same layout works inside a narrow panel on a
 large screen.
+
+## Right to left
+
+`dir="rtl"` on any container mirrors what is inside it — the same container the
+theme and the density sit on:
+
+```html
+<div class="rs" dir="rtl" data-theme="light" data-density="medium">
+```
+
+```tsx
+<div dir="rtl">
+  <Rostra theme="light">…</Rostra>
+</div>
+```
+
+The layout is flexbox, so most of it flips on its own. What does not — the
+drawer's side, the pinned table column, the toast corner, the tree's guide
+line, the switch knob — is mirrored by a block of `[dir='rtl']` overrides at
+the end of the stylesheet. React reads the direction too: in the calendar, the
+tree and the tabs the left arrow key moves forward, and a popover anchored to
+`align="start"` opens from the right edge.
+
+The overrides are plain attribute selectors rather than logical properties
+(`margin-inline-start` and the rest), because those start at Chrome 89 and
+Safari 15 and would raise the support floor stated in the README — and
+`rostra.legacy.css` could not express them at all. RTL therefore works in the
+legacy build too.
+
+Two things the system does not do for you: the content itself (Arabic and
+Hebrew text, dates and number formats come from your data and `Intl`), and
+directional glyphs inside your own icons.

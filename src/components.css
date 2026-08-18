@@ -310,6 +310,7 @@
 .rs-menu__item.is-on, .rs-menu__item[data-state='checked'] { color: var(--rs-info-fg); font-weight: 500; }
 .rs-menu__item.is-disabled, .rs-menu__item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
 .rs-menu__sep { height: 1px; background: var(--rs-hairline); margin: 4px 0; }
+.rs-push { margin-left: auto; }
 .rs-menu__hint { margin-left: auto; color: var(--rs-text-faint); font-size: var(--rs-fs-label); }
 
 /* --- 16. Inline editing ------------------------------------ */
@@ -595,3 +596,36 @@
 .rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(3) { animation-delay: 90ms; }
 .rs-demo-stagger-card:hover .rs-demo-stagger > *:nth-child(4) { animation-delay: 135ms; }
 .rs-demo-shake:hover .rs-input { animation: rs-nudge var(--rs-dur-slow) var(--rs-ease) both; }
+
+/* --- Right to left -------------------------------------------
+   Mirrored by overriding the handful of rules that carry a direction, not by
+   moving the whole file to logical properties: those start at Chrome 89 and
+   Safari 15, and would push the support floor past what the README promises —
+   and past what rostra.legacy.css can express at all. Everything else is
+   flexbox, which flips on its own.
+
+   ponytail: an override block, not logical properties. Revisit when the
+   support floor rises past Safari 15 for other reasons. */
+[dir='rtl'] .rs-select { padding-right: var(--rs-space-3); padding-left: 30px; }
+[dir='rtl'] .rs-table th { text-align: right; }
+[dir='rtl'] .rs-table .rs-num { text-align: left; }
+[dir='rtl'] .rs-table--sticky th:first-child, [dir='rtl'] .rs-table--sticky td:first-child { left: auto; right: 0; }
+[dir='rtl'] .rs-table--sticky th:first-child::after, [dir='rtl'] .rs-table--sticky td:first-child::after { right: auto; left: 0; }
+[dir='rtl'] .rs-layer--right { right: auto; left: 0; }
+[dir='rtl'] .rs-drawer { border-left: 0; border-right: 1px solid var(--rs-border); }
+[dir='rtl'] .rs-toast-viewport { right: auto; left: var(--rs-space-4); }
+[dir='rtl'] .rs-shell__side { border-right: 0; border-left: 1px solid var(--rs-hairline); }
+[dir='rtl'] .rs-rail { border-right: 0; border-left: 1px solid var(--rs-hairline); }
+[dir='rtl'] .rs-push, [dir='rtl'] .rs-menu__hint { margin-left: 0; margin-right: auto; }
+[dir='rtl'] .rs-board__count { margin-left: 0; margin-right: auto; }
+[dir='rtl'] .rs-tree__kids { margin-left: 0; margin-right: 17px; padding-left: 0; padding-right: 13px; border-left: 0; border-right: 1px solid var(--rs-hairline); }
+[dir='rtl'] .rs-timeline__when { text-align: left; }
+[dir='rtl'] .rs-stack .rs-avatar { margin-left: 0; margin-right: -5px; padding-right: 0; padding-left: 2px; }
+[dir='rtl'] .rs-stack .rs-avatar:first-child { margin-right: 0; }
+[dir='rtl'] .rs-md ul, [dir='rtl'] .rs-md ol { padding-left: 0; padding-right: 20px; }
+[dir='rtl'] .rs-md ul { padding-right: 15px; }
+[dir='rtl'] .rs-md ul li::before { left: auto; right: -15px; }
+[dir='rtl'] .rs-md blockquote { padding-left: 0; padding-right: 15px; border-left: 0; border-right: 2px solid var(--rs-border); }
+/* The switch knob travels the other way, and the checkmark is not mirrored:
+   a tick reads the same in both directions. */
+[dir='rtl'] .rs-switch.is-on::after, [dir='rtl'] .rs-choice__input:checked + .rs-switch::after { transform: translateX(-14px); }

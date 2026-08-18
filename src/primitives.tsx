@@ -168,13 +168,34 @@ export function useModalIsolation(ref: RefObject<HTMLElement | null>, active: bo
   }, [active, ref])
 }
 
+/**
+ * Reading direction of an element. In a right-to-left interface the left arrow
+ * key means "forward", so every component that walks with arrows asks first.
+ */
+export function isRtl(node: Element | null | undefined) {
+  if (!node) return false
+  // The dir attribute is what an application actually sets, and it is the one
+  // thing that answers before any stylesheet has loaded.
+  const owner = node.closest('[dir]')
+  if (owner) return (owner as HTMLElement).dir.toLowerCase() === 'rtl'
+  return typeof getComputedStyle === 'function' && getComputedStyle(node).direction === 'rtl'
+}
+
+/** Left and right swap places under RTL; the vertical keys never do. */
+export function readingKey(key: string, node: Element | null | undefined) {
+  if (key !== 'ArrowLeft' && key !== 'ArrowRight') return key
+  if (!isRtl(node)) return key
+  return key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft'
+}
+
 export type Side = 'top' | 'right' | 'bottom' | 'left'
 export type Align = 'start' | 'center' | 'end'
 
 const OPPOSITE: Record<Side, Side> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' }
 const EDGE = 8
 
-export function place(anchor: DOMRect, floating: { width: number; height: number }, side: Side, align: Align, offset: number) {
+export function place(anchor: DOMRect, floating: { width: number; height: number }, side: Side, align: Align, offset: number, rtl = false) {
+  if (rtl && align !== 'center') align = align === 'start' ? 'end' : 'start'
   const vw = window.innerWidth
   const vh = window.innerHeight
   const room: Record<Side, number> = {
@@ -233,7 +254,7 @@ export function useAnchoredPosition({
     const box = floating.getBoundingClientRect()
     const anchorBox = anchor.getBoundingClientRect()
     const width = matchWidth ? anchorBox.width : box.width
-    const next = place(anchorBox, { width, height: box.height }, side, align, offset)
+    const next = place(anchorBox, { width, height: box.height }, side, align, offset, isRtl(anchor))
     setStyle({ top: next.top, left: next.left, width: matchWidth ? width : undefined })
     setResolvedSide(next.side)
   }, [anchorRef, floatingRef, side, align, offset, matchWidth])
