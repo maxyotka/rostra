@@ -91,23 +91,23 @@
     }
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
     "@types/node": "^26.2.0",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.5.4",
-    "axe-core": "^4.10.2",
+    "axe-core": "^4.13.0",
     "caniuse-lite": "^1.0.30001809",
-    "culori": "^4.0.1",
-    "esbuild": "^0.25.0",
-    "jsdom": "^26.0.0",
+    "culori": "^4.0.2",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.0.1",
     "postcss": "^8.5.26",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.5"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=18"

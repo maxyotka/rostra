@@ -27,6 +27,13 @@ versioning follows [SemVer](https://semver.org/).
 - `npm run check:size` measures the published builds against a budget, and CI
   runs it — the numbers in the README cannot drift unnoticed any more.
 
+### Changed
+
+- Every development dependency moved to its current major: TypeScript 7,
+  Vitest 4, jsdom 30, esbuild 0.28, jest-dom 7. Nothing in the published output
+  changed — same css, same bundles, same sizes. CI runs Node 24 and the current
+  actions.
+
 ### Fixed
 
 - The combobox list is a floating layer instead of an absolutely positioned
