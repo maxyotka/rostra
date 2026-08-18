@@ -92,19 +92,20 @@ these numbers cannot drift unnoticed:
 | A screen: shell, filters, fields, table, badges | **1.6 kB** | — | — |
 | Button, table, badge, dialog, text input | **2.5 kB** | 32.2 kB | 36.8 kB |
 | Every component in the package | **10.7 kB** | 180.9 kB | 85.0 kB |
-| Stylesheet | **13.3 kB** | 37.9 kB | 86.2 kB |
-| Packages installed | **0** | 27 | 84 |
+| Stylesheet | **13.4 kB** | 37.9 kB | 86.2 kB |
+| Packages installed | **0** | 23 | 81 |
 
 The other two columns were measured the same way on 2026-08-18, with the
-versions named in the header; `check:size` itself installs nothing and measures
-Rostra only. What the first row shows is a base runtime: both libraries load
+versions named in the header; package counts exclude React, which all three
+take as a peer, and `check:size` itself installs nothing and measures Rostra
+only. What the first row shows is a base runtime: both libraries load
 theirs with the first import, and Rostra has none. What it does not show is
 component count — Mantine ships 116 components to our 55, and a headless
 library such as Base UI or React Aria ships behaviour with no stylesheet at
 all, so its CSS column would be whatever you write yourself.
 
 A first screen is the honest total — a button plus the whole stylesheet, since
-ours is one file and loads in full: **14.3 kB** against Mantine's 50.1 kB and
+ours is one file and loads in full: **14.4 kB** against Mantine's 50.1 kB and
 Radix Themes' 91.4 kB.
 
 ## Documentation

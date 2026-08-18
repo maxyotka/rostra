@@ -899,7 +899,7 @@
 
    ponytail: an override block, not logical properties. Revisit when the
    support floor rises past Safari 15 for other reasons. */
-[dir='rtl'] .rs-select { padding-right: var(--rs-space-3); padding-left: 30px; }
+[dir='rtl'] .rs-select { padding-right: 11px; padding-left: 30px; }
 [dir='rtl'] .rs-table th { text-align: right; }
 [dir='rtl'] .rs-table .rs-num { text-align: left; }
 [dir='rtl'] .rs-table--sticky th:first-child, [dir='rtl'] .rs-table--sticky td:first-child { left: auto; right: 0; }
@@ -919,6 +919,10 @@
 [dir='rtl'] .rs-md ul { padding-right: 15px; }
 [dir='rtl'] .rs-md ul li::before { left: auto; right: -15px; }
 [dir='rtl'] .rs-md blockquote { padding-left: 0; padding-right: 15px; border-left: 0; border-right: 2px solid var(--rs-border); }
+/* Our own glyphs: the month chevrons and the tree's collapsed arrow point
+   along the reading direction. The expanded arrow and the checkmark are
+   symmetric, so flipping them changes nothing. */
+[dir='rtl'] .rs-cal__head .rs-btn--icon, [dir='rtl'] .rs-tree__toggle { transform: scaleX(-1); }
 /* The switch knob travels the other way, and the checkmark is not mirrored:
    a tick reads the same in both directions. */
 [dir='rtl'] .rs-switch.is-on::after, [dir='rtl'] .rs-choice__input:checked + .rs-switch::after { transform: translateX(-14px); }

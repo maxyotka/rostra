@@ -108,11 +108,13 @@ const window = useVirtualRows({ count: rows.length, rowHeight: 33, scrollRef: sc
 
 <TableWrap ref={scroller} style={{ overflowY: 'auto', maxHeight: '100%' }}>
   <Table zebra aria-rowcount={rows.length}>
-    <thead>…</thead>
+    <thead>
+      <tr aria-rowindex={1}>…</tr>
+    </thead>
     <tbody>
       {window.padTop > 0 && <tr aria-hidden="true" style={{ height: window.padTop }} />}
       {rows.slice(window.start, window.end).map((row, i) => (
-        <tr key={row.id} aria-rowindex={window.start + i + 1}>
+        <tr key={row.id} aria-rowindex={window.start + i + 2}>
           <td>{row.org}</td>
           <Num>{row.seats}</Num>
         </tr>
@@ -132,7 +134,8 @@ drifts by a pixel per row.
 
 **`aria-rowcount` and `aria-rowindex` are not optional here.** The DOM no longer
 holds all the rows, so without them a screen reader announces "row 3 of 40"
-over a table of twenty thousand.
+over a table of twenty thousand. The index counts the header row as well, which
+is why the data rows start at 2.
 
 The rows themselves must be one line tall — a cell that wraps breaks the
 arithmetic. Where content varies, keep the table unvirtualised and paginate.
