@@ -29,6 +29,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # The README quotes these numbers; the budgets keep them from drifting.
+      - run: node scripts/check-size.mjs --check
       # A built package must also import: "the build succeeded" and "the
       # package exports something" are different claims.
       - name: Built package exposes its components
