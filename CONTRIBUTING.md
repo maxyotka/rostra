@@ -16,7 +16,7 @@ npm run check:support   # which browsers the result supports
 | `src/*.tsx` | yes — the React layer |
 | `rostra.css` | no — generated from the two above |
 | `rostra.legacy.css` | no — generated from `rostra.css` |
-| `*.html` | yes — the demo pages, plain markup on the `rs-*` classes |
+| `examples/playground.jsx` | yes — the page behind the published playground |
 
 A token edited directly in `rostra.css` is lost on the next build and drifts
 away from client themes generated from the same json. `npm run check:tokens`

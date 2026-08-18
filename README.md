@@ -110,20 +110,15 @@ too: its stylesheet alone is 88 kB gzipped.
 components themselves, with the code beside each one. Open a dialog, walk a
 menu with the arrow keys, switch theme and density and watch it repaint.
 
-The component library and two clickable prototypes are `.html` files in the
-repository root. They render from a static server — no build step:
+To run it locally, build the bundle and serve the repository root:
 
 ```bash
-python -m http.server 5501   # from the repository root
+npm run build:playground
+python -m http.server 5501   # then open /examples/
 ```
 
-- [`examples/`](examples/index.html) — index of the four pages
-- `rostra-library.html` — every component, with theme and density switches
-- `prototype-clients.html` — a registry screen: filters, drawer, dialog, toasts
-- `prototype-dispatch.html` — a request board with SLA timers and a live feed
-
-Each page is checked with axe-core against WCAG 2.1 A/AA and reports no
-violations.
+Every component is checked with axe-core against WCAG 2.1 A/AA in CI and
+reports no violations.
 
 ## Browser support
 
