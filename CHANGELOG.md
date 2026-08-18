@@ -3,6 +3,38 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versioning follows [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `dir="rtl"` mirrors the system. Layout, the drawer's side, the pinned table
+  column, the toast corner and the switch knob flip through a block of
+  attribute selectors; the calendar, the tree and the tabs read the direction
+  before the arrow keys move; a popover anchored to `align="start"` opens from
+  the right edge. The support floor is unchanged and the legacy build mirrors
+  too — logical properties would have cost Chrome 84 and Safari 14.1.
+- `useVirtualRows` — renders only the rows in view and holds the rest of the
+  height with two spacer rows, for tables past a few thousand rows.
+  `docs/recipes.md` has the screen, `aria-rowcount` and all.
+- `Button` accepts `href` and renders an `a`: navigation lands in history and
+  opens in a new tab. `target="_blank"` gets `rel="noopener noreferrer"`
+  unless you pass your own.
+- `Calendar` and `Combobox` take `defaultValue` and keep their own selection
+  when the caller passes none.
+- Refs: `Calendar`, `Combobox`, `Tree`, `Board` and `TableWrap` forward one to
+  their root, `Dialog`, `Drawer` and `Popover` hand out the layer itself
+  through `contentRef`.
+- `npm run check:size` measures the published builds against a budget, and CI
+  runs it — the numbers in the README cannot drift unnoticed any more.
+
+### Fixed
+
+- The combobox list is a floating layer instead of an absolutely positioned
+  child: inside a scrolling pane the old one was clipped by the first ancestor
+  with `overflow`, which in this system is every table wrapper.
+- Tree-shaking reaches the components built with `forwardRef` — the calls are
+  marked pure, so importing a button costs 1.0 kB instead of 1.3.
+
 ## [0.2.1] — 2026-08-17
 
 ### Added
