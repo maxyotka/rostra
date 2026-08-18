@@ -104,7 +104,7 @@ height with two spacer rows:
 
 ```tsx
 const scroller = useRef<HTMLDivElement>(null)
-const window = useVirtualRows({ count: rows.length, rowHeight: 33, scrollRef: scroller })
+const view = useVirtualRows({ count: rows.length, rowHeight: 33, scrollRef: scroller })
 
 <TableWrap ref={scroller} style={{ overflowY: 'auto', maxHeight: '100%' }}>
   <Table zebra aria-rowcount={rows.length}>
@@ -112,22 +112,22 @@ const window = useVirtualRows({ count: rows.length, rowHeight: 33, scrollRef: sc
       <tr aria-rowindex={1}>…</tr>
     </thead>
     <tbody>
-      {window.padTop > 0 && <tr aria-hidden="true" style={{ height: window.padTop }} />}
-      {rows.slice(window.start, window.end).map((row, i) => (
-        <tr key={row.id} aria-rowindex={window.start + i + 2}>
+      {view.padTop > 0 && <tr aria-hidden="true" style={{ height: view.padTop }} />}
+      {rows.slice(view.start, view.end).map((row, i) => (
+        <tr key={row.id} aria-rowindex={view.start + i + 2}>
           <td>{row.org}</td>
           <Num>{row.seats}</Num>
         </tr>
       ))}
-      {window.padBottom > 0 && <tr aria-hidden="true" style={{ height: window.padBottom }} />}
+      {view.padBottom > 0 && <tr aria-hidden="true" style={{ height: view.padBottom }} />}
     </tbody>
   </Table>
 </TableWrap>
 ```
 
-Two things the hook cannot do for you:
+The hook stops at two things.
 
-**`rowHeight` is a measurement, not a guess.** Row height follows the density —
+**`rowHeight` is measured, never assumed.** Row height follows the density —
 a compact row is shorter than a roomy one — so measure one rendered row in the
 density you ship and pass that number. Wrong by a pixel and the scrollbar
 drifts by a pixel per row.

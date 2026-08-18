@@ -256,18 +256,18 @@ describe('Segmented', () => {
 describe('useVirtualRows', () => {
   function BigTable({ rows = 1000 }: { rows?: number }) {
     const wrap = useRef<HTMLDivElement>(null)
-    const window = useVirtualRows({ count: rows, rowHeight: 20, scrollRef: wrap, overscan: 2 })
+    const view = useVirtualRows({ count: rows, rowHeight: 20, scrollRef: wrap, overscan: 2 })
     return (
       <TableWrap ref={wrap} style={{ height: 100, overflowY: 'auto' }}>
         <Table aria-rowcount={rows}>
           <tbody>
-            {window.padTop > 0 && <tr aria-hidden="true" style={{ height: window.padTop }} />}
-            {Array.from({ length: window.end - window.start }, (_, i) => (
-              <tr key={window.start + i} aria-rowindex={window.start + i + 1}>
-                <td>Row {window.start + i}</td>
+            {view.padTop > 0 && <tr aria-hidden="true" style={{ height: view.padTop }} />}
+            {Array.from({ length: view.end - view.start }, (_, i) => (
+              <tr key={view.start + i} aria-rowindex={view.start + i + 1}>
+                <td>Row {view.start + i}</td>
               </tr>
             ))}
-            {window.padBottom > 0 && <tr aria-hidden="true" style={{ height: window.padBottom }} />}
+            {view.padBottom > 0 && <tr aria-hidden="true" style={{ height: view.padBottom }} />}
           </tbody>
         </Table>
       </TableWrap>

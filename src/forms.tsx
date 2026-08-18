@@ -11,9 +11,9 @@ export interface ButtonProps extends Omit<ComponentPropsWithoutRef<'button'>, 'o
   icon?: boolean
   loading?: boolean
   /**
-   * Renders an `a` instead of a `button`. Navigation is a link — it belongs in
-   * the browser's history, opens in a new tab on the middle button and is read
-   * as a link. A router link goes here too: `href` plus its own `onClick`.
+   * Renders an `a` instead of a `button`, because navigation belongs in the
+   * browser history and on the middle mouse button. A router link goes here
+   * too: `href` plus its own `onClick`.
    */
   href?: string
   target?: string

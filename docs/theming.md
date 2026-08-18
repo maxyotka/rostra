@@ -124,9 +124,8 @@ tree and the tabs the left arrow key moves forward, and a popover anchored to
 The overrides are plain attribute selectors rather than logical properties
 (`margin-inline-start` and the rest), because those start at Chrome 89 and
 Safari 15 and would raise the support floor stated in the README — and
-`rostra.legacy.css` could not express them at all. RTL therefore works in the
-legacy build too.
+`rostra.legacy.css` could not express them at all. That is also why the legacy
+build mirrors.
 
-Two things the system does not do for you: the content itself (Arabic and
-Hebrew text, dates and number formats come from your data and `Intl`), and
-directional glyphs inside your own icons.
+The content stays yours: Arabic and Hebrew text, dates and number formats come
+from your data and `Intl`, and so do the directional glyphs in your own icons.

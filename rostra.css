@@ -897,8 +897,8 @@
    and past what rostra.legacy.css can express at all. Everything else is
    flexbox, which flips on its own.
 
-   ponytail: an override block, not logical properties. Revisit when the
-   support floor rises past Safari 15 for other reasons. */
+   Worth revisiting the day the floor rises past Safari 15 for another
+   reason: then logical properties cost nothing and this block goes away. */
 [dir='rtl'] .rs-select { padding-right: 11px; padding-left: 30px; }
 [dir='rtl'] .rs-table th { text-align: right; }
 [dir='rtl'] .rs-table .rs-num { text-align: left; }
