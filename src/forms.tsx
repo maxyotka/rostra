@@ -1,35 +1,73 @@
 import { forwardRef, useId } from 'react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, MouseEvent, ReactNode } from 'react'
 import { cx } from './cx'
 
-export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
+export interface ButtonProps extends Omit<ComponentPropsWithoutRef<'button'>, 'onClick'> {
+  /** Typed for both elements, because `href` turns the button into a link. */
+  onClick?: (event: MouseEvent<HTMLElement>) => void
   variant?: 'default' | 'primary' | 'ghost' | 'danger'
   size?: 'md' | 'sm'
   /** Square button for a single icon. Requires an aria-label. */
   icon?: boolean
   loading?: boolean
+  /**
+   * Renders an `a` instead of a `button`. Navigation is a link — it belongs in
+   * the browser's history, opens in a new tab on the middle button and is read
+   * as a link. A router link goes here too: `href` plus its own `onClick`.
+   */
+  href?: string
+  target?: string
+  rel?: string
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'default', size = 'md', icon, loading, className, disabled, type = 'button', children, onClick, ...rest },
+export const Button = /* @__PURE__ */ forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonProps>(function Button(
+  { variant = 'default', size = 'md', icon, loading, className, disabled, type = 'button', href, target, rel, children, onClick, ...rest },
   ref
 ) {
+  const classes = cx(
+    'rs-btn',
+    variant !== 'default' && `rs-btn--${variant}`,
+    size === 'sm' && 'rs-btn--sm',
+    icon && 'rs-btn--icon',
+    loading && 'is-loading',
+    className
+  )
+  // A loading button stays in the focus order but does not fire: disabled
+  // would drop focus into nowhere at the exact moment the form is submitted.
+  const busy = loading || undefined
+
+  if (href !== undefined) {
+    const inert = loading || disabled
+    return (
+      <a
+        ref={ref}
+        // A link cannot be disabled, so the href goes away and the role stays:
+        // a keyboard reaches it, activating it does nothing.
+        href={inert ? undefined : href}
+        role={inert ? 'link' : undefined}
+        target={target}
+        // Opening a new tab without noopener hands the opener to the new page.
+        rel={target === '_blank' ? (rel ?? 'noopener noreferrer') : rel}
+        className={classes}
+        aria-busy={busy}
+        aria-disabled={inert || undefined}
+        onClick={inert ? (event) => event.preventDefault() : onClick}
+        // The remaining props are typed for a button; on the link they are the
+        // same DOM attributes with a different element in the handler.
+        {...(rest as ComponentPropsWithoutRef<'a'>)}
+      >
+        {children}
+      </a>
+    )
+  }
+
   return (
     <button
       ref={ref}
       type={type}
-      className={cx(
-        'rs-btn',
-        variant !== 'default' && `rs-btn--${variant}`,
-        size === 'sm' && 'rs-btn--sm',
-        icon && 'rs-btn--icon',
-        loading && 'is-loading',
-        className
-      )}
-      // A loading button stays in the focus order but does not fire: disabled
-      // would drop focus into nowhere at the exact moment the form is submitted.
-      aria-busy={loading || undefined}
-      aria-disabled={loading || undefined}
+      className={classes}
+      aria-busy={busy}
+      aria-disabled={busy}
       disabled={disabled}
       onClick={loading ? undefined : onClick}
       {...rest}
@@ -88,21 +126,21 @@ export function Field({ label, hint, error, required, className, children, ...re
   )
 }
 
-export const Input = forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(function Input(
+export const Input = /* @__PURE__ */ forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(function Input(
   { className, ...rest },
   ref
 ) {
   return <input ref={ref} className={cx('rs-input', className)} {...rest} />
 })
 
-export const Textarea = forwardRef<HTMLTextAreaElement, ComponentPropsWithoutRef<'textarea'>>(
+export const Textarea = /* @__PURE__ */ forwardRef<HTMLTextAreaElement, ComponentPropsWithoutRef<'textarea'>>(
   function Textarea({ className, rows = 3, ...rest }, ref) {
     return <textarea ref={ref} rows={rows} className={cx('rs-textarea', className)} {...rest} />
   }
 )
 
 /** Native select: keyboard, type-ahead and the mobile OS picker come for free. */
-export const Select = forwardRef<HTMLSelectElement, ComponentPropsWithoutRef<'select'>>(
+export const Select = /* @__PURE__ */ forwardRef<HTMLSelectElement, ComponentPropsWithoutRef<'select'>>(
   function Select({ className, ...rest }, ref) {
     return <select ref={ref} className={cx('rs-select', className)} {...rest} />
   }

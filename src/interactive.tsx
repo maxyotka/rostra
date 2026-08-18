@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ComponentPropsWithoutRef, KeyboardEvent, ReactNode } from 'react'
 import { cx } from './cx'
+import { LayerScope } from './theme'
+import { Portal, mergeRefs, useAnchoredPosition, useControlled } from './primitives'
 
 /* --- Dates ---------------------------------------------------
    Small local helpers instead of a date library: the calendar needs six
@@ -47,6 +49,8 @@ export interface CalendarProps extends Omit<ComponentPropsWithoutRef<'div'>, 'on
   /** A single day, or a period picked in two clicks. */
   mode?: 'single' | 'range'
   value?: Date | DateRange | null
+  /** Starting selection when the calendar keeps the state itself. */
+  defaultValue?: Date | DateRange | null
   onValueChange?: (value: Date | DateRange | null) => void
   /** Controlled month. Without it the calendar keeps its own. */
   month?: Date
@@ -65,9 +69,10 @@ export interface CalendarProps extends Omit<ComponentPropsWithoutRef<'div'>, 'on
  * Month grid following the APG date-picker pattern: the grid cell is the focus
  * target, arrows move it, and the month follows the cursor across its edges.
  */
-export function Calendar({
+export const Calendar = /* @__PURE__ */ forwardRef<HTMLDivElement, CalendarProps>(function Calendar({
   mode = 'single',
-  value,
+  value: valueProp,
+  defaultValue = null,
   onValueChange,
   month: monthProp,
   defaultMonth,
@@ -78,7 +83,8 @@ export function Calendar({
   labels,
   className,
   ...rest
-}: CalendarProps) {
+}, ref) {
+  const [value, setValue] = useControlled(valueProp, defaultValue, onValueChange)
   const anchor = isRange(value) ? value.from : value instanceof Date ? value : null
   const [ownMonth, setOwnMonth] = useState(() => startOfMonth(defaultMonth ?? anchor ?? new Date()))
   const month = monthProp ? startOfMonth(monthProp) : ownMonth
@@ -141,15 +147,15 @@ export function Calendar({
   function pick(day: Date) {
     if (isDisabled?.(day)) return
     if (mode === 'single') {
-      onValueChange?.(day)
+      setValue(day)
       return
     }
     // A completed range starts a new one; an open one closes, ordering itself
     // so that dragging backwards still yields from <= to.
     if (!isRange(value) || value.to) {
-      onValueChange?.({ from: day })
+      setValue({ from: day })
     } else {
-      onValueChange?.(+day < +value.from ? { from: day, to: value.from } : { from: value.from, to: day })
+      setValue(+day < +value.from ? { from: day, to: value.from } : { from: value.from, to: day })
     }
   }
 
@@ -177,7 +183,7 @@ export function Calendar({
   }
 
   return (
-    <div className={cx('rs-cal', className)} {...rest}>
+    <div ref={ref} className={cx('rs-cal', className)} {...rest}>
       <div className="rs-cal__head">
         <button
           type="button"
@@ -248,9 +254,12 @@ export function Calendar({
       </div>
     </div>
   )
-}
+})
 
 /* --- Combobox ------------------------------------------------ */
+
+/** A shared empty selection: a fresh [] every render would reset the state. */
+const EMPTY: string[] = []
 
 export interface ComboboxOption {
   value: string
@@ -260,8 +269,10 @@ export interface ComboboxOption {
 
 export interface ComboboxProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'value' | 'defaultValue'> {
   options: ComboboxOption[]
-  value: string[]
-  onValueChange: (value: string[]) => void
+  value?: string[]
+  /** Starting selection when the combobox keeps the state itself. */
+  defaultValue?: string[]
+  onValueChange?: (value: string[]) => void
   /** Accessible name of the field. */
   label: string
   placeholder?: string
@@ -276,9 +287,10 @@ export interface ComboboxProps extends Omit<ComponentPropsWithoutRef<'div'>, 'on
  * focus and announces the active option through aria-activedescendant, so
  * arrow keys never move focus away from what the user is typing into.
  */
-export function Combobox({
+export const Combobox = /* @__PURE__ */ forwardRef<HTMLDivElement, ComboboxProps>(function Combobox({
   options,
-  value,
+  value: valueProp,
+  defaultValue = EMPTY,
   onValueChange,
   label,
   placeholder,
@@ -286,7 +298,8 @@ export function Combobox({
   removeLabel = (option) => `Remove ${option.label}`,
   className,
   ...rest
-}: ComboboxProps) {
+}, ref) {
+  const [value, setValue] = useControlled(valueProp, defaultValue, onValueChange)
   const id = useId()
   const listId = `${id}-list`
   const [query, setQuery] = useState('')
@@ -294,6 +307,19 @@ export function Combobox({
   const [active, setActive] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  // The list is a floating layer, not a child of the field: inside a scrolling
+  // pane an absolutely positioned list is clipped by the first ancestor with
+  // overflow, which in this system is every table wrapper.
+  const position = useAnchoredPosition({
+    anchorRef: rootRef,
+    floatingRef: listRef,
+    open,
+    side: 'bottom',
+    align: 'start',
+    offset: 4,
+    matchWidth: true,
+  })
 
   const selected = useMemo(
     () => value.map((v) => options.find((o) => o.value === v)).filter((o): o is ComboboxOption => !!o),
@@ -313,7 +339,9 @@ export function Combobox({
   useEffect(() => {
     if (!open) return
     function onPointerDown(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+      const target = event.target as Node
+      // The list lives in a portal, so "outside" is the field *and* the list.
+      if (!rootRef.current?.contains(target) && !listRef.current?.contains(target)) setOpen(false)
     }
     document.addEventListener('pointerdown', onPointerDown)
     return () => document.removeEventListener('pointerdown', onPointerDown)
@@ -321,13 +349,13 @@ export function Combobox({
 
   function add(option: ComboboxOption) {
     if (option.disabled) return
-    onValueChange([...value, option.value])
+    setValue([...value, option.value])
     setQuery('')
     setActive(0)
   }
 
   function remove(optionValue: string) {
-    onValueChange(value.filter((v) => v !== optionValue))
+    setValue(value.filter((v) => v !== optionValue))
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -361,7 +389,7 @@ export function Combobox({
   }
 
   return (
-    <div ref={rootRef} className={cx('rs-combo-wrap', className)} {...rest}>
+    <div ref={mergeRefs(rootRef, ref)} className={cx('rs-combo-wrap', className)} {...rest}>
       <div className="rs-combo" onClick={() => inputRef.current?.focus()}>
         {selected.map((option) => (
           <span className="rs-token" key={option.value}>
@@ -399,32 +427,43 @@ export function Combobox({
         />
       </div>
       {open && (
-        <ul className="rs-menu rs-combo__list" role="listbox" id={listId} aria-label={label}>
-          {matches.length === 0 && (
-            <li className="rs-menu__item rs-muted" role="presentation">
-              {emptyText}
-            </li>
-          )}
-          {matches.map((option, index) => (
-            <li
-              key={option.value}
-              id={`${id}-option-${index}`}
-              role="option"
-              aria-selected={index === active}
-              aria-disabled={option.disabled || undefined}
-              className={cx('rs-menu__item', index === active && 'is-focus', option.disabled && 'is-disabled')}
-              // mousedown would blur the input before the click lands
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => add(option)}
+        <Portal>
+          <LayerScope>
+            <ul
+              ref={listRef}
+              className="rs-menu rs-combo__list"
+              style={position.style}
+              role="listbox"
+              id={listId}
+              aria-label={label}
             >
-              {option.label}
-            </li>
-          ))}
-        </ul>
+              {matches.length === 0 && (
+                <li className="rs-menu__item rs-muted" role="presentation">
+                  {emptyText}
+                </li>
+              )}
+              {matches.map((option, index) => (
+                <li
+                  key={option.value}
+                  id={`${id}-option-${index}`}
+                  role="option"
+                  aria-selected={index === active}
+                  aria-disabled={option.disabled || undefined}
+                  className={cx('rs-menu__item', index === active && 'is-focus', option.disabled && 'is-disabled')}
+                  // mousedown would blur the input before the click lands
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => add(option)}
+                >
+                  {option.label}
+                </li>
+              ))}
+            </ul>
+          </LayerScope>
+        </Portal>
       )}
     </div>
   )
-}
+})
 
 /* --- Tree ---------------------------------------------------- */
 
@@ -448,7 +487,7 @@ export interface TreeProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onSele
 }
 
 /** Tree following the APG pattern: one tab stop, arrows walk and fold. */
-export function Tree({
+export const Tree = /* @__PURE__ */ forwardRef<HTMLDivElement, TreeProps>(function Tree({
   items,
   label,
   expanded: expandedProp,
@@ -458,7 +497,7 @@ export function Tree({
   onSelect,
   className,
   ...rest
-}: TreeProps) {
+}, ref) {
   const [ownExpanded, setOwnExpanded] = useState(defaultExpanded)
   const expanded = expandedProp ?? ownExpanded
   const open = useMemo(() => new Set(expanded), [expanded])
@@ -585,11 +624,11 @@ export function Tree({
     })
 
   return (
-    <div ref={rootRef} role="tree" aria-label={label} className={className} onKeyDown={onKeyDown} {...rest}>
+    <div ref={mergeRefs(rootRef, ref)} role="tree" aria-label={label} className={className} onKeyDown={onKeyDown} {...rest}>
       {render(items, 1)}
     </div>
   )
-}
+})
 
 /* --- Board --------------------------------------------------- */
 
@@ -619,9 +658,12 @@ export interface BoardProps extends ComponentPropsWithoutRef<'div'> {
   labels?: { moveLeft?: string; moveRight?: string }
 }
 
-export function Board({ columns, onCardMove, labels, className, ...rest }: BoardProps) {
+export const Board = /* @__PURE__ */ forwardRef<HTMLDivElement, BoardProps>(function Board(
+  { columns, onCardMove, labels, className, ...rest },
+  ref
+) {
   return (
-    <div className={cx('rs-board', className)} {...rest}>
+    <div ref={ref} className={cx('rs-board', className)} {...rest}>
       {columns.map((column, columnIndex) => {
         const previous = columns[columnIndex - 1]
         const next = columns[columnIndex + 1]
@@ -668,4 +710,4 @@ export function Board({ columns, onCardMove, labels, className, ...rest }: Board
       })}
     </div>
   )
-}
+})

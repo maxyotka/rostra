@@ -56,7 +56,7 @@ export interface NavItemProps extends ComponentPropsWithoutRef<'a'> {
   icon?: ReactNode
 }
 
-export const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(function NavItem(
+export const NavItem = /* @__PURE__ */ forwardRef<HTMLAnchorElement, NavItemProps>(function NavItem(
   { active, icon, className, children, ...rest },
   ref
 ) {
@@ -82,7 +82,7 @@ export interface RailItemProps extends ComponentPropsWithoutRef<'button'> {
   active?: boolean
 }
 
-export const RailItem = forwardRef<HTMLButtonElement, RailItemProps>(function RailItem(
+export const RailItem = /* @__PURE__ */ forwardRef<HTMLButtonElement, RailItemProps>(function RailItem(
   { active, className, type = 'button', ...rest },
   ref
 ) {

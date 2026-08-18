@@ -10,10 +10,14 @@ Every component also accepts the props of the element it renders, so
 
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
+| `onClick` | `(event: MouseEvent<HTMLElement>) => void` | — | Typed for both elements, because `href` turns the button into a link. |
 | `variant` | `'default' \| 'primary' \| 'ghost' \| 'danger'` | — |  |
 | `size` | `'md' \| 'sm'` | — |  |
 | `icon` | `boolean` | — | Square button for a single icon. Requires an aria-label. |
 | `loading` | `boolean` | — |  |
+| `href` | `string` | — | Renders an `a` instead of a `button`. Navigation is a link — it belongs in * the browser's history, opens in a new tab on the middle button and is read * as a link. A router link goes here too: `href` plus its own `onClick`. |
+| `target` | `string` | — |  |
+| `rel` | `string` | — |  |
 
 ### Field
 
@@ -138,6 +142,7 @@ Every component also accepts the props of the element it renders, so
 | `align` | `Align` | — |  |
 | `label` | `string` | — | Accessible name. Without it the popover is a plain container, not a dialog. |
 | `className` | `string` | — |  |
+| `contentRef` | `Ref<HTMLDivElement>` | — | The floating panel itself. |
 
 ### Tooltip
 
@@ -255,6 +260,7 @@ Every component also accepts the props of the element it renders, so
 | --- | --- | --- | --- |
 | `mode` | `'single' \| 'range'` | — | A single day, or a period picked in two clicks. |
 | `value` | `Date \| DateRange \| null` | — |  |
+| `defaultValue` | `Date \| DateRange \| null` | — | Starting selection when the calendar keeps the state itself. |
 | `onValueChange` | `(value: Date \| DateRange \| null) => void` | — |  |
 | `month` | `Date` | — | Controlled month. Without it the calendar keeps its own. |
 | `defaultMonth` | `Date` | — |  |
@@ -277,8 +283,9 @@ Every component also accepts the props of the element it renders, so
 | Prop | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `options` | `ComboboxOption[]` | yes |  |
-| `value` | `string[]` | yes |  |
-| `onValueChange` | `(value: string[]) => void` | yes |  |
+| `value` | `string[]` | — |  |
+| `defaultValue` | `string[]` | — | Starting selection when the combobox keeps the state itself. |
+| `onValueChange` | `(value: string[]) => void` | — |  |
 | `label` | `string` | yes | Accessible name of the field. |
 | `placeholder` | `string` | — |  |
 | `emptyText` | `string` | — | Shown when the query matches nothing. |

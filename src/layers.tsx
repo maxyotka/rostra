@@ -9,12 +9,13 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { ComponentPropsWithoutRef, KeyboardEvent, ReactElement, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, KeyboardEvent, ReactElement, ReactNode, Ref } from 'react'
 import { cx } from './cx'
 import { LayerScope } from './theme'
 import {
   Portal,
   focusable,
+  mergeRefs,
   useAnchoredPosition,
   useDismiss,
   useFocusTrap,
@@ -67,6 +68,8 @@ interface OverlayProps {
   footer?: ReactNode
   children?: ReactNode
   className?: string
+  /** The window itself — for measuring it, or scrolling it back to the top. */
+  contentRef?: Ref<HTMLDivElement>
 }
 
 const CloseContext = createContext<(() => void) | null>(null)
@@ -81,6 +84,7 @@ function Overlay({
   footer,
   children,
   className,
+  contentRef: callerRef,
 }: OverlayProps & { variant: 'dialog' | 'drawer' }) {
   const [open, setOpen] = useControlledOpen(openProp, onOpenChange)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -102,7 +106,7 @@ function Overlay({
             <div className="rs-backdrop" />
             <div className={cx('rs-layer', variant === 'drawer' ? 'rs-layer--right' : 'rs-layer--center')}>
               <div
-                ref={contentRef}
+                ref={mergeRefs(contentRef, callerRef)}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={titleId}
@@ -160,6 +164,8 @@ export interface PopoverProps {
   /** Accessible name. Without it the popover is a plain container, not a dialog. */
   label?: string
   className?: string
+  /** The floating panel itself. */
+  contentRef?: Ref<HTMLDivElement>
 }
 
 /**
@@ -167,7 +173,7 @@ export interface PopoverProps {
  * focus returns to the trigger. The page behind stays live, which is the
  * difference from Dialog.
  */
-export function Popover({ trigger, children, open: openProp, onOpenChange, side = 'bottom', align = 'start', label, className }: PopoverProps) {
+export function Popover({ trigger, children, open: openProp, onOpenChange, side = 'bottom', align = 'start', label, className, contentRef: callerRef }: PopoverProps) {
   const [open, setOpen] = useControlledOpen(openProp, onOpenChange)
   const anchorRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -188,7 +194,7 @@ export function Popover({ trigger, children, open: openProp, onOpenChange, side 
         <Portal>
           <LayerScope>
             <div
-              ref={contentRef}
+              ref={mergeRefs(contentRef, callerRef)}
               className={cx('rs-popover', className)}
               style={position.style}
               data-side={position.side}

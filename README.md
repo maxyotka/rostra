@@ -67,8 +67,8 @@ APG patterns: focus trapping with return, Escape and outside-click dismissal,
 flips when the side runs out of room. Same for calendar, combobox, tree, tabs
 and board.
 
-**Size.** A button costs 1.3 kB gzipped, a table screen 1.7 kB, the entire
-package 10.0 kB. Tree-shaking works because nothing imports a shared runtime.
+**Size.** A button costs 1.0 kB gzipped, a table screen 1.6 kB, the entire
+package 10.4 kB. Tree-shaking works because nothing imports a shared runtime.
 
 **Server rendering.** Every component renders without a DOM; closed layers emit
 nothing and their triggers arrive complete, so the page works before hydration.
@@ -83,10 +83,10 @@ these numbers cannot drift unnoticed:
 
 | Import | Rostra | Mantine 9.5.1 | Radix Themes 3.3.0 |
 | --- | --- | --- | --- |
-| A button | **1.3 kB** | 12.2 kB | 5.2 kB |
-| A screen: shell, filters, fields, table, badges | **1.7 kB** | — | — |
-| Button, table, badge, dialog, text input | **2.6 kB** | 32.2 kB | 36.8 kB |
-| Every component in the package | **10.0 kB** | 180.9 kB | 85.0 kB |
+| A button | **1.0 kB** | 12.2 kB | 5.2 kB |
+| A screen: shell, filters, fields, table, badges | **1.6 kB** | — | — |
+| Button, table, badge, dialog, text input | **2.5 kB** | 32.2 kB | 36.8 kB |
+| Every component in the package | **10.4 kB** | 180.9 kB | 85.0 kB |
 | Stylesheet | **12.7 kB** | 37.9 kB | 86.2 kB |
 | Packages installed | **0** | 27 | 84 |
 
@@ -99,7 +99,7 @@ library such as Base UI or React Aria ships behaviour with no stylesheet at
 all, so its CSS column would be whatever you write yourself.
 
 A first screen is the honest total — a button plus the whole stylesheet, since
-ours is one file and loads in full: **14.0 kB** against Mantine's 50.1 kB and
+ours is one file and loads in full: **13.7 kB** against Mantine's 50.1 kB and
 Radix Themes' 91.4 kB.
 
 ## Documentation

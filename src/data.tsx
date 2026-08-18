@@ -28,7 +28,7 @@ export function Eyebrow({ variant = 'line', sentence, bare, className, children,
   )
 }
 
-export const Card = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<'div'>>(function Card(
+export const Card = /* @__PURE__ */ forwardRef<HTMLDivElement, ComponentPropsWithoutRef<'div'>>(function Card(
   { className, ...rest },
   ref
 ) {
@@ -63,7 +63,7 @@ export interface ChipProps extends ComponentPropsWithoutRef<'button'> {
   add?: boolean
 }
 
-export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
+export const Chip = /* @__PURE__ */ forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   { selected, add, className, type = 'button', ...rest },
   ref
 ) {
@@ -125,7 +125,7 @@ export interface TableProps extends ComponentPropsWithoutRef<'table'> {
   sentenceHead?: boolean
 }
 
-export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
+export const Table = /* @__PURE__ */ forwardRef<HTMLTableElement, TableProps>(function Table(
   { zebra, sticky, sentenceHead, className, ...rest },
   ref
 ) {

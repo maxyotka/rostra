@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useState } from 'react'
+import { createRef, useState } from 'react'
 import axe from 'axe-core'
 import { Button, Dialog, DialogClose, Drawer, Input, Menu, Pane, Popover, Rostra, Tabs, Tooltip } from '../src'
 import { place } from '../src/primitives'
@@ -43,6 +43,16 @@ function DialogHost() {
 }
 
 describe('Dialog', () => {
+  it('hands the window itself to the caller through contentRef', () => {
+    const ref = createRef<HTMLDivElement>()
+    render(
+      <Dialog open title="Invoice" contentRef={ref}>
+        Body
+      </Dialog>
+    )
+    expect(ref.current).toBe(screen.getByRole('dialog'))
+  })
+
   it('traps Tab inside and cycles at both ends', async () => {
     render(<DialogHost />)
     await userEvent.click(screen.getByRole('button', { name: 'Open' }))

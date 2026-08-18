@@ -83,6 +83,35 @@ function ComboHost({ initial = [] as string[] }) {
 }
 
 describe('Combobox', () => {
+  it('keeps its own selection when the caller passes none', async () => {
+    render(
+      <Combobox
+        label="Owners"
+        defaultValue={['ann']}
+        options={[
+          { value: 'ann', label: 'Ann' },
+          { value: 'bob', label: 'Bob' },
+        ]}
+      />
+    )
+    expect(screen.getByText('Ann')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(screen.getByRole('option', { name: 'Bob' }))
+    expect(screen.getByText('Bob')).toBeInTheDocument()
+  })
+
+  it('renders its list outside the field, so a scrolling pane cannot clip it', async () => {
+    const { container } = render(
+      <div style={{ overflow: 'hidden' }}>
+        <Combobox label="Owners" options={[{ value: 'ann', label: 'Ann' }]} />
+      </div>
+    )
+    await userEvent.click(screen.getByRole('combobox'))
+    const list = screen.getByRole('listbox')
+    expect(container.contains(list)).toBe(false)
+    expect(list).toHaveStyle({ position: 'fixed' })
+  })
+
   it('filters by query and takes the highlighted option on Enter', async () => {
     render(<ComboHost />)
     const input = screen.getByRole('combobox', { name: 'Plans' })

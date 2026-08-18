@@ -41,6 +41,32 @@ describe('Button', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
+  it('with href renders a link that keeps the button styling', () => {
+    render(<Button href="/reports" variant="primary">Reports</Button>)
+    const link = screen.getByRole('link', { name: 'Reports' })
+    expect(link).toHaveAttribute('href', '/reports')
+    expect(link).toHaveClass('rs-btn', 'rs-btn--primary')
+  })
+
+  it('a disabled link keeps its place in the tab order but goes nowhere', async () => {
+    const onClick = vi.fn()
+    render(
+      <Button href="/reports" disabled onClick={onClick}>
+        Reports
+      </Button>
+    )
+    const link = screen.getByRole('link', { name: 'Reports' })
+    expect(link).not.toHaveAttribute('href')
+    expect(link).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.click(link)
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it('a link opening a new tab does not hand over the opener', () => {
+    render(<Button href="https://example.org" target="_blank">Docs</Button>)
+    expect(screen.getByRole('link', { name: 'Docs' })).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
   it('is clickable and does not submit the form by default', async () => {
     const onClick = vi.fn()
     const onSubmit = vi.fn((e: FormEvent) => e.preventDefault())

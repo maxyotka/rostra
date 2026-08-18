@@ -18,7 +18,7 @@ export const useRostraTheme = (): ThemeSettings => useContext(ThemeContext)
 export interface RostraProps extends ComponentPropsWithoutRef<'div'>, Partial<ThemeSettings> {}
 
 /** Root of the system: theme, density and viewport mode for the subtree. */
-export const Rostra = forwardRef<HTMLDivElement, RostraProps>(function Rostra(
+export const Rostra = /* @__PURE__ */ forwardRef<HTMLDivElement, RostraProps>(function Rostra(
   { theme = 'light', density = 'medium', viewport, className, ...rest },
   ref
 ) {

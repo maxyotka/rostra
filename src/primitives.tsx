@@ -212,6 +212,7 @@ export function useAnchoredPosition({
   side = 'bottom',
   align = 'start',
   offset = 6,
+  matchWidth = false,
 }: {
   anchorRef: RefObject<HTMLElement | null>
   floatingRef: RefObject<HTMLElement | null>
@@ -219,8 +220,10 @@ export function useAnchoredPosition({
   side?: Side
   align?: Align
   offset?: number
+  /** The layer takes the anchor's width — what a combobox list is expected to do. */
+  matchWidth?: boolean
 }) {
-  const [style, setStyle] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
+  const [style, setStyle] = useState<{ top: number; left: number; width?: number }>({ top: 0, left: 0 })
   const [resolvedSide, setResolvedSide] = useState<Side>(side)
 
   const update = useCallback(() => {
@@ -228,10 +231,12 @@ export function useAnchoredPosition({
     const floating = floatingRef.current
     if (!anchor || !floating) return
     const box = floating.getBoundingClientRect()
-    const next = place(anchor.getBoundingClientRect(), { width: box.width, height: box.height }, side, align, offset)
-    setStyle({ top: next.top, left: next.left })
+    const anchorBox = anchor.getBoundingClientRect()
+    const width = matchWidth ? anchorBox.width : box.width
+    const next = place(anchorBox, { width, height: box.height }, side, align, offset)
+    setStyle({ top: next.top, left: next.left, width: matchWidth ? width : undefined })
     setResolvedSide(next.side)
-  }, [anchorRef, floatingRef, side, align, offset])
+  }, [anchorRef, floatingRef, side, align, offset, matchWidth])
 
   useBrowserLayoutEffect(() => {
     if (!open) return
@@ -245,6 +250,24 @@ export function useAnchoredPosition({
   }, [open, update])
 
   return { style: { position: 'fixed' as const, ...style }, side: resolvedSide, update }
+}
+
+/**
+ * One state, driven either by the caller or by the component. A prop that is
+ * present wins every time — passing `value` and then dropping it mid-life is a
+ * bug in the caller, not a mode this hook tries to support.
+ */
+export function useControlled<T>(controlled: T | undefined, initial: T, onChange?: (next: T) => void) {
+  const [own, setOwn] = useState(initial)
+  const value = controlled === undefined ? own : controlled
+  const set = useCallback(
+    (next: T) => {
+      if (controlled === undefined) setOwn(next)
+      onChange?.(next)
+    },
+    [controlled, onChange]
+  )
+  return [value, set] as const
 }
 
 /** Merges a ref of ours into whatever ref the caller's element already has. */
